@@ -1,0 +1,55 @@
+@import "tailwindcss";
+
+:root {
+  --bg-primary: #040d1a;
+  --bg-secondary: #0a1e35;
+  --accent: #00b4ff;
+  --accent-dark: #0066cc;
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background: var(--bg-primary);
+    color: #fff;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    min-height: 100vh;
+  }
+
+  a {
+    color: inherit;
+  }
+
+  select {
+    background-color: #0a1e35;
+    color: #fff;
+    color-scheme: dark;
+  }
+
+  select option {
+    background-color: #0d2545;
+    color: #fff;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #040d1a;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #00b4ff;
+    border-radius: 3px;
+  }
+}

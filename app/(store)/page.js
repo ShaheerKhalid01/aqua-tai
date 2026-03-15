@@ -1,0 +1,145 @@
+"use client";
+import Link from "next/link";
+import { useEffect } from "react";
+import { useProducts } from "@/context/ProductsContext";
+import ProductCard from "@/components/ProductCard";
+import { formatPrice } from "@/lib/utils";
+
+const stats = [
+  { value: "50,000+", label: "Happy Customers" },
+  { value: "99.9%", label: "Purity Rate" },
+  { value: "6 Yrs", label: "In Business" },
+  { value: "24/7", label: "Support" },
+];
+
+const features = [
+  { icon: "🏆", title: "NSF Certified", desc: "All filters meet international safety and performance standards." },
+  { icon: "🚚", title: "Free Delivery", desc: "Free shipping on orders above PKR 5,000 across Pakistan." },
+  { icon: "🔧", title: "Free Installation", desc: "Our technicians install your system at no extra charge." },
+  { icon: "🔄", title: "Easy Returns", desc: "30-day hassle-free return policy on all products." },
+];
+
+export default function Home() {
+  const { products, loadProducts } = useProducts();
+
+  useEffect(() => { loadProducts(); }, []);
+
+  const featured = products.slice(0, 3);
+
+  const scrollToFeatures = (e) => {
+    e.preventDefault();
+    const el = document.getElementById("features");
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  return (
+    <div>
+      {/* Hero */}
+      <section style={{ background: "linear-gradient(135deg, #040d1a 0%, #0a2540 50%, #0d3060 100%)", minHeight: "90vh", display: "flex", alignItems: "center", position: "relative", overflow: "hidden" }}>
+        {/* Background circles — pointerEvents none so they don't block buttons */}
+        <div style={{ position: "absolute", width: 600, height: 600, borderRadius: "50%", background: "radial-gradient(circle, rgba(0,180,255,0.06) 0%, transparent 70%)", top: "50%", right: -200, transform: "translateY(-50%)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", width: 400, height: 400, borderRadius: "50%", background: "radial-gradient(circle, rgba(0,102,204,0.08) 0%, transparent 70%)", bottom: -100, left: -100, pointerEvents: "none" }} />
+
+        <div className="max-w-7xl mx-auto px-4 w-full" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 60, alignItems: "center" }}>
+          <div>
+            <div style={{ display: "inline-block", background: "rgba(0,180,255,0.1)", border: "1px solid rgba(0,180,255,0.3)", borderRadius: 20, padding: "6px 16px", fontSize: 13, color: "#00b4ff", marginBottom: 24, letterSpacing: 1 }}>
+              🌊 Pakistan's #1 Water Filter Brand
+            </div>
+            <h1 style={{ fontSize: "clamp(36px, 5vw, 64px)", fontWeight: 900, fontFamily: "Georgia, serif", lineHeight: 1.15, marginBottom: 20 }}>
+              Drink Water<br />
+              <span style={{ background: "linear-gradient(135deg, #00b4ff, #60efff)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Perfectly Pure</span>
+            </h1>
+            <p style={{ color: "#94a3b8", fontSize: 18, lineHeight: 1.8, marginBottom: 32, maxWidth: 480 }}>
+              Advanced filtration technology removing 99.9% of contaminants. Safe, clean water for your family — delivered to your door.
+            </p>
+            <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
+              <Link
+                href="/shop"
+                style={{ background: "linear-gradient(135deg, #00b4ff, #0066cc)", color: "#fff", padding: "14px 32px", borderRadius: 12, border: "none", fontWeight: 700, fontSize: 16, cursor: "pointer", display: "inline-block", textDecoration: "none" }}
+              >
+                Shop Now →
+              </Link>
+              <button
+                onClick={scrollToFeatures}
+                style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.15)", color: "#fff", padding: "14px 32px", borderRadius: 12, fontWeight: 600, fontSize: 16, cursor: "pointer" }}
+              >
+                Learn More
+              </button>
+            </div>
+          </div>
+          {/* Hero visual */}
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <div style={{ position: "relative", width: 320, height: 320 }}>
+              <div style={{ position: "absolute", inset: 0, borderRadius: "50%", background: "radial-gradient(circle, rgba(0,180,255,0.15) 0%, transparent 70%)", animation: "pulse 3s infinite" }} />
+              <div style={{ width: "100%", height: "100%", background: "linear-gradient(135deg, rgba(0,180,255,0.1), rgba(0,102,204,0.1))", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid rgba(0,180,255,0.2)", fontSize: 120 }}>
+                💧
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Stats */}
+      <section style={{ background: "linear-gradient(135deg, #00b4ff, #0066cc)", padding: "40px 0" }}>
+        <div className="max-w-7xl mx-auto px-4" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 20 }}>
+          {stats.map((s) => (
+            <div key={s.value} style={{ textAlign: "center" }}>
+              <div style={{ fontSize: 32, fontWeight: 900, color: "#fff", fontFamily: "Georgia, serif" }}>{s.value}</div>
+              <div style={{ color: "rgba(255,255,255,0.8)", fontSize: 14, marginTop: 4 }}>{s.label}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Features */}
+      <section id="features" style={{ padding: "80px 0" }}>
+        <div className="max-w-7xl mx-auto px-4">
+          <div style={{ textAlign: "center", marginBottom: 60 }}>
+            <div style={{ color: "#00b4ff", fontSize: 13, fontWeight: 600, letterSpacing: 3, textTransform: "uppercase", marginBottom: 12 }}>Why Choose Us</div>
+            <h2 style={{ fontSize: 40, fontWeight: 900, fontFamily: "Georgia, serif" }}>The AquaTai Difference</h2>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 24 }}>
+            {features.map((f) => (
+              <div key={f.title} style={{ background: "linear-gradient(145deg, #0d2545, #0a1e35)", border: "1px solid rgba(0,180,255,0.15)", borderRadius: 16, padding: 28, textAlign: "center" }}>
+                <div style={{ fontSize: 44, marginBottom: 16 }}>{f.icon}</div>
+                <h3 style={{ color: "#fff", fontWeight: 700, fontSize: 18, marginBottom: 10 }}>{f.title}</h3>
+                <p style={{ color: "#64748b", fontSize: 14, lineHeight: 1.6 }}>{f.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Products */}
+      <section style={{ padding: "0 0 80px" }}>
+        <div className="max-w-7xl mx-auto px-4">
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 40, flexWrap: "wrap", gap: 16 }}>
+            <div>
+              <div style={{ color: "#00b4ff", fontSize: 13, fontWeight: 600, letterSpacing: 3, textTransform: "uppercase", marginBottom: 8 }}>Top Picks</div>
+              <h2 style={{ fontSize: 36, fontWeight: 900, fontFamily: "Georgia, serif" }}>Featured Products</h2>
+            </div>
+            <Link href="/shop" style={{ background: "rgba(0,180,255,0.1)", border: "1px solid rgba(0,180,255,0.3)", color: "#00b4ff", padding: "10px 24px", borderRadius: 10, textDecoration: "none", fontWeight: 600 }}>
+              View All →
+            </Link>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 24 }}>
+            {featured.length > 0
+              ? featured.map((p) => <ProductCard key={p._id} product={p} />)
+              : <p style={{ color: "#64748b", fontSize: 15 }}>No products yet. Add some from the admin panel.</p>}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section style={{ background: "linear-gradient(135deg, #0a2540, #0d3060)", padding: "80px 0", margin: "0 0 0", borderTop: "1px solid rgba(0,180,255,0.15)" }}>
+        <div className="max-w-7xl mx-auto px-4" style={{ textAlign: "center" }}>
+          <h2 style={{ fontSize: 44, fontWeight: 900, fontFamily: "Georgia, serif", marginBottom: 16 }}>Ready for Pure Water?</h2>
+          <p style={{ color: "#94a3b8", fontSize: 18, marginBottom: 32 }}>Join 50,000+ families who trust AquaTai for clean, safe drinking water.</p>
+          <Link href="/shop" style={{ background: "linear-gradient(135deg, #00b4ff, #0066cc)", color: "#fff", padding: "16px 48px", borderRadius: 14, textDecoration: "none", fontWeight: 700, fontSize: 18, display: "inline-block" }}>
+            Shop All Filters
+          </Link>
+        </div>
+      </section>
+    </div>
+  );
+}
