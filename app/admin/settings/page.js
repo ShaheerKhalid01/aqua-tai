@@ -2,7 +2,7 @@
 import { useState } from "react";
 
 export default function AdminSettings() {
-  const [settings, setSettings] = useState({ storeName: "AquaTai", tagline: "Pure Water Solutions", email: "info@aquatai.pk", phone: "+92 300 1234567", address: "Lahore, Pakistan", currency: "PKR", freeShippingThreshold: 5000, taxRate: 17 });
+  const [settings, setSettings] = useState({ storeName: "AQUA R.O Filter", tagline: "Pure Water Solutions", email: "info@aquatai.pk", phone: "+92 300 1234567", address: "Lahore, Pakistan", currency: "PKR", freeShippingThreshold: 5000, taxRate: 17 });
   const [saved, setSaved] = useState(false);
 
   const handleSave = () => { setSaved(true); setTimeout(() => setSaved(false), 2000); };

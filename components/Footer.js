@@ -6,7 +6,7 @@ export default function Footer() {
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
               <span style={{ fontSize: 28 }}>💧</span>
-              <span style={{ color: "#fff", fontWeight: 800, fontSize: 22, fontFamily: "Georgia, serif" }}>AquaTai</span>
+              <span style={{ color: "#fff", fontWeight: 800, fontSize: 22, fontFamily: "Georgia, serif" }}>AQUA R.O Filter</span>
             </div>
             <p style={{ color: "#64748b", fontSize: 14, lineHeight: 1.7 }}>Pakistan's most trusted water filtration brand. Delivering pure, safe water to homes and businesses since 2019.</p>
           </div>
@@ -31,7 +31,7 @@ export default function Footer() {
           </div>
         </div>
         <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: 24, display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 10 }}>
-          <p style={{ color: "#334155", fontSize: 13 }}>© 2024 AquaTai Water Solutions. All rights reserved.</p>
+          <p style={{ color: "#334155", fontSize: 13 }}>© 2024 AQUA R.O Filter. All rights reserved.</p>
           <p style={{ color: "#334155", fontSize: 13 }}>Made with 💧 in Pakistan</p>
         </div>
       </div>

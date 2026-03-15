@@ -16,9 +16,9 @@ export default function AdminNavbar() {
     <nav style={{ background: "linear-gradient(135deg, #030a15 0%, #060f22 100%)", borderBottom: "1px solid rgba(0,180,255,0.15)", padding: "0 24px", height: 60, display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 50 }}>
       {/* Logo */}
       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-        <div style={{ width: 32, height: 32, background: "linear-gradient(135deg, #00b4ff, #0066cc)", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16 }}>💧</div>
+        <img src="/logo.jpeg" alt="AQUA R.O Filter Logo" style={{ width: 36, height: 36, objectFit: "contain", borderRadius: 6 }} />
         <div>
-          <div style={{ color: "#fff", fontWeight: 800, fontSize: 16, fontFamily: "Georgia, serif", letterSpacing: 0.5 }}>AquaTai</div>
+          <div style={{ color: "#fff", fontWeight: 800, fontSize: 16, fontFamily: "Georgia, serif", letterSpacing: 0.5 }}>AQUA R.O Filter</div>
           <div style={{ color: "#00b4ff", fontSize: 9, letterSpacing: 2, textTransform: "uppercase" }}>Admin Panel</div>
         </div>
       </div>

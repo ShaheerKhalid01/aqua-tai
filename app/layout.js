@@ -5,8 +5,8 @@ import { OrdersProvider } from "@/context/OrdersContext";
 import { ProductsProvider } from "@/context/ProductsContext";
 
 export const metadata = {
-  title: "AquaTai - Pure Water Solutions",
-  description: "Pakistan's leading water filtration store.",
+  title: "AQUA R.O Filter - Pure Water Solutions",
+  description: "Pakistan's leading water filtration store. Shop RO systems, domestic filters, whole house softeners and more.",
 };
 
 export default function RootLayout({ children }) {

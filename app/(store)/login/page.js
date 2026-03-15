@@ -53,9 +53,9 @@ export default function LoginPage() {
       <div style={{ width: "100%", maxWidth: 460, position: "relative", zIndex: 1 }}>
         <div style={{ textAlign: "center", marginBottom: 32 }}>
           <Link href="/" style={{ textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 10 }}>
-            <div style={{ width: 44, height: 44, background: "linear-gradient(135deg, #00b4ff, #0066cc)", borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22 }}>💧</div>
+            <img src="/logo.jpeg" alt="AQUA R.O Filter" style={{ width: 48, height: 48, objectFit: "contain", borderRadius: 10 }} />
             <div>
-              <div style={{ color: "#fff", fontWeight: 800, fontSize: 22, fontFamily: "Georgia, serif" }}>AquaTai</div>
+              <div style={{ color: "#fff", fontWeight: 800, fontSize: 22, fontFamily: "Georgia, serif" }}>AQUA R.O Filter</div>
               <div style={{ color: "#00b4ff", fontSize: 10, letterSpacing: 3, textTransform: "uppercase" }}>Pure Water Solutions</div>
             </div>
           </Link>
@@ -75,7 +75,7 @@ export default function LoginPage() {
             {tab === "login" ? "Welcome back" : "Create account"}
           </h2>
           <p style={{ color: "#64748b", fontSize: 13, marginBottom: 24 }}>
-            {tab === "login" ? "Sign in to your AquaTai account." : "Join AquaTai for a better experience."}
+            {tab === "login" ? "Sign in to your AQUA R.O Filter account." : "Join AQUA R.O Filter for a better experience."}
           </p>
 
           {error && <div style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)", color: "#ef4444", padding: "10px 14px", borderRadius: 8, fontSize: 13, marginBottom: 16 }}>⚠ {error}</div>}

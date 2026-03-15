@@ -96,7 +96,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4">
           <div style={{ textAlign: "center", marginBottom: 60 }}>
             <div style={{ color: "#00b4ff", fontSize: 13, fontWeight: 600, letterSpacing: 3, textTransform: "uppercase", marginBottom: 12 }}>Why Choose Us</div>
-            <h2 style={{ fontSize: 40, fontWeight: 900, fontFamily: "Georgia, serif" }}>The AquaTai Difference</h2>
+            <h2 style={{ fontSize: 40, fontWeight: 900, fontFamily: "Georgia, serif" }}>The AQUA R.O Filter Difference</h2>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 24 }}>
             {features.map((f) => (
@@ -134,7 +134,7 @@ export default function Home() {
       <section style={{ background: "linear-gradient(135deg, #0a2540, #0d3060)", padding: "80px 0", margin: "0 0 0", borderTop: "1px solid rgba(0,180,255,0.15)" }}>
         <div className="max-w-7xl mx-auto px-4" style={{ textAlign: "center" }}>
           <h2 style={{ fontSize: 44, fontWeight: 900, fontFamily: "Georgia, serif", marginBottom: 16 }}>Ready for Pure Water?</h2>
-          <p style={{ color: "#94a3b8", fontSize: 18, marginBottom: 32 }}>Join 50,000+ families who trust AquaTai for clean, safe drinking water.</p>
+          <p style={{ color: "#94a3b8", fontSize: 18, marginBottom: 32 }}>Join 50,000+ families who trust AQUA R.O Filter for clean, safe drinking water.</p>
           <Link href="/shop" style={{ background: "linear-gradient(135deg, #00b4ff, #0066cc)", color: "#fff", padding: "16px 48px", borderRadius: 14, textDecoration: "none", fontWeight: 700, fontSize: 18, display: "inline-block" }}>
             Shop All Filters
           </Link>

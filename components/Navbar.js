@@ -22,9 +22,9 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 no-underline">
-          <div style={{ width: 36, height: 36, background: "linear-gradient(135deg, #00b4ff, #0066cc)", borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18 }}>💧</div>
+          <img src="/logo.jpeg" alt="AQUA R.O Filter Logo" style={{ width: 42, height: 42, objectFit: "contain", borderRadius: 8 }} />
           <div>
-            <div style={{ color: "#fff", fontWeight: 800, fontSize: 20, fontFamily: "Georgia, serif", letterSpacing: 1 }}>AquaTai</div>
+            <div style={{ color: "#fff", fontWeight: 800, fontSize: 20, fontFamily: "Georgia, serif", letterSpacing: 1 }}>AQUA R.O Filter</div>
             <div style={{ color: "#00b4ff", fontSize: 9, letterSpacing: 3, textTransform: "uppercase" }}>Pure Water Solutions</div>
           </div>
         </Link>
