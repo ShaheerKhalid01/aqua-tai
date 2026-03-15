@@ -39,6 +39,14 @@ export default function Navbar() {
               {label}
             </Link>
           ))}
+          {state.clientUser && (
+            <Link href="/orders"
+              style={{ color: "rgba(255,255,255,0.8)", textDecoration: "none", fontSize: 14, fontWeight: 500 }}
+              onMouseEnter={e => e.target.style.color = "#00b4ff"}
+              onMouseLeave={e => e.target.style.color = "rgba(255,255,255,0.8)"}>
+              My Orders
+            </Link>
+          )}
         </div>
 
         {/* Right side actions */}
@@ -70,6 +78,12 @@ export default function Navbar() {
                     <div style={{ color: "#fff", fontWeight: 600, fontSize: 13 }}>{state.clientUser.name}</div>
                     <div style={{ color: "#64748b", fontSize: 11 }}>{state.clientUser.email}</div>
                   </div>
+                  <Link href="/orders" onClick={() => setDropdownOpen(false)}
+                    style={{ display: "flex", alignItems: "center", gap: 8, padding: "9px 14px", color: "#94a3b8", textDecoration: "none", fontSize: 13, borderRadius: 8, marginBottom: 4 }}
+                    onMouseEnter={e => e.currentTarget.style.color = "#fff"}
+                    onMouseLeave={e => e.currentTarget.style.color = "#94a3b8"}>
+                    📦 My Orders
+                  </Link>
                   <button onClick={handleLogout}
                     style={{ width: "100%", display: "flex", alignItems: "center", gap: 8, padding: "9px 14px", background: "rgba(239,68,68,0.07)", border: "1px solid rgba(239,68,68,0.15)", borderRadius: 8, color: "#ef4444", cursor: "pointer", fontSize: 13, fontWeight: 600 }}>
                     🚪 Logout

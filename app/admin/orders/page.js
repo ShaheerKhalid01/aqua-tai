@@ -3,8 +3,8 @@ import { useState, useEffect } from "react";
 import { useOrders } from "@/context/OrdersContext";
 import { formatPrice } from "@/lib/utils";
 
-const statusColors = { Delivered: "#10b981", Processing: "#f59e0b", Shipped: "#3b82f6", Pending: "#ef4444" };
-const allStatuses = ["Pending", "Processing", "Shipped", "Delivered"];
+const statusColors = { Delivered: "#10b981", Processing: "#f59e0b", Shipped: "#3b82f6", Pending: "#ef4444", Cancelled: "#64748b" };
+const allStatuses = ["Pending", "Processing", "Shipped", "Delivered", "Cancelled"];
 
 export default function AdminOrders() {
   const { orders, loading, loadOrders, changeStatus } = useOrders();
@@ -84,10 +84,16 @@ export default function AdminOrders() {
                         style={{ background: "rgba(0,180,255,0.1)", border: "1px solid rgba(0,180,255,0.2)", color: "#00b4ff", padding: "5px 10px", borderRadius: 6, cursor: "pointer", fontSize: 11 }}>
                         View
                       </button>
-                      <select value={order.status} onChange={(e) => updateStatus(order.id, e.target.value)}
+                      <select value={order.status} onChange={(e) => updateStatus(order.id || order.orderId, e.target.value)}
                         style={{ background: "#0a1e35", border: "1px solid rgba(0,180,255,0.2)", color: "#fff", padding: "5px 8px", borderRadius: 6, cursor: "pointer", fontSize: 11, outline: "none" }}>
                         {allStatuses.map((s) => <option key={s} value={s}>{s}</option>)}
                       </select>
+                      {order.status !== "Cancelled" && order.status !== "Delivered" && (
+                        <button onClick={() => updateStatus(order.id || order.orderId, "Cancelled")}
+                          style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)", color: "#ef4444", padding: "5px 10px", borderRadius: 6, cursor: "pointer", fontSize: 11, fontWeight: 600 }}>
+                          Cancel
+                        </button>
+                      )}
                     </div>
                   </td>
                 </tr>
