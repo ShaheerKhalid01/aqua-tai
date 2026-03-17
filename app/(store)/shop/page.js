@@ -1,12 +1,20 @@
 "use client";
-import { useState, useMemo, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useMemo, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useProducts } from "@/context/ProductsContext";
 import { useCart } from "@/context/CartContext";
 import ProductCard from "@/components/ProductCard";
 import { formatPrice } from "@/lib/utils";
 
 const MAX_PRICE = 100000;
+
+const CATEGORY_ICONS = {
+  "Reverse Osmosis System": "🔬",
+  "Cartridges & Accessories": "🔧",
+  "Whole House Water Softener": "🏠",
+  "Domestic Water Filter": "🚰",
+  "Commercial Water Plants": "🏭",
+};
 
 function FilterTag({ label, onRemove }) {
   return (
@@ -51,7 +59,8 @@ function ListCard({ product }) {
   );
 }
 
-export default function ShopPage() {
+function ShopContent() {
+  const searchParams = useSearchParams();
   const { products, loading, loadProducts } = useProducts();
   const [activeCategory, setActiveCategory] = useState("All");
   const [sortBy, setSortBy] = useState("default");
@@ -61,6 +70,12 @@ export default function ShopPage() {
   const [gridView, setGridView] = useState(true);
 
   useEffect(() => { loadProducts(); }, []);
+
+  // Read category from URL query param (from homepage category cards)
+  useEffect(() => {
+    const cat = searchParams.get("category");
+    if (cat) setActiveCategory(decodeURIComponent(cat));
+  }, [searchParams]);
 
   const categories = useMemo(() => {
     const cats = [...new Set(products.map(p => p.category).filter(Boolean))];
@@ -77,7 +92,7 @@ export default function ShopPage() {
     });
     if (sortBy === "price-asc") result = [...result].sort((a, b) => a.price - b.price);
     else if (sortBy === "price-desc") result = [...result].sort((a, b) => b.price - a.price);
-    else if (sortBy === "rating") result = [...result].sort((a, b) => (b.rating||0) - (a.rating||0));
+    else if (sortBy === "rating") result = [...result].sort((a, b) => (b.rating || 0) - (a.rating || 0));
     return result;
   }, [products, activeCategory, sortBy, search, priceRange, onlyInStock]);
 
@@ -86,15 +101,23 @@ export default function ShopPage() {
 
   return (
     <div style={{ minHeight: "100vh", paddingBottom: 80 }}>
+      {/* Header */}
       <div style={{ background: "linear-gradient(135deg, #0a2540, #0d3060)", padding: "50px 0 36px", borderBottom: "1px solid rgba(0,180,255,0.15)" }}>
         <div className="max-w-7xl mx-auto px-4">
           <div style={{ color: "#00b4ff", fontSize: 12, letterSpacing: 3, textTransform: "uppercase", marginBottom: 8 }}>Our Collection</div>
-          <h1 style={{ fontSize: 42, fontWeight: 900, fontFamily: "Georgia, serif", marginBottom: 12 }}>All Water Filters</h1>
-          <p style={{ color: "#94a3b8", fontSize: 15 }}>Find the perfect filtration solution for your home or business.</p>
+          <h1 style={{ fontSize: 42, fontWeight: 900, fontFamily: "Georgia, serif", marginBottom: 12 }}>
+            {activeCategory === "All" ? "All Water Filters" : activeCategory}
+          </h1>
+          {activeCategory !== "All" && (
+            <button onClick={() => setActiveCategory("All")} style={{ background: "rgba(0,180,255,0.1)", border: "1px solid rgba(0,180,255,0.2)", color: "#00b4ff", padding: "6px 14px", borderRadius: 20, fontSize: 12, cursor: "pointer" }}>
+              ← All Categories
+            </button>
+          )}
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-8">
+        {/* Top Bar */}
         <div style={{ display: "flex", gap: 12, marginBottom: 28, flexWrap: "wrap", alignItems: "center" }}>
           <div style={{ position: "relative", flex: 1, minWidth: 220 }}>
             <span style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: "#64748b" }}>🔍</span>
@@ -123,29 +146,39 @@ export default function ShopPage() {
                 <span style={{ fontWeight: 800, fontSize: 15 }}>Filters</span>
                 {hasActiveFilters && <button onClick={resetFilters} style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.25)", color: "#ef4444", padding: "3px 10px", borderRadius: 6, cursor: "pointer", fontSize: 11, fontWeight: 600 }}>Reset All</button>}
               </div>
+
+              {/* Categories */}
               <div style={{ marginBottom: 24 }}>
                 <div style={{ color: "#00b4ff", fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", marginBottom: 12 }}>Category</div>
                 {categories.map(cat => {
                   const count = cat === "All" ? products.length : products.filter(p => p.category === cat).length;
                   const active = activeCategory === cat;
+                  const icon = CATEGORY_ICONS[cat] || "💧";
                   return (
                     <button key={cat} onClick={() => setActiveCategory(cat)}
                       style={{ width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", padding: "9px 12px", borderRadius: 8, marginBottom: 3, background: active ? "rgba(0,180,255,0.12)" : "transparent", border: active ? "1px solid rgba(0,180,255,0.35)" : "1px solid transparent", color: active ? "#00b4ff" : "#94a3b8", fontWeight: active ? 700 : 400, fontSize: 13, cursor: "pointer" }}>
-                      <span>{cat}</span>
+                      <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                        <span>{cat === "All" ? "🌊" : icon}</span>
+                        <span>{cat}</span>
+                      </span>
                       <span style={{ background: active ? "rgba(0,180,255,0.2)" : "rgba(255,255,255,0.07)", color: active ? "#00b4ff" : "#64748b", borderRadius: 10, padding: "1px 7px", fontSize: 11 }}>{count}</span>
                     </button>
                   );
                 })}
               </div>
+
+              {/* Price Range */}
               <div style={{ marginBottom: 24 }}>
                 <div style={{ color: "#00b4ff", fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", marginBottom: 12 }}>Price Range</div>
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 10, fontSize: 13 }}>
                   <span style={{ color: "#94a3b8" }}>{formatPrice(priceRange[0])}</span>
                   <span style={{ color: "#94a3b8" }}>{formatPrice(priceRange[1])}</span>
                 </div>
-                <input type="range" min={0} max={MAX_PRICE} step={500} value={priceRange[0]} onChange={e => setPriceRange([Math.min(+e.target.value, priceRange[1]-500), priceRange[1]])} style={{ width: "100%", accentColor: "#00b4ff", marginBottom: 6, cursor: "pointer" }} />
-                <input type="range" min={0} max={MAX_PRICE} step={500} value={priceRange[1]} onChange={e => setPriceRange([priceRange[0], Math.max(+e.target.value, priceRange[0]+500)])} style={{ width: "100%", accentColor: "#00b4ff", cursor: "pointer" }} />
+                <input type="range" min={0} max={MAX_PRICE} step={500} value={priceRange[0]} onChange={e => setPriceRange([Math.min(+e.target.value, priceRange[1] - 500), priceRange[1]])} style={{ width: "100%", accentColor: "#00b4ff", marginBottom: 6, cursor: "pointer" }} />
+                <input type="range" min={0} max={MAX_PRICE} step={500} value={priceRange[1]} onChange={e => setPriceRange([priceRange[0], Math.max(+e.target.value, priceRange[0] + 500)])} style={{ width: "100%", accentColor: "#00b4ff", cursor: "pointer" }} />
               </div>
+
+              {/* In Stock */}
               <div>
                 <div style={{ color: "#00b4ff", fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", marginBottom: 12 }}>Availability</div>
                 <div style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer" }} onClick={() => setOnlyInStock(!onlyInStock)}>
@@ -200,5 +233,13 @@ export default function ShopPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ShopPage() {
+  return (
+    <Suspense fallback={<div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", color: "#64748b" }}>Loading...</div>}>
+      <ShopContent />
+    </Suspense>
   );
 }
