@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
 
 function verifyAdmin(req) {
   const auth = req.headers.get("authorization");
@@ -15,49 +16,48 @@ export async function POST(req) {
     return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
 
   try {
+    const cloudName   = process.env.CLOUDINARY_CLOUD_NAME;
+    const apiKey      = process.env.CLOUDINARY_API_KEY;
+    const apiSecret   = process.env.CLOUDINARY_API_SECRET;
+
+    if (!cloudName || !apiKey || !apiSecret)
+      return NextResponse.json({ error: "Cloudinary credentials missing." }, { status: 500 });
+
     const formData = await req.formData();
     const file = formData.get("image");
-
     if (!file)
       return NextResponse.json({ error: "No image provided." }, { status: 400 });
 
-    // Check Cloudinary env vars
-    const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
-    const apiKey = process.env.CLOUDINARY_API_KEY;
-    const apiSecret = process.env.CLOUDINARY_API_SECRET;
+    // Convert to base64
+    const bytes  = await file.arrayBuffer();
+    const base64 = `data:${file.type};base64,${Buffer.from(bytes).toString("base64")}`;
 
-    console.log("Cloudinary cloud_name:", cloudName);
-    console.log("Cloudinary api_key:", apiKey ? "set" : "missing");
-    console.log("Cloudinary api_secret:", apiSecret ? "set" : "missing");
+    // Build signed request
+    const timestamp = Math.floor(Date.now() / 1000).toString();
+    const folder    = "aquatai/products";
 
-    if (!cloudName || !apiKey || !apiSecret) {
-      return NextResponse.json({ error: "Cloudinary credentials missing in environment variables." }, { status: 500 });
-    }
+    // Signature: sign "folder=...&timestamp=..." with api_secret
+    const signStr  = `folder=${folder}&timestamp=${timestamp}${apiSecret}`;
+    const signature = crypto.createHash("sha256").update(signStr).digest("hex");
 
-    // Convert file to base64
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-    const base64 = `data:${file.type};base64,${buffer.toString("base64")}`;
+    const payload = new FormData();
+    payload.append("file",      base64);
+    payload.append("timestamp", timestamp);
+    payload.append("api_key",   apiKey);
+    payload.append("signature", signature);
+    payload.append("folder",    folder);
 
-    // Upload directly via Cloudinary REST API — no SDK needed
-    const formPayload = new FormData();
-    formPayload.append("file", base64);
-    formPayload.append("upload_preset", "ml_default");
-    formPayload.append("folder", "aquatai/products");
+    const res  = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+      method: "POST",
+      body: payload,
+    });
 
-    const uploadRes = await fetch(
-      `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-      { method: "POST", body: formPayload }
-    );
+    const data = await res.json();
 
-    const uploadData = await uploadRes.json();
-    console.log("Cloudinary response:", uploadData);
+    if (data.error)
+      return NextResponse.json({ error: "Upload failed: " + data.error.message }, { status: 500 });
 
-    if (uploadData.error) {
-      return NextResponse.json({ error: "Upload failed: " + uploadData.error.message }, { status: 500 });
-    }
-
-    return NextResponse.json({ url: uploadData.secure_url, public_id: uploadData.public_id });
+    return NextResponse.json({ url: data.secure_url, public_id: data.public_id });
 
   } catch (err) {
     console.error("Upload error:", err);
