@@ -12,13 +12,6 @@ const stats = [
   { value: "24/7", label: "Support" },
 ];
 
-const features = [
-  { icon: "🏆", title: "Quality Guaranteed", desc: "All our filters meet international safety and performance standards for pure, safe water." },
-  { icon: "🔧", title: "Free Installation", desc: "Our expert technicians come to your home and install your system at no extra charge." },
-  { icon: "📞", title: "Complaint Support", desc: "Call us on 0304-2604217 or 068-2098583 for any complaints or after-sale support." },
-  { icon: "🔄", title: "Easy Returns", desc: "Hassle-free return and replacement policy on all our water filter products." },
-];
-
 export default function Home() {
   const { products, loadProducts } = useProducts();
 
@@ -99,7 +92,11 @@ export default function Home() {
             <h2 style={{ fontSize: 40, fontWeight: 900, fontFamily: "Georgia, serif" }}>The AQUA R.O Filter Difference</h2>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 24 }}>
-            {features.map((f) => (
+            {[
+              { icon: "🔧", title: "Free Installation", desc: "Our expert technicians come to your home and install your system at no extra charge." },
+              { icon: "📞", title: "Complaint Support", desc: "Call us on 0304-2604217 or 068-2098583 for any complaints or after-sale support." },
+              { icon: "🔄", title: "Easy Returns", desc: "Hassle-free return and replacement policy on all our water filter products." },
+            ].map((f) => (
               <div key={f.title} style={{ background: "linear-gradient(145deg, #0d2545, #0a1e35)", border: "1px solid rgba(0,180,255,0.15)", borderRadius: 16, padding: 28, textAlign: "center" }}>
                 <div style={{ fontSize: 44, marginBottom: 16 }}>{f.icon}</div>
                 <h3 style={{ color: "#fff", fontWeight: 700, fontSize: 18, marginBottom: 10 }}>{f.title}</h3>
