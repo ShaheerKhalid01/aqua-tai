@@ -3,119 +3,8 @@ import { useCart } from "@/context/CartContext";
 import { useOrders } from "@/context/OrdersContext";
 import { useAuth } from "@/context/AuthContext";
 import { formatPrice } from "@/lib/utils";
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
-
-// ── Mapbox Address Autocomplete ──────────────────────────────
-function AddressAutocomplete({ value, onChange, onCityChange, placeholder }) {
-  const [query, setQuery] = useState(value || "");
-  const [suggestions, setSuggestions] = useState([]);
-  const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [highlighted, setHighlighted] = useState(-1);
-  const ref = useRef(null);
-  const debounceRef = useRef(null);
-  const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
-
-  useEffect(() => {
-    const handler = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, []);
-
-  const search = async (text) => {
-    if (!text || text.length < 2 || !MAPBOX_TOKEN) { setSuggestions([]); setOpen(false); return; }
-    setLoading(true);
-    try {
-      const res = await fetch(
-        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(text)}.json?` +
-        `access_token=${MAPBOX_TOKEN}&country=PK&language=en&limit=6&types=place,locality,neighborhood,address,poi`
-      );
-      const data = await res.json();
-      setSuggestions(data.features || []);
-      setOpen((data.features || []).length > 0);
-    } catch { setSuggestions([]); }
-    finally { setLoading(false); }
-  };
-
-  const handleInput = (e) => {
-    const val = e.target.value;
-    setQuery(val);
-    onChange(val);
-    setHighlighted(-1);
-    clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(() => search(val), 350);
-  };
-
-  const handleSelect = (feature) => {
-    const fullAddress = feature.place_name;
-    setQuery(fullAddress);
-    onChange(fullAddress);
-    const city = feature.context?.find(c => c.id.startsWith("place") || c.id.startsWith("district"))?.text || feature.text || "";
-    if (onCityChange && city) onCityChange(city);
-    setSuggestions([]);
-    setOpen(false);
-    setHighlighted(-1);
-  };
-
-  const handleKeyDown = (e) => {
-    if (!open) return;
-    if (e.key === "ArrowDown") { e.preventDefault(); setHighlighted(h => Math.min(h + 1, suggestions.length - 1)); }
-    if (e.key === "ArrowUp") { e.preventDefault(); setHighlighted(h => Math.max(h - 1, 0)); }
-    if (e.key === "Enter" && highlighted >= 0) { e.preventDefault(); handleSelect(suggestions[highlighted]); }
-    if (e.key === "Escape") setOpen(false);
-  };
-
-  const inputStyle = {
-    width: "100%",
-    background: "rgba(255,255,255,0.05)",
-    border: `1px solid ${open ? "rgba(0,180,255,0.5)" : "rgba(0,180,255,0.2)"}`,
-    borderRadius: open && suggestions.length > 0 ? "10px 10px 0 0" : 10,
-    padding: "12px 40px 12px 42px",
-    color: "#fff",
-    fontSize: 14,
-    outline: "none",
-    marginTop: 6,
-    transition: "border 0.2s",
-  };
-
-  return (
-    <div ref={ref} style={{ position: "relative" }}>
-      <span style={{ position: "absolute", left: 14, top: "calc(50% + 3px)", transform: "translateY(-50%)", fontSize: 15, color: "#64748b", pointerEvents: "none" }}>📍</span>
-      <input type="text" value={query} onChange={handleInput} onKeyDown={handleKeyDown}
-        onFocus={() => { if (suggestions.length > 0) setOpen(true); }}
-        placeholder={placeholder || "Search address in Pakistan..."} style={inputStyle} autoComplete="off" />
-      {loading && <span style={{ position: "absolute", right: 14, top: "calc(50% + 3px)", transform: "translateY(-50%)", color: "#64748b", fontSize: 12 }}>⏳</span>}
-      {!loading && query && (
-        <button onClick={() => { setQuery(""); onChange(""); setSuggestions([]); setOpen(false); }}
-          style={{ position: "absolute", right: 14, top: "calc(50% + 3px)", transform: "translateY(-50%)", background: "none", border: "none", color: "#64748b", cursor: "pointer", fontSize: 18, lineHeight: 1 }}>×</button>
-      )}
-      {open && suggestions.length > 0 && (
-        <div style={{ position: "absolute", top: "100%", left: 0, right: 0, background: "#0d2545", border: "1px solid rgba(0,180,255,0.3)", borderTop: "none", borderRadius: "0 0 10px 10px", zIndex: 100, boxShadow: "0 16px 40px rgba(0,0,0,0.5)", overflow: "hidden" }}>
-          {suggestions.map((f, i) => {
-            const main = f.text || f.place_name.split(",")[0];
-            const secondary = f.place_name.replace(main + ", ", "");
-            return (
-              <div key={f.id} onClick={() => handleSelect(f)}
-                style={{ padding: "12px 16px", cursor: "pointer", fontSize: 14, display: "flex", alignItems: "flex-start", gap: 10, background: highlighted === i ? "rgba(0,180,255,0.1)" : "transparent", borderBottom: i < suggestions.length - 1 ? "1px solid rgba(255,255,255,0.04)" : "none", transition: "background 0.1s" }}
-                onMouseEnter={() => setHighlighted(i)} onMouseLeave={() => setHighlighted(-1)}>
-                <span style={{ color: "#00b4ff", fontSize: 14, flexShrink: 0, marginTop: 1 }}>📍</span>
-                <div>
-                  <div style={{ color: "#fff", fontWeight: 600, fontSize: 14 }}>{main}</div>
-                  <div style={{ color: "#64748b", fontSize: 12, marginTop: 2 }}>{secondary}</div>
-                </div>
-              </div>
-            );
-          })}
-          <div style={{ padding: "7px 16px", fontSize: 11, color: "#475569", borderTop: "1px solid rgba(255,255,255,0.04)", background: "rgba(0,0,0,0.2)", display: "flex", alignItems: "center", gap: 6 }}>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="#475569"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-            Powered by Mapbox · Pakistan addresses
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
 
 export default function CheckoutPage() {
   const { items, total, dispatch } = useCart();
@@ -195,20 +84,13 @@ export default function CheckoutPage() {
                   </div>
                 </div>
 
-                {/* Address — Mapbox search */}
+                {/* Address — plain text */}
                 <label style={labelStyle}>Address *</label>
-                <AddressAutocomplete
-                  value={form.address}
-                  onChange={(val) => setForm(f => ({ ...f, address: val }))}
-                  onCityChange={(city) => setForm(f => ({ ...f, city }))}
-                  placeholder="Search your street, area or city..."
-                />
-                <input type="text" name="address" value={form.address} onChange={() => {}} required style={{ opacity: 0, height: 0, position: "absolute", pointerEvents: "none" }} />
+                <input style={inputStyle} name="address" value={form.address} onChange={handleChange} required placeholder="Street, area, landmark..." />
 
-                {/* City — auto-filled or manual */}
+                {/* City — plain text */}
                 <label style={labelStyle}>City *</label>
-                <input style={inputStyle} name="city" value={form.city}
-                  onChange={handleChange} required placeholder="Auto-filled from address or type manually" />
+                <input style={inputStyle} name="city" value={form.city} onChange={handleChange} required placeholder="e.g. Rahim Yar Khan" />
               </div>
 
               <div style={{ background: "linear-gradient(145deg, #0d2545, #0a1e35)", border: "1px solid rgba(0,180,255,0.15)", borderRadius: 16, padding: 28 }}>
