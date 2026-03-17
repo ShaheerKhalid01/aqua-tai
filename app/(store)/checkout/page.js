@@ -3,88 +3,135 @@ import { useCart } from "@/context/CartContext";
 import { useOrders } from "@/context/OrdersContext";
 import { useAuth } from "@/context/AuthContext";
 import { formatPrice } from "@/lib/utils";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
 
-const CITIES = ["Lahore", "Karachi", "Islamabad", "Rawalpindi", "Faisalabad", "Multan", "Peshawar", "Quetta", "Sialkot", "Gujranwala", "Hyderabad", "Abbottabad"];
-
-function CityDropdown({ value, onChange }) {
+// ── Google Places City Autocomplete ──────────────────────────
+function CityAutocomplete({ value, onChange }) {
+  const [query, setQuery] = useState(value || "");
+  const [suggestions, setSuggestions] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
+  const [apiReady, setApiReady] = useState(false);
   const ref = useRef(null);
+  const debounceRef = useRef(null);
+  const sessionToken = useRef(null);
 
-  // Close when clicking outside
+  // Load Google Maps script
+  useEffect(() => {
+    if (window.google?.maps?.places) { setApiReady(true); return; }
+    const key = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY;
+    if (!key || key === "your_google_maps_api_key") return; // no key yet
+
+    const script = document.createElement("script");
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${key}&libraries=places`;
+    script.async = true;
+    script.onload = () => {
+      setApiReady(true);
+      sessionToken.current = new window.google.maps.places.AutocompleteSessionToken();
+    };
+    document.head.appendChild(script);
+  }, []);
+
+  // Close on outside click
   useEffect(() => {
     const handler = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  const select = (city) => { onChange(city); setOpen(false); };
+  const fetchSuggestions = useCallback((input) => {
+    if (!input || input.length < 2 || !apiReady) { setSuggestions([]); return; }
+
+    setLoading(true);
+    const service = new window.google.maps.places.AutocompleteService();
+    service.getPlacePredictions(
+      {
+        input,
+        sessionToken: sessionToken.current,
+        componentRestrictions: { country: "pk" }, // Pakistan only
+        types: ["(cities)"],
+      },
+      (predictions, status) => {
+        setLoading(false);
+        if (status === window.google.maps.places.PlacesServiceStatus.OK && predictions) {
+          setSuggestions(predictions);
+          setOpen(true);
+        } else {
+          setSuggestions([]);
+        }
+      }
+    );
+  }, [apiReady]);
+
+  const handleInput = (e) => {
+    const val = e.target.value;
+    setQuery(val);
+    onChange(""); // clear confirmed value while typing
+    clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => fetchSuggestions(val), 300);
+  };
+
+  const handleSelect = (prediction) => {
+    // Extract city name (first part before comma)
+    const cityName = prediction.structured_formatting.main_text;
+    setQuery(cityName);
+    onChange(cityName);
+    setSuggestions([]);
+    setOpen(false);
+    // Refresh session token after selection
+    if (window.google?.maps?.places) {
+      sessionToken.current = new window.google.maps.places.AutocompleteSessionToken();
+    }
+  };
+
+  const inputStyle = {
+    width: "100%",
+    background: "rgba(255,255,255,0.05)",
+    border: `1px solid ${open ? "rgba(0,180,255,0.5)" : "rgba(0,180,255,0.2)"}`,
+    borderRadius: open && suggestions.length > 0 ? "10px 10px 0 0" : 10,
+    padding: "12px 16px 12px 40px",
+    color: "#fff",
+    fontSize: 14,
+    outline: "none",
+    marginTop: 6,
+    transition: "border 0.2s",
+  };
 
   return (
-    <div ref={ref} style={{ position: "relative", marginTop: 6 }}>
-      {/* Trigger button */}
-      <button
-        type="button"
-        onClick={() => setOpen(!open)}
-        style={{
-          width: "100%",
-          background: "rgba(255,255,255,0.05)",
-          border: `1px solid ${open ? "rgba(0,180,255,0.5)" : "rgba(0,180,255,0.2)"}`,
-          borderRadius: open ? "10px 10px 0 0" : 10,
-          padding: "12px 16px",
-          color: value ? "#fff" : "#64748b",
-          fontSize: 14,
-          cursor: "pointer",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          transition: "border 0.2s",
-          textAlign: "left",
-        }}
-      >
-        <span>{value || "Select your city"}</span>
-        <span style={{ color: "#00b4ff", fontSize: 12, transition: "transform 0.2s", display: "inline-block", transform: open ? "rotate(180deg)" : "rotate(0deg)" }}>▼</span>
-      </button>
+    <div ref={ref} style={{ position: "relative" }}>
+      <span style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", fontSize: 16, color: "#64748b", marginTop: 3, pointerEvents: "none" }}>📍</span>
+      <input
+        type="text"
+        value={query}
+        onChange={handleInput}
+        onFocus={() => { if (suggestions.length > 0) setOpen(true); }}
+        placeholder={!apiReady && process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY === "your_google_maps_api_key"
+          ? "Enter your city"
+          : "Search your city in Pakistan..."}
+        style={inputStyle}
+        autoComplete="off"
+      />
+      {loading && (
+        <span style={{ position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", color: "#64748b", fontSize: 12, marginTop: 3 }}>⏳</span>
+      )}
+      {value && !loading && (
+        <span style={{ position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", color: "#10b981", fontSize: 14, marginTop: 3 }}>✓</span>
+      )}
 
-      {/* Dropdown panel */}
-      {open && (
-        <div style={{
-          position: "absolute",
-          top: "100%",
-          left: 0,
-          right: 0,
-          background: "#0d2545",
-          border: "1px solid rgba(0,180,255,0.3)",
-          borderTop: "none",
-          borderRadius: "0 0 10px 10px",
-          zIndex: 50,
-          maxHeight: 260,
-          overflowY: "auto",
-          boxShadow: "0 16px 40px rgba(0,0,0,0.5)",
-        }}>
-          {CITIES.map((city, i) => (
-            <div
-              key={city}
-              onClick={() => select(city)}
-              style={{
-                padding: "11px 16px",
-                cursor: "pointer",
-                fontSize: 14,
-                color: value === city ? "#00b4ff" : "#e2e8f0",
-                background: value === city ? "rgba(0,180,255,0.1)" : "transparent",
-                borderBottom: i < CITIES.length - 1 ? "1px solid rgba(255,255,255,0.04)" : "none",
-                display: "flex",
-                alignItems: "center",
-                gap: 10,
-                transition: "background 0.15s",
-              }}
-              onMouseEnter={e => { if (value !== city) e.currentTarget.style.background = "rgba(0,180,255,0.07)"; }}
-              onMouseLeave={e => { if (value !== city) e.currentTarget.style.background = "transparent"; }}
-            >
-              <span style={{ fontSize: 16 }}>📍</span>
-              {city}
-              {value === city && <span style={{ marginLeft: "auto", color: "#00b4ff", fontSize: 14 }}>✓</span>}
+      {/* Suggestions dropdown */}
+      {open && suggestions.length > 0 && (
+        <div style={{ position: "absolute", top: "100%", left: 0, right: 0, background: "#0d2545", border: "1px solid rgba(0,180,255,0.3)", borderTop: "none", borderRadius: "0 0 10px 10px", zIndex: 100, maxHeight: 260, overflowY: "auto", boxShadow: "0 16px 40px rgba(0,0,0,0.5)" }}>
+          {suggestions.map((s, i) => (
+            <div key={s.place_id} onClick={() => handleSelect(s)}
+              style={{ padding: "12px 16px", cursor: "pointer", fontSize: 14, borderBottom: i < suggestions.length - 1 ? "1px solid rgba(255,255,255,0.04)" : "none", display: "flex", alignItems: "center", gap: 10, transition: "background 0.15s" }}
+              onMouseEnter={e => e.currentTarget.style.background = "rgba(0,180,255,0.08)"}
+              onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
+              <span style={{ color: "#00b4ff", fontSize: 14, flexShrink: 0 }}>📍</span>
+              <div>
+                <div style={{ color: "#fff", fontWeight: 600 }}>{s.structured_formatting.main_text}</div>
+                <div style={{ color: "#64748b", fontSize: 12 }}>{s.structured_formatting.secondary_text}</div>
+              </div>
             </div>
           ))}
         </div>
@@ -170,8 +217,7 @@ export default function CheckoutPage() {
                 <label style={labelStyle}>Address *</label>
                 <input style={inputStyle} name="address" value={form.address} onChange={handleChange} required placeholder="Street address" />
                 <label style={labelStyle}>City *</label>
-                <CityDropdown value={form.city} onChange={(city) => setForm({ ...form, city })} />
-                {/* Hidden input to satisfy form required validation */}
+                <CityAutocomplete value={form.city} onChange={(city) => setForm({ ...form, city })} />
                 <input type="text" name="city" value={form.city} onChange={() => {}} required style={{ opacity: 0, height: 0, position: "absolute", pointerEvents: "none" }} />
               </div>
 

@@ -2,7 +2,7 @@
 import { useState } from "react";
 
 export default function AdminSettings() {
-  const [settings, setSettings] = useState({ storeName: "AQUA R.O Filter", tagline: "Pure Water Solutions", email: "info@aquatai.pk", phone: "+92 300 1234567", address: "Lahore, Pakistan", currency: "PKR", freeShippingThreshold: 5000, taxRate: 17 });
+  const [settings, setSettings] = useState({ storeName: "AQUA R.O Filter", tagline: "Pure Water Solutions", email: "aquarowaterfilter@gmail.com", phone: "0304-2604217", address: "Jamia Tul Farooq Road, OPP. Abbasi PSO Pump, Old Adda Khanpur, Rahim Yar Khan", currency: "PKR", freeShippingThreshold: 5000, taxRate: 0 });
   const [saved, setSaved] = useState(false);
 
   const handleSave = () => { setSaved(true); setTimeout(() => setSaved(false), 2000); };

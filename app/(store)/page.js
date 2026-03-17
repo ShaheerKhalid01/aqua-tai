@@ -6,17 +6,17 @@ import ProductCard from "@/components/ProductCard";
 import { formatPrice } from "@/lib/utils";
 
 const stats = [
-  { value: "50,000+", label: "Happy Customers" },
+  { value: "1000+", label: "Happy Customers" },
   { value: "99.9%", label: "Purity Rate" },
-  { value: "6 Yrs", label: "In Business" },
+  { value: "10+ Yrs", label: "In Business" },
   { value: "24/7", label: "Support" },
 ];
 
 const features = [
-  { icon: "🏆", title: "NSF Certified", desc: "All filters meet international safety and performance standards." },
-  { icon: "🚚", title: "Free Delivery", desc: "Free shipping on orders above PKR 5,000 across Pakistan." },
-  { icon: "🔧", title: "Free Installation", desc: "Our technicians install your system at no extra charge." },
-  { icon: "🔄", title: "Easy Returns", desc: "30-day hassle-free return policy on all products." },
+  { icon: "🏆", title: "Quality Guaranteed", desc: "All our filters meet international safety and performance standards for pure, safe water." },
+  { icon: "🔧", title: "Free Installation", desc: "Our expert technicians come to your home and install your system at no extra charge." },
+  { icon: "📞", title: "Complaint Support", desc: "Call us on 0304-2604217 or 068-2098583 for any complaints or after-sale support." },
+  { icon: "🔄", title: "Easy Returns", desc: "Hassle-free return and replacement policy on all our water filter products." },
 ];
 
 export default function Home() {
@@ -50,7 +50,7 @@ export default function Home() {
               <span style={{ background: "linear-gradient(135deg, #00b4ff, #60efff)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Perfectly Pure</span>
             </h1>
             <p style={{ color: "#94a3b8", fontSize: 18, lineHeight: 1.8, marginBottom: 32, maxWidth: 480 }}>
-              Advanced filtration technology removing 99.9% of contaminants. Safe, clean water for your family — delivered to your door.
+              Rahim Yar Khan's trusted water filtration specialists. RO systems, domestic filters, commercial plants — installed and serviced by our expert team.
             </p>
             <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
               <Link
@@ -134,7 +134,8 @@ export default function Home() {
       <section style={{ background: "linear-gradient(135deg, #0a2540, #0d3060)", padding: "80px 0", margin: "0 0 0", borderTop: "1px solid rgba(0,180,255,0.15)" }}>
         <div className="max-w-7xl mx-auto px-4" style={{ textAlign: "center" }}>
           <h2 style={{ fontSize: 44, fontWeight: 900, fontFamily: "Georgia, serif", marginBottom: 16 }}>Ready for Pure Water?</h2>
-          <p style={{ color: "#94a3b8", fontSize: 18, marginBottom: 32 }}>Join 50,000+ families who trust AQUA R.O Filter for clean, safe drinking water.</p>
+          <p style={{ color: "#94a3b8", fontSize: 18, marginBottom: 12 }}>Join 1000+ satisfied customers across Rahim Yar Khan who trust AQUA R.O Filter.</p>
+          <p style={{ color: "#64748b", fontSize: 15, marginBottom: 32 }}>📍 Jamia Tul Farooq Road, Old Adda Khanpur, Rahim Yar Khan &nbsp;|&nbsp; 📞 0304-2604217</p>
           <Link href="/shop" style={{ background: "linear-gradient(135deg, #00b4ff, #0066cc)", color: "#fff", padding: "16px 48px", borderRadius: 14, textDecoration: "none", fontWeight: 700, fontSize: 18, display: "inline-block" }}>
             Shop All Filters
           </Link>
