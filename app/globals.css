@@ -1,10 +1,13 @@
 @import "tailwindcss";
 
 :root {
-  --bg-primary: #040d1a;
-  --bg-secondary: #0a1e35;
-  --accent: #00b4ff;
-  --accent-dark: #0066cc;
+  --primary: #0057a8;
+  --primary-dark: #003d7a;
+  --accent: #38bdf8;
+  --bg: #f5f8ff;
+  --white: #ffffff;
+  --text: #1a1a2e;
+  --muted: #64748b;
 }
 
 @layer base {
@@ -19,8 +22,8 @@
   }
 
   body {
-    background: var(--bg-primary);
-    color: #fff;
+    background: var(--bg);
+    color: var(--text);
     font-family: 'Segoe UI', system-ui, sans-serif;
     min-height: 100vh;
   }
@@ -30,26 +33,17 @@
   }
 
   select {
-    background-color: #0a1e35;
-    color: #fff;
-    color-scheme: dark;
+    background-color: #fff;
+    color: #1a1a2e;
+    color-scheme: light;
   }
 
   select option {
-    background-color: #0d2545;
-    color: #fff;
+    background-color: #fff;
+    color: #1a1a2e;
   }
 
-  ::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  ::-webkit-scrollbar-track {
-    background: #040d1a;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background: #00b4ff;
-    border-radius: 3px;
-  }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: #f1f5f9; }
+  ::-webkit-scrollbar-thumb { background: #0057a8; border-radius: 3px; }
 }

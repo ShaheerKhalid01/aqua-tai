@@ -1,209 +1,271 @@
 "use client";
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useProducts } from "@/context/ProductsContext";
 import ProductCard from "@/components/ProductCard";
 
-const stats = [
-  { value: "1000+", label: "Happy Customers" },
-  { value: "99.9%", label: "Purity Rate" },
-  { value: "10+ Yrs", label: "In Business" },
-  { value: "24/7", label: "Support" },
-];
-
+// ── Data ──────────────────────────────────────────────────────
 const CATEGORIES = [
-  {
-    name: "Reverse Osmosis System",
-    icon: "🔬",
-    desc: "Advanced multi-stage RO systems for pure, mineral-balanced drinking water.",
-    color: "#00b4ff",
-    bg: "rgba(0,180,255,0.08)",
-    border: "rgba(0,180,255,0.25)",
-  },
-  {
-    name: "Cartridges & Accessories",
-    icon: "🔧",
-    desc: "Replacement filters, membranes and accessories for all filter brands.",
-    color: "#10b981",
-    bg: "rgba(16,185,129,0.08)",
-    border: "rgba(16,185,129,0.25)",
-  },
-  {
-    name: "Whole House Water Softener",
-    icon: "🏠",
-    desc: "Whole-home softening systems that protect pipes and appliances.",
-    color: "#8b5cf6",
-    bg: "rgba(139,92,246,0.08)",
-    border: "rgba(139,92,246,0.25)",
-  },
-  {
-    name: "Domestic Water Filter",
-    icon: "🚰",
-    desc: "Compact countertop and under-sink filters for everyday home use.",
-    color: "#f59e0b",
-    bg: "rgba(245,158,11,0.08)",
-    border: "rgba(245,158,11,0.25)",
-  },
-  {
-    name: "Commercial Water Plants",
-    icon: "🏭",
-    desc: "Large-scale industrial filtration plants for businesses and communities.",
-    color: "#ef4444",
-    bg: "rgba(239,68,68,0.08)",
-    border: "rgba(239,68,68,0.25)",
-  },
+  { name: "Reverse Osmosis System",      icon: "🔬", img: null, desc: "Multi-stage RO systems for crystal-clear drinking water at home." },
+  { name: "Cartridges & Accessories",    icon: "🔧", img: null, desc: "Replacement filters, membranes & spare parts for all brands." },
+  { name: "Whole House Water Softener",  icon: "🏠", img: null, desc: "Full-home softening systems to protect pipes & appliances." },
+  { name: "Domestic Water Filter",       icon: "🚰", img: null, desc: "Compact under-sink & countertop filters for daily home use." },
+  { name: "Commercial Water Plants",     icon: "🏭", img: null, desc: "Industrial-grade plants for offices, factories & communities." },
 ];
 
+const TRUST = [
+  { icon: "✅", title: "Genuine Products",    desc: "100% authentic, tested water filtration equipment." },
+  { icon: "🔧", title: "Free Installation",   desc: "Our technicians install at your doorstep, free of charge." },
+  { icon: "📞", title: "After-Sale Support",  desc: "Call 0304-2604217 anytime for help & complaints." },
+  { icon: "🚚", title: "Fast Delivery",       desc: "Delivered across Rahim Yar Khan & all of Pakistan." },
+];
+
+const STATS = [
+  { value: "1000+", label: "Happy Customers" },
+  { value: "10+",   label: "Years Experience" },
+  { value: "5",     label: "Product Categories" },
+  { value: "24/7",  label: "Customer Support" },
+];
+
+// ── Ticker ────────────────────────────────────────────────────
+function Ticker() {
+  const items = ["Free Installation on All Products", "Cash on Delivery Available", "Call: 0304-2604217", "Serving All Across Pakistan", "Genuine Water Filter Products"];
+  return (
+    <div style={{ background: "#0057a8", overflow: "hidden", padding: "8px 0" }}>
+      <div style={{ display: "flex", animation: "ticker 30s linear infinite", whiteSpace: "nowrap" }}>
+        {[...items, ...items].map((t, i) => (
+          <span key={i} style={{ color: "#fff", fontSize: 13, fontWeight: 500, padding: "0 40px" }}>
+            ⭐ {t}
+          </span>
+        ))}
+      </div>
+      <style>{`@keyframes ticker { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }`}</style>
+    </div>
+  );
+}
+
+// ── Category Card ─────────────────────────────────────────────
+function CategoryCard({ cat }) {
+  const [hov, setHov] = useState(false);
+  return (
+    <Link href={`/shop?category=${encodeURIComponent(cat.name)}`} style={{ textDecoration: "none" }}>
+      <div onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
+        style={{ background: "#fff", borderRadius: 16, overflow: "hidden", boxShadow: hov ? "0 12px 40px rgba(0,87,168,0.18)" : "0 2px 16px rgba(0,0,0,0.07)", border: `2px solid ${hov ? "#0057a8" : "transparent"}`, transition: "all 0.3s", cursor: "pointer" }}>
+        {/* Image area */}
+        <div style={{ background: "linear-gradient(135deg, #e8f4ff 0%, #cce5ff 100%)", height: 160, display: "flex", alignItems: "center", justifyContent: "center", position: "relative", overflow: "hidden" }}>
+          <span style={{ fontSize: 64, transition: "transform 0.3s", transform: hov ? "scale(1.15)" : "scale(1)" }}>{cat.icon}</span>
+          <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 40, background: "linear-gradient(transparent, rgba(0,87,168,0.08))" }} />
+        </div>
+        {/* Text */}
+        <div style={{ padding: "18px 20px 20px" }}>
+          <h3 style={{ color: "#0057a8", fontWeight: 800, fontSize: 15, marginBottom: 6, lineHeight: 1.3 }}>{cat.name}</h3>
+          <p style={{ color: "#64748b", fontSize: 13, lineHeight: 1.6, marginBottom: 12 }}>{cat.desc}</p>
+          <span style={{ color: hov ? "#fff" : "#0057a8", background: hov ? "#0057a8" : "rgba(0,87,168,0.08)", padding: "5px 14px", borderRadius: 20, fontSize: 12, fontWeight: 700, transition: "all 0.3s" }}>
+            Browse →
+          </span>
+        </div>
+      </div>
+    </Link>
+  );
+}
+
+// ── Main Page ─────────────────────────────────────────────────
 export default function Home() {
   const { products, loadProducts } = useProducts();
+  const [heroIdx, setHeroIdx] = useState(0);
 
   useEffect(() => { loadProducts(); }, []);
+  useEffect(() => {
+    const t = setInterval(() => setHeroIdx(i => (i + 1) % CATEGORIES.length), 3500);
+    return () => clearInterval(t);
+  }, []);
 
-  const featured = products.slice(0, 3);
-
-  const scrollToFeatures = (e) => {
-    e.preventDefault();
-    const el = document.getElementById("features");
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
+  const featured = products.slice(0, 4);
 
   return (
-    <div>
-      {/* Hero */}
-      <section style={{ background: "linear-gradient(135deg, #040d1a 0%, #0a2540 50%, #0d3060 100%)", minHeight: "90vh", display: "flex", alignItems: "center", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", width: 600, height: 600, borderRadius: "50%", background: "radial-gradient(circle, rgba(0,180,255,0.06) 0%, transparent 70%)", top: "50%", right: -200, transform: "translateY(-50%)", pointerEvents: "none" }} />
-        <div style={{ position: "absolute", width: 400, height: 400, borderRadius: "50%", background: "radial-gradient(circle, rgba(0,102,204,0.08) 0%, transparent 70%)", bottom: -100, left: -100, pointerEvents: "none" }} />
+    <div style={{ background: "#f5f8ff", fontFamily: "'Segoe UI', system-ui, sans-serif", color: "#1a1a2e" }}>
 
-        <div className="max-w-7xl mx-auto px-4 w-full" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 60, alignItems: "center" }}>
+      {/* ── Ticker ── */}
+      <Ticker />
+
+      {/* ── Hero ── */}
+      <section style={{ background: "linear-gradient(135deg, #0057a8 0%, #003d7a 60%, #001f4d 100%)", padding: "70px 0 80px", position: "relative", overflow: "hidden" }}>
+        {/* decorative circles */}
+        <div style={{ position: "absolute", width: 500, height: 500, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.07)", top: -150, right: -100, pointerEvents: "none" }} />
+        <div style={{ position: "absolute", width: 300, height: 300, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.05)", bottom: -80, left: 60, pointerEvents: "none" }} />
+
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 60, alignItems: "center" }}>
           <div>
-            <div style={{ display: "inline-block", background: "rgba(0,180,255,0.1)", border: "1px solid rgba(0,180,255,0.3)", borderRadius: 20, padding: "6px 16px", fontSize: 13, color: "#00b4ff", marginBottom: 24, letterSpacing: 1 }}>
-              🌊 Rahim Yar Khan's #1 Water Filter Brand
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.2)", borderRadius: 30, padding: "6px 18px", fontSize: 13, color: "#7dd3fc", marginBottom: 24, fontWeight: 600 }}>
+              🇵🇰 Trusted in Pakistan Since 2010
             </div>
-            <h1 style={{ fontSize: "clamp(36px, 5vw, 64px)", fontWeight: 900, fontFamily: "Georgia, serif", lineHeight: 1.15, marginBottom: 20 }}>
-              Drink Water<br />
-              <span style={{ background: "linear-gradient(135deg, #00b4ff, #60efff)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Perfectly Pure</span>
+            <h1 style={{ fontSize: "clamp(32px,4vw,58px)", fontWeight: 900, color: "#fff", lineHeight: 1.15, marginBottom: 20, letterSpacing: -0.5 }}>
+              Pure Water for<br />
+              <span style={{ color: "#7dd3fc" }}>Every Home &</span><br />
+              <span style={{ color: "#38bdf8" }}>Business</span>
             </h1>
-            <p style={{ color: "#94a3b8", fontSize: 18, lineHeight: 1.8, marginBottom: 32, maxWidth: 480 }}>
-              Rahim Yar Khan's trusted water filtration specialists. RO systems, domestic filters, commercial plants — installed and serviced by our expert team.
+            <p style={{ color: "rgba(255,255,255,0.75)", fontSize: 17, lineHeight: 1.8, marginBottom: 36, maxWidth: 460 }}>
+              AQUA R.O Filter — Rahim Yar Khan's most trusted water filtration specialists. RO systems, domestic filters, softeners & commercial plants with free installation.
             </p>
-            <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
-              <Link href="/shop" style={{ background: "linear-gradient(135deg, #00b4ff, #0066cc)", color: "#fff", padding: "14px 32px", borderRadius: 12, fontWeight: 700, fontSize: 16, display: "inline-block", textDecoration: "none" }}>
+            <div style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
+              <Link href="/shop" style={{ background: "#38bdf8", color: "#001f4d", padding: "14px 36px", borderRadius: 10, fontWeight: 800, fontSize: 16, textDecoration: "none", display: "inline-block", boxShadow: "0 4px 20px rgba(56,189,248,0.4)" }}>
                 Shop Now →
               </Link>
-              <button onClick={scrollToFeatures} style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.15)", color: "#fff", padding: "14px 32px", borderRadius: 12, fontWeight: 600, fontSize: 16, cursor: "pointer" }}>
-                Learn More
-              </button>
+              <a href="https://wa.me/923294879030" target="_blank" rel="noreferrer"
+                style={{ background: "rgba(255,255,255,0.12)", border: "2px solid rgba(255,255,255,0.3)", color: "#fff", padding: "14px 36px", borderRadius: 10, fontWeight: 700, fontSize: 16, textDecoration: "none", display: "inline-block" }}>
+                💬 WhatsApp Us
+              </a>
+            </div>
+            {/* quick contact */}
+            <div style={{ marginTop: 36, display: "flex", gap: 24, flexWrap: "wrap" }}>
+              <a href="tel:03042604217" style={{ color: "rgba(255,255,255,0.7)", fontSize: 14, textDecoration: "none", display: "flex", alignItems: "center", gap: 6 }}>
+                📞 0304-2604217
+              </a>
+              <a href="tel:0682098583" style={{ color: "rgba(255,255,255,0.7)", fontSize: 14, textDecoration: "none", display: "flex", alignItems: "center", gap: 6 }}>
+                ☎️ 068-2098583
+              </a>
             </div>
           </div>
+
+          {/* Hero right — animated category showcase */}
           <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <div style={{ position: "relative", width: 320, height: 320 }}>
-              <div style={{ position: "absolute", inset: 0, borderRadius: "50%", background: "radial-gradient(circle, rgba(0,180,255,0.15) 0%, transparent 70%)" }} />
-              <div style={{ width: "100%", height: "100%", background: "linear-gradient(135deg, rgba(0,180,255,0.1), rgba(0,102,204,0.1))", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid rgba(0,180,255,0.2)", overflow: "hidden" }}>
-                <img src="/logo.jpeg" alt="AQUA R.O Filter" style={{ width: 220, height: 220, objectFit: "contain" }} />
+            <div style={{ background: "rgba(255,255,255,0.1)", backdropFilter: "blur(10px)", border: "1px solid rgba(255,255,255,0.2)", borderRadius: 24, padding: 40, textAlign: "center", width: "100%", maxWidth: 340 }}>
+              <div style={{ fontSize: 90, marginBottom: 20, transition: "all 0.5s" }}>{CATEGORIES[heroIdx].icon}</div>
+              <div style={{ color: "#7dd3fc", fontWeight: 800, fontSize: 18, marginBottom: 8 }}>{CATEGORIES[heroIdx].name}</div>
+              <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 14, lineHeight: 1.6 }}>{CATEGORIES[heroIdx].desc}</div>
+              {/* dots */}
+              <div style={{ display: "flex", gap: 6, justifyContent: "center", marginTop: 24 }}>
+                {CATEGORIES.map((_, i) => (
+                  <div key={i} onClick={() => setHeroIdx(i)}
+                    style={{ width: i === heroIdx ? 24 : 8, height: 8, borderRadius: 4, background: i === heroIdx ? "#38bdf8" : "rgba(255,255,255,0.3)", transition: "all 0.3s", cursor: "pointer" }} />
+                ))}
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Stats */}
-      <section style={{ background: "linear-gradient(135deg, #00b4ff, #0066cc)", padding: "40px 0" }}>
-        <div className="max-w-7xl mx-auto px-4" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 20 }}>
-          {stats.map((s) => (
-            <div key={s.value} style={{ textAlign: "center" }}>
-              <div style={{ fontSize: 32, fontWeight: 900, color: "#fff", fontFamily: "Georgia, serif" }}>{s.value}</div>
-              <div style={{ color: "rgba(255,255,255,0.8)", fontSize: 14, marginTop: 4 }}>{s.label}</div>
+      {/* ── Stats bar ── */}
+      <section style={{ background: "#0057a8", padding: "28px 0" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px", display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 20 }}>
+          {STATS.map(s => (
+            <div key={s.label} style={{ textAlign: "center", borderRight: "1px solid rgba(255,255,255,0.15)", paddingRight: 20 }}>
+              <div style={{ fontSize: 30, fontWeight: 900, color: "#fff" }}>{s.value}</div>
+              <div style={{ color: "rgba(255,255,255,0.7)", fontSize: 13, marginTop: 4 }}>{s.label}</div>
             </div>
           ))}
         </div>
       </section>
 
-      {/* Categories */}
-      <section style={{ padding: "80px 0", background: "#040d1a" }}>
-        <div className="max-w-7xl mx-auto px-4">
-          <div style={{ textAlign: "center", marginBottom: 56 }}>
-            <div style={{ color: "#00b4ff", fontSize: 12, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", marginBottom: 12 }}>Browse By Category</div>
-            <h2 style={{ fontSize: 38, fontWeight: 900, fontFamily: "Georgia, serif" }}>Our Product Categories</h2>
-            <p style={{ color: "#64748b", fontSize: 15, marginTop: 12 }}>Find the perfect water solution for your home or business</p>
+      {/* ── Categories ── */}
+      <section style={{ padding: "72px 0", background: "#f5f8ff" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px" }}>
+          <div style={{ textAlign: "center", marginBottom: 52 }}>
+            <div style={{ color: "#0057a8", fontSize: 13, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", marginBottom: 10 }}>What We Offer</div>
+            <h2 style={{ fontSize: 36, fontWeight: 900, color: "#1a1a2e", marginBottom: 12 }}>Shop By Category</h2>
+            <p style={{ color: "#64748b", fontSize: 15, maxWidth: 500, margin: "0 auto" }}>Find the right water filtration solution for your home or business</p>
           </div>
-
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 20 }}>
-            {CATEGORIES.map((cat) => (
-              <Link
-                key={cat.name}
-                href={`/shop?category=${encodeURIComponent(cat.name)}`}
-                style={{ textDecoration: "none" }}
-              >
-                <div
-                  style={{ background: cat.bg, border: `1px solid ${cat.border}`, borderRadius: 18, padding: "28px 20px", textAlign: "center", cursor: "pointer", transition: "all 0.3s", height: "100%" }}
-                  onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-6px)"; e.currentTarget.style.boxShadow = `0 20px 40px ${cat.bg}`; e.currentTarget.style.border = `1px solid ${cat.color}`; }}
-                  onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "none"; e.currentTarget.style.border = `1px solid ${cat.border}`; }}
-                >
-                  <div style={{ fontSize: 48, marginBottom: 16 }}>{cat.icon}</div>
-                  <div style={{ color: cat.color, fontWeight: 800, fontSize: 15, marginBottom: 10, lineHeight: 1.3 }}>{cat.name}</div>
-                  <div style={{ color: "#64748b", fontSize: 13, lineHeight: 1.6 }}>{cat.desc}</div>
-                  <div style={{ marginTop: 18, display: "inline-flex", alignItems: "center", gap: 6, color: cat.color, fontSize: 13, fontWeight: 600 }}>
-                    Browse <span>→</span>
-                  </div>
-                </div>
-              </Link>
-            ))}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 20 }}>
+            {CATEGORIES.map(cat => <CategoryCard key={cat.name} cat={cat} />)}
           </div>
         </div>
       </section>
 
-      {/* Features */}
-      <section id="features" style={{ padding: "80px 0", background: "linear-gradient(135deg, #040d1a, #0a1830)" }}>
-        <div className="max-w-7xl mx-auto px-4">
-          <div style={{ textAlign: "center", marginBottom: 60 }}>
-            <div style={{ color: "#00b4ff", fontSize: 13, fontWeight: 600, letterSpacing: 3, textTransform: "uppercase", marginBottom: 12 }}>Why Choose Us</div>
-            <h2 style={{ fontSize: 40, fontWeight: 900, fontFamily: "Georgia, serif" }}>The AQUA R.O Filter Difference</h2>
+      {/* ── Trust badges ── */}
+      <section style={{ background: "#fff", padding: "64px 0", borderTop: "1px solid #e8f0fe", borderBottom: "1px solid #e8f0fe" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px" }}>
+          <div style={{ textAlign: "center", marginBottom: 48 }}>
+            <div style={{ color: "#0057a8", fontSize: 13, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", marginBottom: 10 }}>Why Choose Us</div>
+            <h2 style={{ fontSize: 34, fontWeight: 900, color: "#1a1a2e" }}>The AQUA R.O Filter Promise</h2>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 24 }}>
-            {[
-              { icon: "🔧", title: "Free Installation", desc: "Our expert technicians come to your home and install your system at no extra charge." },
-              { icon: "📞", title: "Complaint Support", desc: "Call us on 0304-2604217 or 068-2098583 for any complaints or after-sale support." },
-              { icon: "🔄", title: "Easy Returns", desc: "Hassle-free return and replacement policy on all our water filter products." },
-            ].map((f) => (
-              <div key={f.title} style={{ background: "linear-gradient(145deg, #0d2545, #0a1e35)", border: "1px solid rgba(0,180,255,0.15)", borderRadius: 16, padding: 28, textAlign: "center" }}>
-                <div style={{ fontSize: 44, marginBottom: 16 }}>{f.icon}</div>
-                <h3 style={{ color: "#fff", fontWeight: 700, fontSize: 18, marginBottom: 10 }}>{f.title}</h3>
-                <p style={{ color: "#64748b", fontSize: 14, lineHeight: 1.6 }}>{f.desc}</p>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px,1fr))", gap: 24 }}>
+            {TRUST.map(t => (
+              <div key={t.title} style={{ background: "#f5f8ff", borderRadius: 16, padding: "28px 24px", textAlign: "center", border: "1px solid #e8f0fe" }}>
+                <div style={{ fontSize: 40, marginBottom: 14 }}>{t.icon}</div>
+                <h3 style={{ color: "#0057a8", fontWeight: 800, fontSize: 16, marginBottom: 8 }}>{t.title}</h3>
+                <p style={{ color: "#64748b", fontSize: 14, lineHeight: 1.6 }}>{t.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Featured Products */}
-      <section style={{ padding: "80px 0", background: "#040d1a" }}>
-        <div className="max-w-7xl mx-auto px-4">
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 40, flexWrap: "wrap", gap: 16 }}>
+      {/* ── Featured Products ── */}
+      <section style={{ padding: "72px 0", background: "#f5f8ff" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 44, flexWrap: "wrap", gap: 16 }}>
             <div>
-              <div style={{ color: "#00b4ff", fontSize: 13, fontWeight: 600, letterSpacing: 3, textTransform: "uppercase", marginBottom: 8 }}>Top Picks</div>
-              <h2 style={{ fontSize: 36, fontWeight: 900, fontFamily: "Georgia, serif" }}>Featured Products</h2>
+              <div style={{ color: "#0057a8", fontSize: 13, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", marginBottom: 8 }}>Top Picks</div>
+              <h2 style={{ fontSize: 34, fontWeight: 900, color: "#1a1a2e" }}>Featured Products</h2>
             </div>
-            <Link href="/shop" style={{ background: "rgba(0,180,255,0.1)", border: "1px solid rgba(0,180,255,0.3)", color: "#00b4ff", padding: "10px 24px", borderRadius: 10, textDecoration: "none", fontWeight: 600 }}>
-              View All →
+            <Link href="/shop" style={{ background: "#0057a8", color: "#fff", padding: "11px 28px", borderRadius: 10, textDecoration: "none", fontWeight: 700, fontSize: 14 }}>
+              View All Products →
             </Link>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 24 }}>
-            {featured.length > 0
-              ? featured.map((p) => <ProductCard key={p._id} product={p} />)
-              : <p style={{ color: "#64748b", fontSize: 15 }}>No products yet. Add some from the admin panel.</p>}
+          {featured.length > 0 ? (
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px,1fr))", gap: 24 }}>
+              {featured.map(p => <ProductCard key={p._id} product={p} />)}
+            </div>
+          ) : (
+            <div style={{ textAlign: "center", padding: "60px 0", color: "#94a3b8" }}>
+              <div style={{ fontSize: 48, marginBottom: 12 }}>📦</div>
+              <p style={{ fontSize: 16 }}>Products will appear here once added from the admin panel.</p>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* ── About strip ── */}
+      <section style={{ background: "#fff", padding: "64px 0", borderTop: "1px solid #e8f0fe" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 60, alignItems: "center" }}>
+          <div>
+            <div style={{ color: "#0057a8", fontSize: 13, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", marginBottom: 12 }}>About Us</div>
+            <h2 style={{ fontSize: 34, fontWeight: 900, color: "#1a1a2e", marginBottom: 16, lineHeight: 1.25 }}>Rahim Yar Khan's Most Trusted Water Filter Company</h2>
+            <p style={{ color: "#64748b", fontSize: 15, lineHeight: 1.8, marginBottom: 20 }}>
+              AQUA R.O Filter has been providing clean, pure water solutions to homes and businesses in Rahim Yar Khan for over 10 years. We specialize in RO systems, domestic filters, whole-house softeners, and large-scale commercial water plants.
+            </p>
+            <p style={{ color: "#64748b", fontSize: 15, lineHeight: 1.8, marginBottom: 28 }}>
+              📍 Jamia Tul Farooq Road, OPP. Abbasi PSO Pump, Old Adda Khanpur, Rahim Yar Khan
+            </p>
+            <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+              <a href="tel:03042604217" style={{ background: "#0057a8", color: "#fff", padding: "11px 22px", borderRadius: 8, textDecoration: "none", fontWeight: 700, fontSize: 14 }}>📞 Call Us</a>
+              <a href="https://wa.me/923294879030" target="_blank" rel="noreferrer"
+                style={{ background: "#25D366", color: "#fff", padding: "11px 22px", borderRadius: 8, textDecoration: "none", fontWeight: 700, fontSize: 14 }}>💬 WhatsApp</a>
+            </div>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+            {[
+              { num: "1000+", txt: "Satisfied Customers" },
+              { num: "10+",   txt: "Years in Business" },
+              { num: "5",     txt: "Product Categories" },
+              { num: "Free",  txt: "Installation Service" },
+            ].map(i => (
+              <div key={i.num} style={{ background: "#f5f8ff", borderRadius: 14, padding: 24, textAlign: "center", border: "1px solid #e8f0fe" }}>
+                <div style={{ fontSize: 32, fontWeight: 900, color: "#0057a8", marginBottom: 6 }}>{i.num}</div>
+                <div style={{ color: "#64748b", fontSize: 13 }}>{i.txt}</div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section style={{ background: "linear-gradient(135deg, #0a2540, #0d3060)", padding: "80px 0", borderTop: "1px solid rgba(0,180,255,0.15)" }}>
-        <div className="max-w-7xl mx-auto px-4" style={{ textAlign: "center" }}>
-          <h2 style={{ fontSize: 44, fontWeight: 900, fontFamily: "Georgia, serif", marginBottom: 16 }}>Ready for Pure Water?</h2>
-          <p style={{ color: "#94a3b8", fontSize: 18, marginBottom: 12 }}>Join 1000+ satisfied customers across Rahim Yar Khan who trust AQUA R.O Filter.</p>
-          <p style={{ color: "#64748b", fontSize: 15, marginBottom: 32 }}>📍 Jamia Tul Farooq Road, Old Adda Khanpur, Rahim Yar Khan &nbsp;|&nbsp; 📞 0304-2604217</p>
-          <Link href="/shop" style={{ background: "linear-gradient(135deg, #00b4ff, #0066cc)", color: "#fff", padding: "16px 48px", borderRadius: 14, textDecoration: "none", fontWeight: 700, fontSize: 18, display: "inline-block" }}>
-            Shop All Filters
-          </Link>
+      {/* ── CTA Banner ── */}
+      <section style={{ background: "linear-gradient(135deg, #0057a8, #003d7a)", padding: "60px 0" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px", textAlign: "center" }}>
+          <h2 style={{ fontSize: 38, fontWeight: 900, color: "#fff", marginBottom: 14 }}>Ready for Pure, Clean Water?</h2>
+          <p style={{ color: "rgba(255,255,255,0.75)", fontSize: 17, marginBottom: 10 }}>Contact us today for a free consultation and quote.</p>
+          <p style={{ color: "rgba(255,255,255,0.55)", fontSize: 14, marginBottom: 36 }}>
+            📍 Old Adda Khanpur, Rahim Yar Khan &nbsp;|&nbsp; ✉️ aquarowaterfilter@gmail.com
+          </p>
+          <div style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap" }}>
+            <Link href="/shop" style={{ background: "#38bdf8", color: "#001f4d", padding: "14px 36px", borderRadius: 10, fontWeight: 800, fontSize: 16, textDecoration: "none" }}>
+              Shop All Products
+            </Link>
+            <a href="https://wa.me/923294879030" target="_blank" rel="noreferrer"
+              style={{ background: "#25D366", color: "#fff", padding: "14px 36px", borderRadius: 10, fontWeight: 700, fontSize: 16, textDecoration: "none" }}>
+              💬 WhatsApp Order
+            </a>
+          </div>
         </div>
       </section>
     </div>
