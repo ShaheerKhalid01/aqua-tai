@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-import { connectDB } from "@/lib/mongodb";
-import mongoose from "mongoose";
+import { connectDB, getOrders, updateOrder } from "@/lib/mongodb";
 import jwt from "jsonwebtoken";
 
 const JWT_SECRET = process.env.JWT_SECRET || "aquatai_fallback_secret";
@@ -21,11 +20,12 @@ export async function PATCH(req, { params }) {
 
   try {
     await connectDB();
-    const db = mongoose.connection.db;
     const { status } = await req.json();
     const { id } = await params;
 
-    const order = await db.collection("orders").findOne({ orderId: id });
+    const orders = await getOrders();
+    const order = orders.find(o => o.orderId === id);
+    
     if (!order) return NextResponse.json({ error: "Order not found." }, { status: 404 });
 
     // Client cancellation rules
@@ -43,13 +43,9 @@ export async function PATCH(req, { params }) {
         return NextResponse.json({ error: "Clients can only cancel orders." }, { status: 403 });
     }
 
-    const result = await db.collection("orders").findOneAndUpdate(
-      { orderId: id },
-      { $set: { status, updatedAt: new Date() } },
-      { returnDocument: "after" }
-    );
+    const updatedOrder = await updateOrder(order._id, { status, updatedAt: new Date() });
 
-    return NextResponse.json({ message: "Order updated.", order: result });
+    return NextResponse.json({ message: "Order updated.", order: updatedOrder });
   } catch (err) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
@@ -62,9 +58,9 @@ export async function GET(req, { params }) {
 
   try {
     await connectDB();
-    const db = mongoose.connection.db;
     const { id } = await params;
-    const order = await db.collection("orders").findOne({ orderId: id });
+    const orders = await getOrders();
+    const order = orders.find(o => o.orderId === id);
 
     if (!order) return NextResponse.json({ error: "Order not found." }, { status: 404 });
 

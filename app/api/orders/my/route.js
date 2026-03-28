@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-import { connectDB } from "@/lib/mongodb";
-import mongoose from "mongoose";
+import { connectDB, getOrders } from "@/lib/mongodb";
 import jwt from "jsonwebtoken";
 
 const JWT_SECRET = process.env.JWT_SECRET || "aquatai_fallback_secret";
@@ -14,12 +13,11 @@ export async function GET(req) {
   try {
     const decoded = jwt.verify(auth.slice(7), JWT_SECRET);
     await connectDB();
-    const db = mongoose.connection.db;
 
-    const orders = await db.collection("orders")
-      .find({ email: decoded.email })
-      .sort({ createdAt: -1 })
-      .toArray();
+    const allOrders = await getOrders();
+    const orders = allOrders
+      .filter(o => o.email === decoded.email)
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
     const normalized = orders.map(o => ({ ...o, id: o.orderId }));
     return NextResponse.json({ orders: normalized });

@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-import { connectDB } from "@/lib/mongodb";
-import mongoose from "mongoose";
+import { connectDB, findUser, createUser } from "@/lib/mongodb";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 
@@ -17,9 +16,7 @@ export async function POST(req) {
 
     const normalizedEmail = email.toLowerCase().trim();
 
-    // Query raw collection — no model caching
-    const db = mongoose.connection.db;
-    const existing = await db.collection("users").findOne({ email: normalizedEmail });
+    const existing = await findUser(normalizedEmail);
 
     if (existing)
       return NextResponse.json({ error: "An account with this email already exists." }, { status: 409 });
@@ -29,16 +26,15 @@ export async function POST(req) {
     console.log("Registering:", normalizedEmail);
     console.log("Hash created:", hashedPassword.startsWith("$2") ? "YES" : "NO");
 
-    const result = await db.collection("users").insertOne({
+    const user = await createUser({
       name: name.trim(),
       email: normalizedEmail,
       password: hashedPassword,
       role: "client",
-      createdAt: new Date(),
     });
 
     const token = jwt.sign(
-      { id: result.insertedId, email: normalizedEmail, name: name.trim(), role: "client" },
+      { id: user._id, email: normalizedEmail, name: name.trim(), role: "client" },
       process.env.JWT_SECRET,
       { expiresIn: "7d" }
     );
@@ -46,7 +42,7 @@ export async function POST(req) {
     return NextResponse.json({
       message: "Account created successfully.",
       token,
-      user: { id: result.insertedId, name: name.trim(), email: normalizedEmail, role: "client" },
+      user: { id: user._id, name: name.trim(), email: normalizedEmail, role: "client" },
     }, { status: 201 });
 
   } catch (err) {

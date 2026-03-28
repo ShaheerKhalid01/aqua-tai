@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-import { connectDB } from "@/lib/mongodb";
-import mongoose from "mongoose";
+import { connectDB, getOrders, createOrder, updateOrder } from "@/lib/mongodb";
 import jwt from "jsonwebtoken";
 
 function verifyToken(req) {
@@ -21,8 +20,7 @@ export async function GET(req) {
 
   try {
     await connectDB();
-    const db = mongoose.connection.db;
-    const orders = await db.collection("orders").find().sort({ createdAt: -1 }).toArray();
+    const orders = await getOrders();
     // Normalize — add id field
     const normalized = orders.map((o) => ({ ...o, id: o.orderId }));
     return NextResponse.json({ orders: normalized });
@@ -36,7 +34,6 @@ export async function GET(req) {
 export async function POST(req) {
   try {
     await connectDB();
-    const db = mongoose.connection.db;
     const body = await req.json();
     const { customer, email, phone, address, city, payment, total, items, userId } = body;
 
@@ -46,7 +43,7 @@ export async function POST(req) {
     const orderId = "ORD-" + String(Date.now()).slice(-6);
     const today = new Date().toISOString().slice(0, 10);
 
-    const order = {
+    const order = await createOrder({
       orderId,
       customer,
       email,
@@ -59,12 +56,9 @@ export async function POST(req) {
       status: "Pending",
       date: today,
       userId: userId || null,
-      createdAt: new Date(),
-    };
+    });
 
-    await db.collection("orders").insertOne(order);
     console.log("Order saved:", orderId);
-
     return NextResponse.json({ message: "Order placed successfully.", order: { ...order, id: orderId } }, { status: 201 });
 
   } catch (err) {

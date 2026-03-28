@@ -1,7 +1,5 @@
 import { NextResponse } from "next/server";
-import { connectDB } from "@/lib/mongodb";
-import mongoose from "mongoose";
-import { ObjectId } from "mongodb";
+import { connectDB, getProducts, updateProduct, deleteProduct } from "@/lib/mongodb";
 import jwt from "jsonwebtoken";
 
 function verifyAdmin(req) {
@@ -17,16 +15,10 @@ function verifyAdmin(req) {
 export async function GET(req, { params }) {
   try {
     await connectDB();
-    const db = mongoose.connection.db;
+    const products = await getProducts();
     const { id } = await params;
 
-    let product;
-    // Try ObjectId first, then slug
-    try {
-      product = await db.collection("products").findOne({ _id: new ObjectId(id) });
-    } catch {
-      product = await db.collection("products").findOne({ slug: id });
-    }
+    const product = products.find(p => p._id === id || p.slug === id);
 
     if (!product)
       return NextResponse.json({ error: "Product not found." }, { status: 404 });
@@ -44,29 +36,31 @@ export async function PUT(req, { params }) {
 
   try {
     await connectDB();
-    const db = mongoose.connection.db;
     const { id } = await params;
     const body = await req.json();
+
+    // Debug: Show all available products and their IDs
+    const allProducts = await getProducts();
+    console.log("Available product IDs:", allProducts.map(p => ({ _id: p._id, name: p.name, stock: p.stock })));
+    console.log("Trying to update product with ID:", id);
+    console.log("API received body.stock:", body.stock, "Type:", typeof body.stock);
+    console.log("API parsed parseInt(body.stock, 10):", parseInt(body.stock, 10));
 
     const update = {
       ...body,
       price: Number(body.price),
       originalPrice: Number(body.originalPrice),
-      stock: Number(body.stock),
-      updatedAt: new Date(),
+      stock: parseInt(body.stock, 10) || 0,
     };
-    delete update._id;
 
-    const result = await db.collection("products").findOneAndUpdate(
-      { _id: new ObjectId(id) },
-      { $set: update },
-      { returnDocument: "after" }
-    );
+    console.log("Final update object stock:", update.stock);
 
-    if (!result)
+    const product = await updateProduct(id, update);
+
+    if (!product)
       return NextResponse.json({ error: "Product not found." }, { status: 404 });
 
-    return NextResponse.json({ message: "Product updated.", product: result });
+    return NextResponse.json({ message: "Product updated.", product });
   } catch (err) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
@@ -79,13 +73,12 @@ export async function DELETE(req, { params }) {
 
   try {
     await connectDB();
-    const db = mongoose.connection.db;
     const { id } = await params;
 
-    await db.collection("products").findOneAndUpdate(
-      { _id: new ObjectId(id) },
-      { $set: { active: false, updatedAt: new Date() } }
-    );
+    const success = await deleteProduct(id);
+
+    if (!success)
+      return NextResponse.json({ error: "Product not found." }, { status: 404 });
 
     return NextResponse.json({ message: "Product deleted." });
   } catch (err) {

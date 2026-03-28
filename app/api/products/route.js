@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-import { connectDB } from "@/lib/mongodb";
-import mongoose from "mongoose";
+import { connectDB, getProducts, createProduct } from "@/lib/mongodb";
 import jwt from "jsonwebtoken";
 
 function verifyAdmin(req) {
@@ -8,21 +7,26 @@ function verifyAdmin(req) {
   if (!auth?.startsWith("Bearer ")) return false;
   try {
     const decoded = jwt.verify(auth.slice(7), process.env.JWT_SECRET || "aquatai_fallback_secret");
+    console.log("Verified admin token:", decoded);
     return decoded.role === "admin";
-  } catch { return false; }
+  } catch { 
+    console.error("Error verifying admin token");
+    return false; 
+  }
 }
 
 // GET /api/products — public, get all active products
 export async function GET() {
   try {
+    console.log("=== PRODUCTS API DEBUG ===");
     await connectDB();
-    const db = mongoose.connection.db;
-    const products = await db.collection("products")
-      .find({ active: true })
-      .sort({ createdAt: -1 })
-      .toArray();
+    console.log("Connected to database");
+    const products = await getProducts();
+    console.log("Products retrieved:", products.length);
+    console.log("Products:", products);
     return NextResponse.json({ products });
   } catch (err) {
+    console.error("Products API error:", err);
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
@@ -34,8 +38,10 @@ export async function POST(req) {
 
   try {
     await connectDB();
-    const db = mongoose.connection.db;
     const body = await req.json();
+
+    // Debug logging
+    console.log("API received body.stock:", body.stock, "Type:", typeof body.stock);
 
     // Auto-generate slug from name
     const slug = body.name
@@ -44,25 +50,21 @@ export async function POST(req) {
       .replace(/[^a-z0-9\s-]/g, "")
       .replace(/\s+/g, "-");
 
-    // Check slug uniqueness
-    const existing = await db.collection("products").findOne({ slug });
-    const finalSlug = existing ? `${slug}-${Date.now()}` : slug;
-
-    const product = {
+    const product = await createProduct({
       ...body,
-      slug: finalSlug,
+      slug,
       price: Number(body.price),
       originalPrice: Number(body.originalPrice),
-      stock: Number(body.stock),
+      stock: parseInt(body.stock, 10) || 0,
       active: true,
       rating: 0,
       reviews: 0,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
+    });
 
-    const result = await db.collection("products").insertOne(product);
-    return NextResponse.json({ message: "Product created.", product: { ...product, _id: result.insertedId } }, { status: 201 });
+    // Debug logging
+    console.log("Created product stock:", product.stock, "Type:", typeof product.stock);
+
+    return NextResponse.json({ message: "Product created.", product }, { status: 201 });
   } catch (err) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }

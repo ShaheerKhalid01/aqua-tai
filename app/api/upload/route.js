@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import { writeFile, mkdir } from "fs/promises";
+import { join } from "path";
 import jwt from "jsonwebtoken";
 
 function verifyAdmin(req) {
@@ -20,30 +22,39 @@ export async function POST(req) {
     if (!file)
       return NextResponse.json({ error: "No image provided." }, { status: 400 });
 
-    // Convert to base64
+    // Validate file type
+    const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+    if (!allowedTypes.includes(file.type))
+      return NextResponse.json({ error: "Only JPEG, PNG, WebP, and GIF images are allowed." }, { status: 400 });
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024)
+      return NextResponse.json({ error: "File size must be less than 5MB." }, { status: 400 });
+
     const bytes = await file.arrayBuffer();
-    const base64 = Buffer.from(bytes).toString("base64");
+    const buffer = Buffer.from(bytes);
 
-    // Upload to Imgur — free, no account needed
-    const imgurForm = new FormData();
-    imgurForm.append("image", base64);
-    imgurForm.append("type", "base64");
+    // Create unique filename
+    const timestamp = Date.now();
+    const random = Math.random().toString(36).substring(2, 8);
+    const extension = file.name.split('.').pop();
+    const filename = `${timestamp}_${random}.${extension}`;
 
-    const res = await fetch("https://api.imgur.com/3/image", {
-      method: "POST",
-      headers: {
-        Authorization: "Client-ID 546c25a59c58ad7",
-      },
-      body: imgurForm,
-    });
+    // Ensure upload directory exists
+    const uploadDir = join(process.cwd(), "public", "uploads");
+    try {
+      await mkdir(uploadDir, { recursive: true });
+    } catch {}
 
-    const data = await res.json();
-    console.log("Imgur response:", data);
+    // Save file locally
+    const filepath = join(uploadDir, filename);
+    await writeFile(filepath, buffer);
 
-    if (!data.success)
-      return NextResponse.json({ error: "Upload failed: " + (data.data?.error || "Unknown error") }, { status: 500 });
-
-    return NextResponse.json({ url: data.data.link, public_id: data.data.id });
+    // Return the public URL
+    const url = `/uploads/${filename}`;
+    
+    console.log("File saved locally:", url);
+    return NextResponse.json({ url, filename });
 
   } catch (err) {
     console.error("Upload error:", err);

@@ -19,12 +19,28 @@ export default function AdminProducts() {
   const [error, setError] = useState("");
   const fileRef = useRef();
 
-  useEffect(() => { loadProducts(); }, []);
+  useEffect(() => { 
+    console.log("Products component mounted, loading fresh data...");
+    loadProducts(); 
+  }, []);
 
   const filtered = products.filter(p =>
     p.name?.toLowerCase().includes(search.toLowerCase()) ||
     p.category?.toLowerCase().includes(search.toLowerCase())
   );
+
+  // Debug: Show current products
+  console.log("Current products in frontend:", products.map(p => ({ _id: p._id, name: p.name, stock: p.stock })));
+
+  const forceRefresh = async () => {
+    console.log("Force refreshing products data...");
+    try {
+      await loadProducts();
+      console.log("Products reloaded:", products.length);
+    } catch (err) {
+      console.error("Force refresh failed:", err);
+    }
+  };
 
   const openAdd = () => { setForm(emptyForm); setEditId(null); setError(""); setShowModal(true); };
   const openEdit = p => {
@@ -47,12 +63,53 @@ export default function AdminProducts() {
     setError("");
     if (!form.name || !form.category || !form.price || !form.stock || !form.description)
       return setError("Name, category, price, stock and description are required.");
+    
+    // Debug logging
+    console.log("=== SAVE PROCESS DEBUG ===");
+    console.log("1. Form stock before save:", form.stock, "Type:", typeof form.stock);
+    
     setSaving(true);
     try {
-      const payload = { ...form, price: Number(form.price), originalPrice: Number(form.originalPrice)||Number(form.price), stock: Number(form.stock), features: form.features.split("\n").map(f=>f.trim()).filter(Boolean) };
-      editId ? await editProduct(editId, payload) : await addProduct(payload);
+      const payload = { 
+        ...form, 
+        price: Number(form.price), 
+        originalPrice: Number(form.originalPrice)||Number(form.price), 
+        stock: parseInt(form.stock, 10) || 0, 
+        features: form.features.split("\n").map(f=>f.trim()).filter(Boolean) 
+      };
+      
+      console.log("2. Payload stock before API:", payload.stock, "Type:", typeof payload.stock);
+      
+      if (editId) {
+        console.log("3. Calling editProduct with ID:", editId);
+        const result = await editProduct(editId, payload);
+        console.log("4. Edit result:", result);
+        console.log("5. Product stock in result:", result?.stock);
+      } else {
+        console.log("3. Calling addProduct");
+        const result = await addProduct(payload);
+        console.log("4. Add result:", result);
+        console.log("5. Product stock in result:", result?.stock);
+      }
+      
+      console.log("6. Closing modal and reloading products...");
       setShowModal(false);
-    } catch (err) { setError(err.message); }
+      
+      // Force reload products to ensure we have latest data
+      console.log("7. Force reloading products...");
+      await loadProducts();
+      console.log("8. Products reloaded, new count:", products.length);
+    } catch (err) { 
+      // If it's a 404 error, reload products and try to refresh the data
+      if (err.message.includes("404") || err.message.includes("Not Found")) {
+        console.log("Product not found - reloading products data...");
+        await loadProducts();
+        setError("Product data was stale. Please try again.");
+      } else {
+        console.log("Save error:", err);
+        setError(err.message);
+      }
+    }
     finally { setSaving(false); }
   };
 
@@ -73,9 +130,14 @@ export default function AdminProducts() {
           <h1 style={{ fontSize:28, fontWeight:900, color:"#1a1a2e", marginBottom:6 }}>Products</h1>
           <p style={{ color:"#64748b", fontSize:14 }}>{products.length} products in store</p>
         </div>
-        <button onClick={openAdd} style={{ background:"#0057a8", color:"#fff", border:"none", padding:"11px 22px", borderRadius:10, fontWeight:700, cursor:"pointer", fontSize:14, display:"flex", alignItems:"center", gap:8 }}>
-          ➕ Add Product
-        </button>
+        <div style={{ display:"flex", gap:12 }}>
+          <button onClick={forceRefresh} style={{ background:"#f8fafc", color:"#64748b", border:"1px solid #e2e8f0", padding:"11px 22px", borderRadius:10, fontWeight:600, cursor:"pointer", fontSize:14, display:"flex", alignItems:"center", gap:8 }}>
+            🔄 Refresh
+          </button>
+          <button onClick={openAdd} style={{ background:"#0057a8", color:"#fff", border:"none", padding:"11px 22px", borderRadius:10, fontWeight:700, cursor:"pointer", fontSize:14, display:"flex", alignItems:"center", gap:8 }}>
+            ➕ Add Product
+          </button>
+        </div>
       </div>
 
       {/* Search */}
@@ -204,8 +266,17 @@ export default function AdminProducts() {
               </div>
               <div>
                 <label style={labelStyle}>Stock *</label>
-                <input style={inputStyle} type="number" value={form.stock} onChange={e=>setForm({...form,stock:e.target.value})} placeholder="25"
-                  onFocus={e=>e.target.style.border="2px solid #0057a8"} onBlur={e=>e.target.style.border="2px solid #e2e8f0"} />
+                <input 
+                  style={inputStyle} 
+                  type="number" 
+                  min="0" 
+                  step="1"
+                  value={form.stock} 
+                  onChange={e => setForm(prev => ({...prev, stock: e.target.value}))}
+                  placeholder="25"
+                  onFocus={e=>e.target.style.border="2px solid #0057a8"} 
+                  onBlur={e=>e.target.style.border="2px solid #e2e8f0"} 
+                />
               </div>
             </div>
 

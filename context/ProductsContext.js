@@ -36,6 +36,8 @@ export function ProductsProvider({ children }) {
 
   const editProduct = async (id, productData) => {
     const data = await updateProduct(id, productData);
+    console.log("ProductsContext editProduct - API response:", data);
+    console.log("ProductsContext editProduct - product:", data.product);
     dispatch({ type: "UPDATE", payload: data.product });
     return data.product;
   };

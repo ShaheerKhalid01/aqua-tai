@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-import { connectDB } from "@/lib/mongodb";
-import mongoose from "mongoose";
+import { connectDB, findUser } from "@/lib/mongodb";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 
@@ -17,10 +16,7 @@ export async function POST(req) {
     console.log("Email:", normalizedEmail);
     console.log("Password length:", password.length);
 
-    // Query directly via mongoose connection — no model caching issues
-    const db = mongoose.connection.db;
-    const user = await db.collection("users").findOne({ email: normalizedEmail });
-
+    const user = await findUser(normalizedEmail);
     console.log("User found:", user ? "YES" : "NO");
 
     if (!user)
