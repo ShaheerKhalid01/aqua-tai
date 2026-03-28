@@ -3,7 +3,13 @@ import { useState, useEffect } from "react";
 import { useOrders } from "@/context/OrdersContext";
 import { formatPrice } from "@/lib/utils";
 
-const statusColors = { Delivered: "#10b981", Processing: "#f59e0b", Shipped: "#3b82f6", Pending: "#ef4444", Cancelled: "#64748b" };
+const statusColors = {
+  Delivered:  { bg: "#f0fdf4", color: "#16a34a", border: "#bbf7d0" },
+  Processing: { bg: "#fffbeb", color: "#d97706", border: "#fde68a" },
+  Shipped:    { bg: "#eff6ff", color: "#2563eb", border: "#bfdbfe" },
+  Pending:    { bg: "#fff7ed", color: "#ea580c", border: "#fed7aa" },
+  Cancelled:  { bg: "#f8fafc", color: "#64748b", border: "#e2e8f0" },
+};
 const allStatuses = ["Pending", "Processing", "Shipped", "Delivered", "Cancelled"];
 
 export default function AdminOrders() {
@@ -11,11 +17,10 @@ export default function AdminOrders() {
   const [filter, setFilter] = useState("All");
   const [selectedOrder, setSelectedOrder] = useState(null);
 
-  // Load fresh from DB when admin opens this page
   useEffect(() => { loadOrders(); }, []);
 
-  const filtered = filter === "All" ? orders : orders.filter((o) => o.status === filter);
-  const countOf = (s) => s === "All" ? orders.length : orders.filter((o) => o.status === s).length;
+  const filtered = filter === "All" ? orders : orders.filter(o => o.status === filter);
+  const countOf = s => s === "All" ? orders.length : orders.filter(o => o.status === s).length;
 
   const updateStatus = (id, status) => {
     changeStatus(id, status);
@@ -25,141 +30,141 @@ export default function AdminOrders() {
 
   return (
     <div style={{ padding: 32 }}>
-      <div style={{ marginBottom: 32 }}>
-        <h1 style={{ fontSize: 32, fontWeight: 900, fontFamily: "Georgia, serif" }}>Orders</h1>
-        <p style={{ color: "#64748b", marginTop: 4 }}>{orders.length} total orders</p>
+      <div style={{ marginBottom: 28 }}>
+        <h1 style={{ fontSize: 28, fontWeight: 900, color: "#1a1a2e", marginBottom: 6 }}>Orders</h1>
+        <p style={{ color: "#64748b", fontSize: 14 }}>{orders.length} total orders</p>
       </div>
 
-      {/* Filter Tabs */}
-      <div style={{ display: "flex", gap: 8, marginBottom: 28, flexWrap: "wrap" }}>
-        {["All", ...allStatuses].map((s) => (
-          <button key={s} onClick={() => setFilter(s)}
-            style={{ padding: "8px 18px", borderRadius: 20, border: filter === s ? "none" : "1px solid rgba(0,180,255,0.2)", background: filter === s ? "linear-gradient(135deg, #00b4ff, #0066cc)" : "transparent", color: "#fff", cursor: "pointer", fontSize: 13, fontWeight: filter === s ? 700 : 400, display: "flex", alignItems: "center", gap: 6 }}>
-            {s}
-            <span style={{ background: "rgba(255,255,255,0.15)", borderRadius: 10, padding: "0 6px", fontSize: 11 }}>{countOf(s)}</span>
-          </button>
-        ))}
+      {/* Filter tabs */}
+      <div style={{ display: "flex", gap: 8, marginBottom: 24, flexWrap: "wrap" }}>
+        {["All", ...allStatuses].map(s => {
+          const sc = statusColors[s];
+          const active = filter === s;
+          return (
+            <button key={s} onClick={() => setFilter(s)}
+              style={{ padding: "7px 16px", borderRadius: 20, border: active ? "none" : "1px solid #e2e8f0", background: active ? (sc ? sc.color : "#0057a8") : "#fff", color: active ? "#fff" : "#64748b", cursor: "pointer", fontSize: 13, fontWeight: active ? 700 : 500, display: "flex", alignItems: "center", gap: 6 }}>
+              {s}
+              <span style={{ background: active ? "rgba(255,255,255,0.25)" : "#f1f5f9", color: active ? "#fff" : "#64748b", borderRadius: 10, padding: "1px 7px", fontSize: 11 }}>{countOf(s)}</span>
+            </button>
+          );
+        })}
       </div>
 
-      {filtered.length === 0 ? (
-        <div style={{ textAlign: "center", padding: "80px 0", color: "#64748b" }}>
-          <div style={{ fontSize: 50, marginBottom: 16 }}>📭</div>
-          <p style={{ fontSize: 16 }}>No orders found{filter !== "All" ? ` with status "${filter}"` : ""}.</p>
-        </div>
-      ) : (
-        <div style={{ background: "linear-gradient(145deg, #0d2545, #0a1e35)", border: "1px solid rgba(0,180,255,0.12)", borderRadius: 16, overflow: "hidden" }}>
+      {/* Table */}
+      <div style={{ background: "#fff", borderRadius: 16, border: "1px solid #e8f0fe", overflow: "hidden" }}>
+        {loading ? (
+          <div style={{ padding: "60px 0", textAlign: "center", color: "#94a3b8" }}>Loading orders...</div>
+        ) : filtered.length === 0 ? (
+          <div style={{ padding: "60px 0", textAlign: "center", color: "#94a3b8" }}>
+            <div style={{ fontSize: 40, marginBottom: 12 }}>📭</div>
+            <p>No orders found.</p>
+          </div>
+        ) : (
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
-              <tr style={{ borderBottom: "1px solid rgba(0,180,255,0.15)" }}>
-                {["Order ID", "Customer", "Date", "Items", "Total", "Status", "Actions"].map((h) => (
-                  <th key={h} style={{ padding: "14px 20px", textAlign: "left", color: "#00b4ff", fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase" }}>{h}</th>
+              <tr style={{ background: "#f8fafc" }}>
+                {["Order ID", "Customer", "Date", "Items", "Total", "Status", "Actions"].map(h => (
+                  <th key={h} style={{ padding: "14px 20px", textAlign: "left", color: "#64748b", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", borderBottom: "1px solid #e8f0fe" }}>{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
-              {filtered.map((order, i) => (
-                <tr key={order.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.04)", background: i % 2 === 0 ? "transparent" : "rgba(255,255,255,0.01)" }}>
-                  <td style={{ padding: "14px 20px" }}>
-                    <span style={{ color: "#00b4ff", fontWeight: 700, fontSize: 13 }}>{order.id}</span>
-                    {i === 0 && orders[0]?.id === order.id && (
-                      <span style={{ marginLeft: 6, background: "rgba(16,185,129,0.15)", color: "#10b981", fontSize: 9, fontWeight: 700, padding: "2px 6px", borderRadius: 4 }}>NEW</span>
-                    )}
-                  </td>
-                  <td style={{ padding: "14px 20px" }}>
-                    <div style={{ fontSize: 14, fontWeight: 600 }}>{order.customer}</div>
-                    <div style={{ color: "#64748b", fontSize: 12 }}>{order.email}</div>
-                    {order.city && <div style={{ color: "#475569", fontSize: 11 }}>📍 {order.city}</div>}
-                  </td>
-                  <td style={{ padding: "14px 20px", color: "#94a3b8", fontSize: 13 }}>{order.date}</td>
-                  <td style={{ padding: "14px 20px", color: "#94a3b8", fontSize: 13 }}>{order.items.length} item{order.items.length > 1 ? "s" : ""}</td>
-                  <td style={{ padding: "14px 20px", color: "#fff", fontWeight: 700 }}>{formatPrice(order.total)}</td>
-                  <td style={{ padding: "14px 20px" }}>
-                    <span style={{ background: `${statusColors[order.status]}22`, color: statusColors[order.status], padding: "4px 12px", borderRadius: 20, fontSize: 12, fontWeight: 600 }}>
-                      {order.status}
-                    </span>
-                  </td>
-                  <td style={{ padding: "14px 20px" }}>
-                    <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
-                      <button onClick={() => setSelectedOrder(order)}
-                        style={{ background: "rgba(0,180,255,0.1)", border: "1px solid rgba(0,180,255,0.2)", color: "#00b4ff", padding: "5px 10px", borderRadius: 6, cursor: "pointer", fontSize: 11 }}>
-                        View
-                      </button>
-                      <select value={order.status} onChange={(e) => updateStatus(order.id || order.orderId, e.target.value)}
-                        style={{ background: "#0a1e35", border: "1px solid rgba(0,180,255,0.2)", color: "#fff", padding: "5px 8px", borderRadius: 6, cursor: "pointer", fontSize: 11, outline: "none" }}>
-                        {allStatuses.map((s) => <option key={s} value={s}>{s}</option>)}
-                      </select>
-                      {order.status !== "Cancelled" && order.status !== "Delivered" && (
-                        <button onClick={() => updateStatus(order.id || order.orderId, "Cancelled")}
-                          style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)", color: "#ef4444", padding: "5px 10px", borderRadius: 6, cursor: "pointer", fontSize: 11, fontWeight: 600 }}>
-                          Cancel
-                        </button>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              ))}
+              {filtered.map((order, i) => {
+                const sc = statusColors[order.status] || statusColors.Pending;
+                const oid = order.orderId || order.id;
+                return (
+                  <tr key={oid} style={{ borderBottom: "1px solid #f1f5f9", transition: "background 0.1s" }}
+                    onMouseEnter={e => e.currentTarget.style.background = "#f8fafc"}
+                    onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
+                    <td style={{ padding: "14px 20px" }}>
+                      <span style={{ color: "#0057a8", fontWeight: 700, fontSize: 13 }}>{oid}</span>
+                      {i === 0 && <span style={{ marginLeft: 6, background: "#f0fdf4", color: "#16a34a", fontSize: 9, fontWeight: 700, padding: "2px 6px", borderRadius: 4, border: "1px solid #bbf7d0" }}>NEW</span>}
+                    </td>
+                    <td style={{ padding: "14px 20px" }}>
+                      <div style={{ fontWeight: 600, fontSize: 13, color: "#1a1a2e" }}>{order.customer}</div>
+                      <div style={{ color: "#94a3b8", fontSize: 11 }}>{order.email}</div>
+                      {order.city && <div style={{ color: "#94a3b8", fontSize: 11 }}>📍 {order.city}</div>}
+                    </td>
+                    <td style={{ padding: "14px 20px", color: "#64748b", fontSize: 12 }}>{order.date}</td>
+                    <td style={{ padding: "14px 20px", color: "#64748b", fontSize: 13 }}>{order.items?.length || 0} item{order.items?.length !== 1 ? "s" : ""}</td>
+                    <td style={{ padding: "14px 20px", fontWeight: 700, color: "#1a1a2e", fontSize: 14 }}>{formatPrice(order.total)}</td>
+                    <td style={{ padding: "14px 20px" }}>
+                      <span style={{ background: sc.bg, color: sc.color, border: `1px solid ${sc.border}`, padding: "4px 12px", borderRadius: 20, fontSize: 11, fontWeight: 700 }}>{order.status}</span>
+                    </td>
+                    <td style={{ padding: "14px 20px" }}>
+                      <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+                        <button onClick={() => setSelectedOrder(order)}
+                          style={{ background: "#eff6ff", border: "1px solid #bfdbfe", color: "#0057a8", padding: "5px 12px", borderRadius: 6, cursor: "pointer", fontSize: 12, fontWeight: 600 }}>View</button>
+                        <select value={order.status} onChange={e => updateStatus(oid, e.target.value)}
+                          style={{ background: "#f8fafc", border: "1px solid #e2e8f0", color: "#334155", padding: "5px 8px", borderRadius: 6, cursor: "pointer", fontSize: 11, outline: "none" }}>
+                          {allStatuses.map(s => <option key={s} value={s}>{s}</option>)}
+                        </select>
+                        {order.status !== "Cancelled" && order.status !== "Delivered" && (
+                          <button onClick={() => updateStatus(oid, "Cancelled")}
+                            style={{ background: "#fff5f5", border: "1px solid #fecaca", color: "#dc2626", padding: "5px 10px", borderRadius: 6, cursor: "pointer", fontSize: 11, fontWeight: 600 }}>Cancel</button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
-        </div>
-      )}
+        )}
+      </div>
 
       {/* Order Detail Modal */}
       {selectedOrder && (
-        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.75)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
-          <div style={{ background: "#0d2545", border: "1px solid rgba(0,180,255,0.25)", borderRadius: 20, padding: 32, width: "100%", maxWidth: 500, maxHeight: "90vh", overflowY: "auto" }}>
+        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
+          <div style={{ background: "#fff", borderRadius: 20, padding: 32, width: "100%", maxWidth: 520, maxHeight: "90vh", overflowY: "auto", boxShadow: "0 24px 60px rgba(0,0,0,0.15)" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
               <div>
-                <h2 style={{ fontWeight: 800, fontSize: 20, marginBottom: 2 }}>Order {selectedOrder.id}</h2>
-                <span style={{ background: `${statusColors[selectedOrder.status]}22`, color: statusColors[selectedOrder.status], padding: "3px 10px", borderRadius: 20, fontSize: 12, fontWeight: 600 }}>
+                <h2 style={{ fontWeight: 900, fontSize: 20, color: "#1a1a2e", marginBottom: 4 }}>Order {selectedOrder.orderId || selectedOrder.id}</h2>
+                <span style={{ background: statusColors[selectedOrder.status]?.bg, color: statusColors[selectedOrder.status]?.color, border: `1px solid ${statusColors[selectedOrder.status]?.border}`, padding: "3px 12px", borderRadius: 20, fontSize: 12, fontWeight: 700 }}>
                   {selectedOrder.status}
                 </span>
               </div>
               <button onClick={() => setSelectedOrder(null)}
-                style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "#94a3b8", width: 32, height: 32, borderRadius: 8, fontSize: 18, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                ×
-              </button>
+                style={{ background: "#f8fafc", border: "1px solid #e2e8f0", color: "#64748b", width: 36, height: 36, borderRadius: 8, fontSize: 18, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>×</button>
             </div>
 
-            {/* Customer info */}
-            <div style={{ background: "rgba(255,255,255,0.03)", borderRadius: 12, padding: 16, marginBottom: 20 }}>
-              <div style={{ color: "#00b4ff", fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", marginBottom: 12 }}>Customer Info</div>
-              {[["👤 Customer", selectedOrder.customer], ["✉️ Email", selectedOrder.email], ["📞 Phone", selectedOrder.phone || "—"], ["📍 City", selectedOrder.city || "—"], ["📅 Date", selectedOrder.date], ["💳 Payment", selectedOrder.payment === "cod" ? "Cash on Delivery" : "Bank Transfer"]].map(([label, val]) => (
-                <div key={label} style={{ display: "flex", justifyContent: "space-between", fontSize: 13, marginBottom: 8 }}>
-                  <span style={{ color: "#64748b" }}>{label}</span>
-                  <span style={{ color: "#e2e8f0", fontWeight: 500 }}>{val}</span>
+            <div style={{ background: "#f8fafc", borderRadius: 12, padding: 16, marginBottom: 20, border: "1px solid #e8f0fe" }}>
+              <div style={{ color: "#0057a8", fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", marginBottom: 12 }}>Customer Info</div>
+              {[["👤 Name", selectedOrder.customer], ["✉️ Email", selectedOrder.email], ["📞 Phone", selectedOrder.phone || "—"], ["📍 City", selectedOrder.city || "—"], ["📅 Date", selectedOrder.date], ["💳 Payment", selectedOrder.payment === "cod" ? "Cash on Delivery" : "Bank Transfer"]].map(([l, v]) => (
+                <div key={l} style={{ display: "flex", justifyContent: "space-between", fontSize: 13, marginBottom: 8 }}>
+                  <span style={{ color: "#64748b" }}>{l}</span>
+                  <span style={{ color: "#1a1a2e", fontWeight: 500 }}>{v}</span>
                 </div>
               ))}
             </div>
 
-            {/* Items */}
-            <div style={{ color: "#00b4ff", fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", marginBottom: 12 }}>Order Items</div>
-            {selectedOrder.items.map((item, i) => (
-              <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0", borderBottom: "1px solid rgba(255,255,255,0.05)", fontSize: 14 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <span style={{ fontSize: 20 }}>💧</span>
-                  <div>
-                    <div style={{ fontWeight: 500 }}>{item.name}</div>
-                    <div style={{ color: "#64748b", fontSize: 12 }}>Qty: {item.qty}</div>
-                  </div>
+            <div style={{ color: "#0057a8", fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", marginBottom: 12 }}>Order Items</div>
+            {selectedOrder.items?.map((item, i) => (
+              <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "10px 0", borderBottom: "1px solid #f1f5f9", fontSize: 13 }}>
+                <div>
+                  <div style={{ fontWeight: 600, color: "#1a1a2e" }}>{item.name}</div>
+                  <div style={{ color: "#94a3b8", fontSize: 12 }}>Qty: {item.qty}</div>
                 </div>
-                <span style={{ color: "#00b4ff", fontWeight: 600 }}>{formatPrice(item.price * item.qty)}</span>
+                <span style={{ color: "#0057a8", fontWeight: 700 }}>{formatPrice(item.price * item.qty)}</span>
               </div>
             ))}
-
-            <div style={{ display: "flex", justifyContent: "space-between", marginTop: 16, padding: "14px 0", borderTop: "1px solid rgba(0,180,255,0.15)", fontSize: 20, fontWeight: 900, color: "#00b4ff" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", marginTop: 16, padding: "14px 0", borderTop: "2px solid #e8f0fe", fontSize: 18, fontWeight: 900, color: "#0057a8" }}>
               <span>Total</span><span>{formatPrice(selectedOrder.total)}</span>
             </div>
 
-            {/* Update status from modal */}
             <div style={{ marginTop: 20 }}>
-              <div style={{ color: "#94a3b8", fontSize: 13, marginBottom: 8 }}>Update Status</div>
+              <div style={{ color: "#64748b", fontSize: 12, marginBottom: 8, fontWeight: 600 }}>Update Status</div>
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                {allStatuses.map((s) => (
-                  <button key={s} onClick={() => updateStatus(selectedOrder.id, s)}
-                    style={{ padding: "7px 14px", borderRadius: 8, border: selectedOrder.status === s ? "none" : "1px solid rgba(255,255,255,0.1)", background: selectedOrder.status === s ? `${statusColors[s]}33` : "transparent", color: selectedOrder.status === s ? statusColors[s] : "#64748b", cursor: "pointer", fontSize: 12, fontWeight: selectedOrder.status === s ? 700 : 400 }}>
-                    {s}
-                  </button>
-                ))}
+                {allStatuses.map(s => {
+                  const sc = statusColors[s];
+                  const active = selectedOrder.status === s;
+                  return (
+                    <button key={s} onClick={() => updateStatus(selectedOrder.orderId || selectedOrder.id, s)}
+                      style={{ padding: "7px 14px", borderRadius: 8, border: active ? "none" : `1px solid ${sc?.border || "#e2e8f0"}`, background: active ? sc?.color || "#0057a8" : sc?.bg || "#f8fafc", color: active ? "#fff" : sc?.color || "#64748b", cursor: "pointer", fontSize: 12, fontWeight: active ? 700 : 500 }}>
+                      {s}
+                    </button>
+                  );
+                })}
               </div>
             </div>
           </div>

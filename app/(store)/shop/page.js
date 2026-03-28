@@ -105,7 +105,7 @@ function ShopContent() {
       <div style={{ background: "linear-gradient(135deg, #0a2540, #0d3060)", padding: "50px 0 36px", borderBottom: "1px solid rgba(0,180,255,0.15)" }}>
         <div className="max-w-7xl mx-auto px-4">
           <div style={{ color: "#00b4ff", fontSize: 12, letterSpacing: 3, textTransform: "uppercase", marginBottom: 8 }}>Our Collection</div>
-          <h1 style={{ fontSize: 42, fontWeight: 900, fontFamily: "Georgia, serif", marginBottom: 12 }}>
+          <h1 style={{ fontSize: 42, fontWeight: 900, fontFamily: "Georgia, serif", marginBottom: 12, color: "#00b4ff" }}>
             {activeCategory === "All" ? "All Water Filters" : activeCategory}
           </h1>
           {activeCategory !== "All" && (

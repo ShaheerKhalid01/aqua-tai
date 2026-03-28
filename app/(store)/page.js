@@ -205,6 +205,137 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── Domestic Water Filter Banner ── */}
+      <section style={{ padding: "60px 0", background: "#f7f9fc" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 0, borderRadius: 20, overflow: "hidden", boxShadow: "0 8px 40px rgba(0,87,168,0.12)" }}>
+            {/* Left — image */}
+            <div style={{ background: "linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%)", minHeight: 340, display: "flex", alignItems: "center", justifyContent: "center", position: "relative", overflow: "hidden" }}>
+              <div style={{ fontSize: 120, opacity: 0.6 }}>🚰</div>
+              <div style={{ position: "absolute", bottom: 20, left: 20, background: "#0057a8", color: "#fff", padding: "6px 14px", borderRadius: 20, fontSize: 12, fontWeight: 700 }}>Domestic Range</div>
+            </div>
+            {/* Right — content */}
+            <div style={{ background: "#0057a8", padding: "48px 44px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+              <div style={{ color: "#93c5fd", fontSize: 12, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", marginBottom: 14 }}>For Your Home</div>
+              <h2 style={{ fontSize: 34, fontWeight: 900, color: "#fff", marginBottom: 16, lineHeight: 1.25 }}>Domestic Water Filters</h2>
+              <p style={{ color: "rgba(255,255,255,0.75)", fontSize: 15, lineHeight: 1.8, marginBottom: 28 }}>
+                Clean, safe drinking water for your family with our range of domestic water filters. Compact, easy to install, and highly effective at removing contaminants.
+              </p>
+              <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                <Link href={`/shop?category=${encodeURIComponent("Domestic Water Filter")}`}
+                  style={{ background: "#fff", color: "#0057a8", padding: "12px 26px", borderRadius: 8, fontWeight: 800, fontSize: 14, textDecoration: "none" }}>
+                  Shop Now →
+                </Link>
+                <Link href="/shop"
+                  style={{ background: "rgba(255,255,255,0.15)", border: "2px solid rgba(255,255,255,0.4)", color: "#fff", padding: "12px 22px", borderRadius: 8, fontWeight: 600, fontSize: 14, textDecoration: "none" }}>
+                  View All
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Filter & Accessories Banner ── */}
+      <section style={{ padding: "0 0 60px", background: "#f7f9fc" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 0, borderRadius: 20, overflow: "hidden", boxShadow: "0 8px 40px rgba(4,120,87,0.12)" }}>
+            {/* Left — content */}
+            <div style={{ background: "#047857", padding: "48px 44px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+              <div style={{ color: "#6ee7b7", fontSize: 12, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", marginBottom: 14 }}>Spare Parts & More</div>
+              <h2 style={{ fontSize: 34, fontWeight: 900, color: "#fff", marginBottom: 16, lineHeight: 1.25 }}>Filter Cartridges & Accessories</h2>
+              <p style={{ color: "rgba(255,255,255,0.75)", fontSize: 15, lineHeight: 1.8, marginBottom: 28 }}>
+                Keep your water filter performing at its best with genuine replacement cartridges, membranes, fittings and accessories for all major brands.
+              </p>
+              <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                <Link href={`/shop?category=${encodeURIComponent("Cartridges & Accessories")}`}
+                  style={{ background: "#fff", color: "#047857", padding: "12px 26px", borderRadius: 8, fontWeight: 800, fontSize: 14, textDecoration: "none" }}>
+                  Shop Now →
+                </Link>
+                <Link href="/shop"
+                  style={{ background: "rgba(255,255,255,0.15)", border: "2px solid rgba(255,255,255,0.4)", color: "#fff", padding: "12px 22px", borderRadius: 8, fontWeight: 600, fontSize: 14, textDecoration: "none" }}>
+                  View All
+                </Link>
+              </div>
+            </div>
+            {/* Right — image */}
+            <div style={{ background: "linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%)", minHeight: 340, display: "flex", alignItems: "center", justifyContent: "center", position: "relative", overflow: "hidden" }}>
+              <div style={{ fontSize: 120, opacity: 0.6 }}>🔧</div>
+              <div style={{ position: "absolute", bottom: 20, right: 20, background: "#047857", color: "#fff", padding: "6px 14px", borderRadius: 20, fontSize: 12, fontWeight: 700 }}>Accessories Range</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Full Width Promo Banner ── */}
+      <section style={{ background: "linear-gradient(120deg, #0f172a 0%, #0057a8 50%, #0284c7 100%)", padding: "56px 0", position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", right: -80, top: "50%", transform: "translateY(-50%)", fontSize: 200, opacity: 0.06, pointerEvents: "none" }}>💧</div>
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 40, alignItems: "center" }}>
+          <div>
+            <div style={{ color: "#7dd3fc", fontSize: 12, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", marginBottom: 14 }}>Limited Time Offer</div>
+            <h2 style={{ fontSize: 38, fontWeight: 900, color: "#fff", lineHeight: 1.2, marginBottom: 16 }}>
+              Get Pure Water<br />
+              <span style={{ color: "#7dd3fc" }}>Delivered to Your Door</span>
+            </h2>
+            <p style={{ color: "rgba(255,255,255,0.75)", fontSize: 16, lineHeight: 1.7, marginBottom: 28 }}>
+              Order any RO system today and get <strong style={{ color: "#fff" }}>free installation</strong> by our certified technicians. Serving Rahim Yar Khan and surrounding areas.
+            </p>
+            <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+              <Link href="/shop" style={{ background: "#fff", color: "#0057a8", padding: "13px 30px", borderRadius: 8, fontWeight: 800, fontSize: 15, textDecoration: "none" }}>
+                Order Now →
+              </Link>
+              <a href="https://wa.me/923294879030" target="_blank" rel="noreferrer"
+                style={{ background: "#25D366", color: "#fff", padding: "13px 24px", borderRadius: 8, fontWeight: 700, fontSize: 15, textDecoration: "none" }}>
+                💬 WhatsApp Order
+              </a>
+            </div>
+          </div>
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <div style={{ background: "rgba(255,255,255,0.1)", backdropFilter: "blur(8px)", border: "1px solid rgba(255,255,255,0.2)", borderRadius: 20, padding: "32px 36px", textAlign: "center" }}>
+              <div style={{ fontSize: 64, marginBottom: 16 }}>🚚</div>
+              <div style={{ color: "#fff", fontWeight: 800, fontSize: 20, marginBottom: 8 }}>Free Delivery</div>
+              <div style={{ color: "rgba(255,255,255,0.7)", fontSize: 14 }}>Across Pakistan</div>
+              <div style={{ borderTop: "1px solid rgba(255,255,255,0.15)", marginTop: 20, paddingTop: 20 }}>
+                <div style={{ fontSize: 48, marginBottom: 10 }}>🔧</div>
+                <div style={{ color: "#fff", fontWeight: 800, fontSize: 20, marginBottom: 8 }}>Free Installation</div>
+                <div style={{ color: "rgba(255,255,255,0.7)", fontSize: 14 }}>By Expert Technicians</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── High Quality Material Section ── */}
+      <section style={{ padding: "72px 0", background: "#fff", borderTop: "1px solid #e8f0fe" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px" }}>
+          <div style={{ textAlign: "center", marginBottom: 52 }}>
+            <p style={{ color: "#0057a8", fontWeight: 700, fontSize: 13, letterSpacing: 3, textTransform: "uppercase", marginBottom: 12 }}>Our Commitment</p>
+            <h2 style={{ fontSize: 36, fontWeight: 900, color: "#1a1a2e", marginBottom: 14 }}>High Quality Material</h2>
+            <p style={{ color: "#64748b", fontSize: 15, maxWidth: 560, margin: "0 auto", lineHeight: 1.7 }}>
+              Every AQUA R.O Filter product is built with premium food-grade materials, tested for durability and certified safe for drinking water use.
+            </p>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 24 }}>
+            {[
+              { icon: "🏅", title: "Food Grade Materials", desc: "All components are made from certified food-safe, BPA-free materials that meet international drinking water standards.", color: "#0057a8", bg: "#eff6ff" },
+              { icon: "⚗️", title: "Advanced Filtration", desc: "Multi-stage filtration technology removes 99.9% of contaminants including bacteria, heavy metals, chlorine and TDS.", color: "#047857", bg: "#f0fdf4" },
+              { icon: "🔬", title: "Lab Tested & Certified", desc: "Every filter is tested in our quality lab before dispatch to ensure consistent performance and purity standards.", color: "#7c3aed", bg: "#faf5ff" },
+              { icon: "⚡", title: "Long Filter Life", desc: "Our cartridges and membranes are engineered for extended lifespan, reducing replacement frequency and cost.", color: "#b45309", bg: "#fffbeb" },
+              { icon: "🌊", title: "High Flow Rate", desc: "Optimized water flow systems ensure you get fresh, filtered water quickly without pressure drops.", color: "#0e7490", bg: "#ecfeff" },
+              { icon: "🛡️", title: "2-Year Warranty", desc: "All our RO systems come with a 2-year manufacturer warranty and lifetime after-sale service support.", color: "#be123c", bg: "#fff1f2" },
+            ].map(f => (
+              <div key={f.title} style={{ background: f.bg, borderRadius: 16, padding: "28px 24px", border: `1px solid ${f.bg}`, transition: "all 0.3s" }}
+                onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.boxShadow = "0 12px 32px rgba(0,0,0,0.08)"; }}
+                onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "none"; }}>
+                <div style={{ fontSize: 36, marginBottom: 14 }}>{f.icon}</div>
+                <h3 style={{ color: f.color, fontWeight: 800, fontSize: 16, marginBottom: 10 }}>{f.title}</h3>
+                <p style={{ color: "#64748b", fontSize: 14, lineHeight: 1.6 }}>{f.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── Why Choose Us ── */}
       <section style={{ padding: "64px 0", background: "#f7f9fc" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 60, alignItems: "center" }}>

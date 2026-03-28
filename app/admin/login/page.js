@@ -20,75 +20,75 @@ export default function AdminLoginPage() {
     try {
       await adminLogin(form.id, form.password);
       router.push("/admin");
-    } catch (err) {
-      setError(err.message);
-    } finally { setLoading(false); }
+    } catch (err) { setError(err.message); }
+    finally { setLoading(false); }
   };
 
-  const inputStyle = { width: "100%", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(0,180,255,0.2)", borderRadius: 10, padding: "12px 16px", color: "#fff", fontSize: 14, outline: "none", marginTop: 6, transition: "border 0.2s" };
+  const inputStyle = { width: "100%", background: "#f8fafc", border: "2px solid #e2e8f0", borderRadius: 10, padding: "12px 16px", color: "#1a1a2e", fontSize: 14, outline: "none", marginTop: 6, transition: "border 0.2s" };
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg, #020810 0%, #060f20 60%, #0a1830 100%)", padding: "40px 16px", position: "relative", overflow: "hidden" }}>
-      <div style={{ position: "absolute", width: 600, height: 600, borderRadius: "50%", background: "radial-gradient(circle, rgba(0,180,255,0.04) 0%, transparent 70%)", top: "50%", left: "50%", transform: "translate(-50%,-50%)", pointerEvents: "none" }} />
-
-      <div style={{ width: "100%", maxWidth: 420, position: "relative", zIndex: 1 }}>
+    <div style={{ minHeight: "100vh", background: "linear-gradient(135deg, #f0f7ff 0%, #e8f4ff 100%)", display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 16px" }}>
+      <div style={{ width: "100%", maxWidth: 440 }}>
+        {/* Logo */}
         <div style={{ textAlign: "center", marginBottom: 32 }}>
-          <div style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
-            <img src="/logo.jpeg" alt="AQUA R.O Filter" style={{ width: 48, height: 48, objectFit: "contain", borderRadius: 10 }} />
-            <div>
-              <div style={{ color: "#fff", fontWeight: 800, fontSize: 22, fontFamily: "Georgia, serif" }}>AQUA R.O Filter</div>
-              <div style={{ color: "#00b4ff", fontSize: 10, letterSpacing: 3, textTransform: "uppercase" }}>Admin Portal</div>
-            </div>
-          </div>
+          <img src="/logo.jpeg" alt="AQUA R.O Filter" style={{ width: 70, height: 70, objectFit: "contain", borderRadius: 16, marginBottom: 12, boxShadow: "0 4px 20px rgba(0,87,168,0.15)" }} />
+          <div style={{ color: "#0057a8", fontWeight: 900, fontSize: 22 }}>AQUA R.O Filter</div>
+          <div style={{ color: "#94a3b8", fontSize: 12, letterSpacing: 2, textTransform: "uppercase", marginTop: 4 }}>Admin Portal</div>
         </div>
 
-        <div style={{ background: "linear-gradient(145deg, #0a1e35, #070f22)", border: "1px solid rgba(0,180,255,0.15)", borderRadius: 20, padding: 36, boxShadow: "0 24px 60px rgba(0,0,0,0.6)" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10, background: "rgba(0,180,255,0.06)", border: "1px solid rgba(0,180,255,0.15)", borderRadius: 10, padding: "10px 14px", marginBottom: 24 }}>
+        {/* Card */}
+        <div style={{ background: "#fff", borderRadius: 20, padding: 36, boxShadow: "0 8px 40px rgba(0,87,168,0.12)", border: "1px solid #e8f0fe" }}>
+          {/* Restricted badge */}
+          <div style={{ display: "flex", alignItems: "center", gap: 10, background: "#fff7ed", border: "1px solid #fed7aa", borderRadius: 10, padding: "10px 14px", marginBottom: 24 }}>
             <span style={{ fontSize: 20 }}>🔐</span>
             <div>
-              <div style={{ color: "#fff", fontWeight: 700, fontSize: 13 }}>Restricted Access</div>
-              <div style={{ color: "#64748b", fontSize: 11 }}>Authorized personnel only</div>
+              <div style={{ color: "#c2410c", fontWeight: 700, fontSize: 13 }}>Restricted Access</div>
+              <div style={{ color: "#94a3b8", fontSize: 11 }}>Authorized personnel only</div>
             </div>
           </div>
 
-          <h2 style={{ fontWeight: 800, fontSize: 22, marginBottom: 6, fontFamily: "Georgia, serif" }}>Admin Sign In</h2>
-          <p style={{ color: "#64748b", fontSize: 13, marginBottom: 24 }}>Enter your admin credentials to continue.</p>
+          <h2 style={{ fontWeight: 900, fontSize: 22, color: "#1a1a2e", marginBottom: 6 }}>Admin Sign In</h2>
+          <p style={{ color: "#64748b", fontSize: 13, marginBottom: 24 }}>Enter your credentials to access the dashboard.</p>
 
-          {error && <div style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)", color: "#ef4444", padding: "10px 14px", borderRadius: 8, fontSize: 13, marginBottom: 16 }}>⚠ {error}</div>}
+          {error && (
+            <div style={{ background: "#fff5f5", border: "1px solid #fecaca", color: "#dc2626", padding: "10px 14px", borderRadius: 8, fontSize: 13, marginBottom: 16 }}>
+              ⚠ {error}
+            </div>
+          )}
 
           <form onSubmit={handleSubmit}>
-            <label style={{ color: "#94a3b8", fontSize: 13 }}>Admin ID</label>
-            <input style={inputStyle} type="text" name="id" value={form.id} onChange={handle} required placeholder="Enter admin ID" autoComplete="off"
-              onFocus={e => e.target.style.border = "1px solid rgba(0,180,255,0.5)"}
-              onBlur={e => e.target.style.border = "1px solid rgba(0,180,255,0.2)"} />
+            <label style={{ color: "#475569", fontSize: 13, fontWeight: 600 }}>Admin ID</label>
+            <input style={inputStyle} type="text" name="id" value={form.id} onChange={handle} required placeholder="Enter admin ID"
+              onFocus={e => e.target.style.border = "2px solid #0057a8"}
+              onBlur={e => e.target.style.border = "2px solid #e2e8f0"} />
 
             <div style={{ marginTop: 16, position: "relative" }}>
-              <label style={{ color: "#94a3b8", fontSize: 13 }}>Password</label>
+              <label style={{ color: "#475569", fontSize: 13, fontWeight: 600 }}>Password</label>
               <input style={inputStyle} type={showPassword ? "text" : "password"} name="password" value={form.password} onChange={handle} required placeholder="••••••••"
-                onFocus={e => e.target.style.border = "1px solid rgba(0,180,255,0.5)"}
-                onBlur={e => e.target.style.border = "1px solid rgba(0,180,255,0.2)"} />
+                onFocus={e => e.target.style.border = "2px solid #0057a8"}
+                onBlur={e => e.target.style.border = "2px solid #e2e8f0"} />
               <button type="button" onClick={() => setShowPassword(!showPassword)}
-                style={{ position: "absolute", right: 14, bottom: 12, background: "none", border: "none", color: "#64748b", cursor: "pointer", fontSize: 14 }}>
+                style={{ position: "absolute", right: 14, bottom: 12, background: "none", border: "none", color: "#94a3b8", cursor: "pointer", fontSize: 14 }}>
                 {showPassword ? "🙈" : "👁"}
               </button>
             </div>
 
             <button type="submit" disabled={loading}
-              style={{ width: "100%", background: loading ? "rgba(0,180,255,0.4)" : "linear-gradient(135deg,#00b4ff,#0066cc)", color: "#fff", border: "none", padding: "13px 0", borderRadius: 11, fontWeight: 700, fontSize: 15, cursor: loading ? "not-allowed" : "pointer", marginTop: 22, display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
+              style={{ width: "100%", background: loading ? "#93c5fd" : "#0057a8", color: "#fff", border: "none", padding: "13px 0", borderRadius: 10, fontWeight: 700, fontSize: 15, cursor: loading ? "not-allowed" : "pointer", marginTop: 22, transition: "background 0.2s" }}>
               {loading ? "Verifying..." : "Sign In to Admin Panel →"}
             </button>
           </form>
 
-          <div style={{ marginTop: 20, padding: "12px 14px", background: "rgba(255,255,255,0.02)", borderRadius: 8, border: "1px solid rgba(255,255,255,0.05)" }}>
-            <p style={{ color: "#475569", fontSize: 11, textAlign: "center" }}>
-              Credentials are stored in <code style={{ color: "#64748b", background: "rgba(255,255,255,0.05)", padding: "1px 5px", borderRadius: 3 }}>.env.local</code>
+          <div style={{ marginTop: 20, padding: "10px 14px", background: "#f8fafc", borderRadius: 8, border: "1px solid #e2e8f0" }}>
+            <p style={{ color: "#94a3b8", fontSize: 11, textAlign: "center" }}>
+              Credentials stored in <code style={{ background: "#e8f0fe", color: "#0057a8", padding: "1px 5px", borderRadius: 3 }}>.env.local</code>
             </p>
           </div>
         </div>
 
-        <p style={{ textAlign: "center", color: "#334155", fontSize: 12, marginTop: 20 }}>
+        <p style={{ textAlign: "center", color: "#94a3b8", fontSize: 12, marginTop: 20 }}>
           Not admin?{" "}
-          <Link href="/login" style={{ color: "#00b4ff", textDecoration: "none", fontWeight: 600 }}>Customer Login</Link>
+          <Link href="/login" style={{ color: "#0057a8", textDecoration: "none", fontWeight: 600 }}>Customer Login</Link>
         </p>
       </div>
     </div>
