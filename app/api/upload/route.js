@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-import { writeFile, mkdir } from "fs/promises";
-import { join } from "path";
+import { v2 as cloudinary } from "cloudinary";
 import jwt from "jsonwebtoken";
 
 function verifyAdmin(req) {
@@ -31,6 +30,14 @@ export async function POST(req) {
     if (file.size > 5 * 1024 * 1024)
       return NextResponse.json({ error: "File size must be less than 5MB." }, { status: 400 });
 
+    // Configure Cloudinary
+    cloudinary.config({
+      cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+      api_key: process.env.CLOUDINARY_API_KEY,
+      api_secret: process.env.CLOUDINARY_API_SECRET,
+    });
+
+    // Convert file to buffer
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
@@ -38,22 +45,28 @@ export async function POST(req) {
     const timestamp = Date.now();
     const random = Math.random().toString(36).substring(2, 8);
     const extension = file.name.split('.').pop();
-    const filename = `${timestamp}_${random}.${extension}`;
+    const publicId = `aqua-tai-${timestamp}_${random}`;
 
-    // Ensure upload directory exists
-    const uploadDir = join(process.cwd(), "public", "uploads");
-    try {
-      await mkdir(uploadDir, { recursive: true });
-    } catch {}
+    // Upload to Cloudinary
+    const result = await new Promise((resolve, reject) => {
+      cloudinary.uploader.upload_stream(
+        {
+          resource_type: 'auto',
+          public_id: publicId,
+          folder: 'aqua-tai/products',
+        },
+        (error, result) => {
+          if (error) reject(error);
+          else resolve(result);
+        }
+      ).end(buffer);
+    });
 
-    // Save file locally
-    const filepath = join(uploadDir, filename);
-    await writeFile(filepath, buffer);
-
-    // Return the public URL
-    const url = `/uploads/${filename}`;
+    // Return Cloudinary URL
+    const url = result.secure_url;
+    const filename = `${publicId}.${extension}`;
     
-    console.log("File saved locally:", url);
+    console.log("File uploaded to Cloudinary:", url);
     return NextResponse.json({ url, filename });
 
   } catch (err) {
