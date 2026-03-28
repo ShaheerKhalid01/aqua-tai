@@ -5,7 +5,7 @@ import { OrdersProvider } from "@/context/OrdersContext";
 import { ProductsProvider } from "@/context/ProductsContext";
 
 export const metadata = {
-  title: "AQUA R.O Filter - Pure Water Solutions",
+  title: "Aqua RO Water Filter - Pure Water Solutions",
   description: "Pakistan's leading water filtration store. Shop RO systems, domestic filters, whole house softeners and more.",
 };
 

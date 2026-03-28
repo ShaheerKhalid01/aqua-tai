@@ -37,9 +37,9 @@ export default function Navbar() {
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px", height: 68, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         {/* Logo */}
         <Link href="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
-          <img src="/logo.jpeg" alt="AQUA R.O Filter" style={{ width: 46, height: 46, objectFit: "contain", borderRadius: 8 }} />
+          <img src="/logo.jpeg" alt="Aqua RO Water Filter" style={{ width: 46, height: 46, objectFit: "contain", borderRadius: 8 }} />
           <div>
-            <div style={{ color: "#0057a8", fontWeight: 900, fontSize: 18, letterSpacing: 0.5, lineHeight: 1.1 }}>AQUA R.O Filter</div>
+            <div style={{ color: "#0057a8", fontWeight: 900, fontSize: 18, letterSpacing: 0.5, lineHeight: 1.1 }}>Aqua RO Water Filter</div>
             <div style={{ color: "#64748b", fontSize: 10, letterSpacing: 2, textTransform: "uppercase" }}>Pure Water Solutions</div>
           </div>
         </Link>

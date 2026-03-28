@@ -9,9 +9,9 @@ export default function Footer() {
           {/* Brand */}
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
-              <img src="/logo.jpeg" alt="AQUA R.O Filter" style={{ width: 42, height: 42, objectFit: "contain", borderRadius: 8 }} />
+              <img src="/logo.jpeg" alt="Aqua RO Water Filter" style={{ width: 42, height: 42, objectFit: "contain", borderRadius: 8 }} />
               <div>
-                <div style={{ color: "#fff", fontWeight: 900, fontSize: 16 }}>AQUA R.O Filter</div>
+                <div style={{ color: "#fff", fontWeight: 900, fontSize: 16 }}>Aqua RO Water Filter</div>
                 <div style={{ color: "#94a3b8", fontSize: 10, letterSpacing: 2 }}>PURE WATER SOLUTIONS</div>
               </div>
             </div>
@@ -62,7 +62,7 @@ export default function Footer() {
         </div>
 
         <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)", paddingTop: 24, display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 10 }}>
-          <p style={{ color: "#475569", fontSize: 13 }}>© {new Date().getFullYear()} AQUA R.O Filter. All rights reserved.</p>
+          <p style={{ color: "#475569", fontSize: 13 }}>© {new Date().getFullYear()} Aqua RO Water Filter. All rights reserved.</p>
           <p style={{ color: "#475569", fontSize: 13 }}>🇵🇰 Made with ❤️ in Pakistan</p>
         </div>
       </div>

@@ -58,7 +58,7 @@ export default function AdminLayout({ children }) {
                 <div style={{ width: 36, height: 36, background: "#0057a8", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontWeight: 800, fontSize: 16 }}>A</div>
                 <div>
                   <div style={{ color: "#0057a8", fontWeight: 700, fontSize: 13 }}>Administrator</div>
-                  <div style={{ color: "#64748b", fontSize: 11 }}>AQUA R.O Filter</div>
+                  <div style={{ color: "#64748b", fontSize: 11 }}>Aqua RO Water Filter</div>
                 </div>
               </div>
             </div>
