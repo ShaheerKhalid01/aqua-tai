@@ -19,7 +19,7 @@ export default function CartPage() {
     <div style={{ minHeight: "100vh", paddingBottom: 80 }}>
       <div style={{ background: "linear-gradient(135deg, #0a2540, #0d3060)", padding: "40px 0", borderBottom: "1px solid rgba(0,180,255,0.15)", marginBottom: 40 }}>
         <div className="max-w-7xl mx-auto px-4">
-          <h1 style={{ fontSize: 40, fontWeight: 900, fontFamily: "Georgia, serif" }}>Shopping Cart</h1>
+          <h1 style={{ fontSize: 40, fontWeight: 900, fontFamily: "Georgia, serif", color: "#00b4ff" }}>Shopping Cart</h1>
           <p style={{ color: "#94a3b8", marginTop: 8 }}>{items.length} item{items.length > 1 ? "s" : ""} in your cart</p>
         </div>
       </div>
@@ -32,7 +32,7 @@ export default function CartPage() {
               <div key={item.id} style={{ background: "linear-gradient(145deg, #0d2545, #0a1e35)", border: "1px solid rgba(0,180,255,0.15)", borderRadius: 16, padding: 24, marginBottom: 16, display: "flex", gap: 20, alignItems: "center" }}>
                 <div style={{ width: 80, height: 80, background: "linear-gradient(135deg, #0a2540, #1a3a6c)", borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 36, flexShrink: 0 }}>💧</div>
                 <div style={{ flex: 1 }}>
-                  <h3 style={{ fontWeight: 700, marginBottom: 6 }}>{item.name}</h3>
+                  <h3 style={{ fontWeight: 700, marginBottom: 6, color: "#00b4ff" }}>{item.name}</h3>
                   <p style={{ color: "#00b4ff", fontWeight: 700, fontSize: 18 }}>{formatPrice(item.price)}</p>
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: 0, background: "rgba(255,255,255,0.05)", border: "1px solid rgba(0,180,255,0.2)", borderRadius: 10, overflow: "hidden" }}>
@@ -51,10 +51,10 @@ export default function CartPage() {
           {/* Summary */}
           <div>
             <div style={{ background: "linear-gradient(145deg, #0d2545, #0a1e35)", border: "1px solid rgba(0,180,255,0.2)", borderRadius: 16, padding: 28, position: "sticky", top: 90 }}>
-              <h2 style={{ fontSize: 22, fontWeight: 800, marginBottom: 24 }}>Order Summary</h2>
+              <h2 style={{ fontSize: 22, fontWeight: 800, color: "#00b4ff", marginBottom: 24 }}>Order Summary</h2>
               {items.map((item) => (
                 <div key={item.id} style={{ display: "flex", justifyContent: "space-between", marginBottom: 12, fontSize: 14 }}>
-                  <span style={{ color: "#94a3b8" }}>{item.name} × {item.qty}</span>
+                  <span style={{ color: "#00b4ff" }}>{item.name} × {item.qty}</span>
                   <span>{formatPrice(item.price * item.qty)}</span>
                 </div>
               ))}

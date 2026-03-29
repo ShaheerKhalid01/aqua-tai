@@ -38,13 +38,13 @@ export default function CheckoutPage() {
   if (placed) return (
     <div style={{ minHeight: "80vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", padding: "0 16px" }}>
       <div style={{ fontSize: 80, marginBottom: 20 }}>🎉</div>
-      <h2 style={{ fontSize: 36, fontWeight: 900, fontFamily: "Georgia, serif", marginBottom: 12 }}>Order Placed!</h2>
+      <h2 style={{ fontSize: 36, fontWeight: 900, fontFamily: "Georgia, serif", color: "#00b4ff", marginBottom: 12 }}>Order Placed!</h2>
       <div style={{ background: "rgba(0,180,255,0.08)", border: "1px solid rgba(0,180,255,0.2)", borderRadius: 12, padding: "12px 28px", marginBottom: 16, display: "inline-block" }}>
-        <span style={{ color: "#64748b", fontSize: 13 }}>Order ID: </span>
+        <span style={{ color: "#00b4ff", fontSize: 13 }}>Order ID: </span>
         <span style={{ color: "#00b4ff", fontWeight: 800, fontSize: 16 }}>{orderId}</span>
       </div>
-      <p style={{ color: "#94a3b8", fontSize: 18, marginBottom: 8 }}>Thank you, {form.name}!</p>
-      <p style={{ color: "#64748b", marginBottom: 32 }}>We'll contact you at {form.phone} to confirm delivery.</p>
+      <p style={{ color: "#00b4ff", fontSize: 18, marginBottom: 8 }}>Thank you, {form.name}!</p>
+      <p style={{ color: "#00b4ff", marginBottom: 32 }}>We'll contact you at {form.phone} to confirm delivery.</p>
       <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center" }}>
         <Link href="/orders" style={{ background: "rgba(0,180,255,0.1)", border: "1px solid rgba(0,180,255,0.3)", color: "#00b4ff", padding: "12px 24px", borderRadius: 12, textDecoration: "none", fontWeight: 700 }}>📦 View My Orders</Link>
         <Link href="/" style={{ background: "linear-gradient(135deg, #00b4ff, #0066cc)", color: "#fff", padding: "12px 24px", borderRadius: 12, textDecoration: "none", fontWeight: 700 }}>Continue Shopping</Link>
@@ -53,13 +53,13 @@ export default function CheckoutPage() {
   );
 
   const inputStyle = { width: "100%", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(0,180,255,0.2)", borderRadius: 10, padding: "12px 16px", color: "#fff", fontSize: 14, outline: "none", marginTop: 6 };
-  const labelStyle = { color: "#94a3b8", fontSize: 13, display: "block", marginTop: 16 };
+  const labelStyle = { color: "#00b4ff", fontSize: 13, display: "block", marginTop: 16 };
 
   return (
     <div style={{ minHeight: "100vh", paddingBottom: 80 }}>
       <div style={{ background: "linear-gradient(135deg, #0a2540, #0d3060)", padding: "40px 0", borderBottom: "1px solid rgba(0,180,255,0.15)", marginBottom: 40 }}>
         <div className="max-w-7xl mx-auto px-4">
-          <h1 style={{ fontSize: 40, fontWeight: 900, fontFamily: "Georgia, serif" }}>Checkout</h1>
+          <h1 style={{ fontSize: 40, fontWeight: 900, fontFamily: "Georgia, serif", color: "#00b4ff" }}>Checkout</h1>
         </div>
       </div>
 
@@ -68,7 +68,7 @@ export default function CheckoutPage() {
           <div style={{ display: "grid", gridTemplateColumns: "1fr 380px", gap: 32 }}>
             <div>
               <div style={{ background: "linear-gradient(145deg, #0d2545, #0a1e35)", border: "1px solid rgba(0,180,255,0.15)", borderRadius: 16, padding: 28, marginBottom: 24 }}>
-                <h2 style={{ fontWeight: 800, fontSize: 20, marginBottom: 4 }}>Delivery Information</h2>
+                <h2 style={{ fontWeight: 800, fontSize: 20, color: "#00b4ff", marginBottom: 4 }}>Delivery Information</h2>
 
                 <label style={labelStyle}>Full Name *</label>
                 <input style={inputStyle} name="name" value={form.name} onChange={handleChange} required placeholder="Enter your full name" />
@@ -94,12 +94,15 @@ export default function CheckoutPage() {
               </div>
 
               <div style={{ background: "linear-gradient(145deg, #0d2545, #0a1e35)", border: "1px solid rgba(0,180,255,0.15)", borderRadius: 16, padding: 28 }}>
-                <h2 style={{ fontWeight: 800, fontSize: 20, marginBottom: 20 }}>Payment Method</h2>
-                {[["cod", "💵", "Cash on Delivery", "Pay when your order arrives"], ["bank", "🏦", "Bank Transfer", "Transfer to our account and share receipt"]].map(([val, icon, title, desc]) => (
+                <h2 style={{ fontWeight: 800, fontSize: 20, color: "#00b4ff", marginBottom: 20 }}>Payment Method</h2>
+                {[
+                  ["cod", "💵", "Cash on Delivery", "Pay when your order arrives"],
+                  ["bank", "🏦", "Bank Transfer", "Transfer to our account and share receipt"]
+                ].map(([val, icon, title, desc]) => (
                   <label key={val} style={{ display: "flex", gap: 16, padding: "16px", background: form.payment === val ? "rgba(0,180,255,0.08)" : "rgba(255,255,255,0.02)", border: `1px solid ${form.payment === val ? "rgba(0,180,255,0.4)" : "rgba(255,255,255,0.08)"}`, borderRadius: 12, cursor: "pointer", marginBottom: 12 }}>
                     <input type="radio" name="payment" value={val} checked={form.payment === val} onChange={handleChange} style={{ marginTop: 4 }} />
                     <span style={{ fontSize: 24 }}>{icon}</span>
-                    <div><div style={{ fontWeight: 700, marginBottom: 2 }}>{title}</div><div style={{ color: "#64748b", fontSize: 13 }}>{desc}</div></div>
+                    <div><div style={{ fontWeight: 700, marginBottom: 2, color: "#00b4ff" }}>{title}</div><div style={{ color: "#64748b", fontSize: 13 }}>{desc}</div></div>
                   </label>
                 ))}
               </div>
@@ -107,10 +110,10 @@ export default function CheckoutPage() {
 
             <div>
               <div style={{ background: "linear-gradient(145deg, #0d2545, #0a1e35)", border: "1px solid rgba(0,180,255,0.2)", borderRadius: 16, padding: 28, position: "sticky", top: 90 }}>
-                <h2 style={{ fontSize: 20, fontWeight: 800, marginBottom: 20 }}>Your Order</h2>
+                <h2 style={{ fontSize: 20, fontWeight: 800, color: "#00b4ff", marginBottom: 20 }}>Your Order</h2>
                 {items.map((item) => (
                   <div key={item.id} style={{ display: "flex", justifyContent: "space-between", marginBottom: 12, fontSize: 14 }}>
-                    <span style={{ color: "#94a3b8" }}>{item.name} × {item.qty}</span>
+                    <span style={{ color: "#00b4ff" }}>{item.name} × {item.qty}</span>
                     <span>{formatPrice(item.price * item.qty)}</span>
                   </div>
                 ))}

@@ -9,11 +9,11 @@ import { formatPrice } from "@/lib/utils";
 const MAX_PRICE = 150000;
 
 const CATEGORY_ICONS = {
-  "Reverse Osmosis System": "🔬",
-  "Cartridges & Accessories": "🔧",
-  "Whole House Water Softener": "🏠",
-  "Domestic Water Filter": "🚰",
-  "Commercial Water Plants": "🏭",
+  "Reverse Osmosis System": "",
+  "Cartridges & Accessories": "",
+  "Whole House Water Softener": "",
+  "Domestic Water Filter": "",
+  "Commercial Water Plants": "",
 };
 
 function FilterTag({ label, onRemove }) {
@@ -139,7 +139,7 @@ function ShopContent() {
           <aside>
             <div style={{ background: "linear-gradient(145deg, #0d2545, #0a1e35)", border: "1px solid rgba(0,180,255,0.12)", borderRadius: 16, padding: 22, position: "sticky", top: 80 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 22 }}>
-                <span style={{ fontWeight: 800, fontSize: 15 }}>Filters</span>
+                <span style={{ fontWeight: 800, fontSize: 15, color: "#00a8ff" }}>Filters</span>
                 {hasActiveFilters && <button onClick={resetFilters} style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.25)", color: "#ef4444", padding: "3px 10px", borderRadius: 6, cursor: "pointer", fontSize: 11, fontWeight: 600 }}>Reset All</button>}
               </div>
 

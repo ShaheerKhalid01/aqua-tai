@@ -59,7 +59,7 @@ export default function MyOrdersPage() {
       <div style={{ background: "linear-gradient(135deg, #0a2540, #0d3060)", padding: "50px 0 36px", borderBottom: "1px solid rgba(0,180,255,0.15)" }}>
         <div className="max-w-4xl mx-auto px-4">
           <div style={{ color: "#00b4ff", fontSize: 12, letterSpacing: 3, textTransform: "uppercase", marginBottom: 8 }}>Account</div>
-          <h1 style={{ fontSize: 38, fontWeight: 900, fontFamily: "Georgia, serif", marginBottom: 8 }}>My Orders</h1>
+          <h1 style={{ fontSize: 38, fontWeight: 900, fontFamily: "Georgia, serif", color: "#00b4ff", marginBottom: 8 }}>My Orders</h1>
           <p style={{ color: "#94a3b8" }}>Welcome, {state.clientUser.name}</p>
         </div>
       </div>
