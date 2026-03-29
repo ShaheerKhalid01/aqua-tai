@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { v2 as cloudinary } from "cloudinary";
 import jwt from "jsonwebtoken";
+import { securityConfig, addSecurityHeaders } from "@/lib/security";
 
 function verifyAdmin(req) {
   const auth = req.headers.get("authorization");
@@ -12,23 +13,38 @@ function verifyAdmin(req) {
 }
 
 export async function POST(req) {
-  if (!verifyAdmin(req))
-    return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
+  if (!verifyAdmin(req)) {
+    return addSecurityHeaders(
+      NextResponse.json({ error: "Unauthorized." }, { status: 401 })
+    );
+  }
 
   try {
     const formData = await req.formData();
     const file = formData.get("image");
-    if (!file)
-      return NextResponse.json({ error: "No image provided." }, { status: 400 });
+    
+    if (!file) {
+      return addSecurityHeaders(
+        NextResponse.json({ error: "No image provided." }, { status: 400 })
+      );
+    }
 
-    // Validate file type
-    const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
-    if (!allowedTypes.includes(file.type))
-      return NextResponse.json({ error: "Only JPEG, PNG, WebP, and GIF images are allowed." }, { status: 400 });
+    // Enhanced file validation
+    if (!securityConfig.ALLOWED_FILE_TYPES.includes(file.type)) {
+      return addSecurityHeaders(
+        NextResponse.json({ 
+          error: "Invalid file type. Only JPEG, PNG, WebP, and GIF images are allowed." 
+        }, { status: 400 })
+      );
+    }
 
-    // Validate file size (max 5MB)
-    if (file.size > 5 * 1024 * 1024)
-      return NextResponse.json({ error: "File size must be less than 5MB." }, { status: 400 });
+    if (file.size > securityConfig.MAX_FILE_SIZE) {
+      return addSecurityHeaders(
+        NextResponse.json({ 
+          error: "File size must be less than 5MB." 
+        }, { status: 400 })
+      );
+    }
 
     // Configure Cloudinary
     cloudinary.config({
@@ -41,17 +57,22 @@ export async function POST(req) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // Create unique filename
+    // Create secure filename
     const timestamp = Date.now();
     const random = Math.random().toString(36).substring(2, 8);
     const extension = file.name.split('.').pop();
+    const sanitizedName = file.name.replace(/[^a-zA-Z0-9.]/g, '');
 
-    // Upload to Cloudinary
+    // Upload to Cloudinary with enhanced security
     const result = await new Promise((resolve, reject) => {
       cloudinary.uploader.upload_stream(
         {
           resource_type: 'auto',
           folder: 'aqua-tai/products',
+          public_id: `product_${timestamp}_${random}`,
+          format: 'auto',
+          quality: 'auto:good',
+          secure: true,
         },
         (error, result) => {
           if (error) reject(error);
@@ -60,15 +81,23 @@ export async function POST(req) {
       ).end(buffer);
     });
 
-    // Return Cloudinary URL
-    const url = result.secure_url;
-    const filename = result.original_filename;
+    // Return secure response
+    const response = {
+      url: result.secure_url,
+      filename: result.original_filename,
+      publicId: result.public_id,
+      format: result.format,
+      size: result.bytes,
+    };
     
-    console.log("File uploaded to Cloudinary:", url);
-    return NextResponse.json({ url, filename });
+    return addSecurityHeaders(
+      NextResponse.json(response)
+    );
 
   } catch (err) {
-    console.error("Upload error:", err);
-    return NextResponse.json({ error: "Upload failed: " + err.message }, { status: 500 });
+    console.error("Upload error occurred");
+    return addSecurityHeaders(
+      NextResponse.json({ error: "Upload failed" }, { status: 500 })
+    );
   }
 }

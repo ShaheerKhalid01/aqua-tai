@@ -2,40 +2,59 @@ import { NextResponse } from "next/server";
 import { connectDB, findUser } from "@/lib/mongodb";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
+import { trackLoginAttempt, validatePassword, addSecurityHeaders } from "@/lib/security";
 
 export async function POST(req) {
   try {
     await connectDB();
     const { email, password } = await req.json();
 
-    if (!email || !password)
-      return NextResponse.json({ error: "Email and password are required." }, { status: 400 });
+    // Input validation
+    if (!email || !password) {
+      return addSecurityHeaders(
+        NextResponse.json({ error: "Email and password are required." }, { status: 400 })
+      );
+    }
 
     const normalizedEmail = email.toLowerCase().trim();
-    console.log("=== LOGIN DEBUG ===");
-    console.log("Email:", normalizedEmail);
-    console.log("Password length:", password.length);
+
+    // Check rate limiting and login attempts
+    const loginAttempt = trackLoginAttempt(normalizedEmail, false);
+    
+    if (loginAttempt.lockoutUntil > Date.now()) {
+      const remainingTime = Math.ceil((loginAttempt.lockoutUntil - Date.now()) / 60000);
+      return addSecurityHeaders(
+        NextResponse.json({ 
+          error: `Account temporarily locked. Try again in ${remainingTime} minutes.` 
+        }, { status: 429 })
+      );
+    }
 
     const user = await findUser(normalizedEmail);
-    console.log("User found:", user ? "YES" : "NO");
 
-    if (!user)
-      return NextResponse.json({ error: "Invalid email or password." }, { status: 401 });
-
-    console.log("Stored hash:", user.password);
-    console.log("Hash starts with $2:", user.password?.startsWith("$2"));
+    if (!user) {
+      return addSecurityHeaders(
+        NextResponse.json({ error: "Invalid email or password." }, { status: 401 })
+      );
+    }
 
     // If password is not hashed (old localStorage data), reject clearly
     if (!user.password?.startsWith("$2")) {
-      console.log("ERROR: Password not hashed — delete this user and re-register");
-      return NextResponse.json({ error: "Account corrupted. Please register again." }, { status: 401 });
+      return addSecurityHeaders(
+        NextResponse.json({ error: "Account corrupted. Please register again." }, { status: 401 })
+      );
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
-    console.log("Password match:", isMatch);
 
-    if (!isMatch)
-      return NextResponse.json({ error: "Invalid email or password." }, { status: 401 });
+    if (!isMatch) {
+      return addSecurityHeaders(
+        NextResponse.json({ error: "Invalid email or password." }, { status: 401 })
+      );
+    }
+
+    // Track successful login
+    trackLoginAttempt(normalizedEmail, true);
 
     const token = jwt.sign(
       { id: user._id, email: user.email, name: user.name, role: user.role || "client" },
@@ -43,14 +62,19 @@ export async function POST(req) {
       { expiresIn: "7d" }
     );
 
-    return NextResponse.json({
-      message: "Logged in successfully.",
-      token,
-      user: { id: user._id, name: user.name, email: user.email, role: user.role || "client" },
-    });
+    return addSecurityHeaders(
+      NextResponse.json({
+        message: "Logged in successfully.",
+        token,
+        user: { id: user._id, name: user.name, email: user.email, role: user.role || "client" },
+      })
+    );
 
   } catch (err) {
-    console.error("Login error full:", err);
-    return NextResponse.json({ error: "Server error: " + err.message }, { status: 500 });
+    // Don't log sensitive authentication data
+    console.error("Login error occurred");
+    return addSecurityHeaders(
+      NextResponse.json({ error: "Authentication failed" }, { status: 500 })
+    );
   }
 }
