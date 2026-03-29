@@ -79,17 +79,11 @@ export default function AdminLoginPage() {
             </button>
           </form>
 
-          <div style={{ marginTop: 20, padding: "10px 14px", background: "#f8fafc", borderRadius: 8, border: "1px solid #e2e8f0" }}>
-            <p style={{ color: "#94a3b8", fontSize: 11, textAlign: "center" }}>
-              Credentials stored in <code style={{ background: "#e8f0fe", color: "#0057a8", padding: "1px 5px", borderRadius: 3 }}>.env.local</code>
-            </p>
-          </div>
+          <p style={{ textAlign: "center", color: "#94a3b8", fontSize: 12, marginTop: 20 }}>
+            Not admin?{" "}
+            <Link href="/login" style={{ color: "#0057a8", textDecoration: "none", fontWeight: 600 }}>Customer Login</Link>
+          </p>
         </div>
-
-        <p style={{ textAlign: "center", color: "#94a3b8", fontSize: 12, marginTop: 20 }}>
-          Not admin?{" "}
-          <Link href="/login" style={{ color: "#0057a8", textDecoration: "none", fontWeight: 600 }}>Customer Login</Link>
-        </p>
       </div>
     </div>
   );
