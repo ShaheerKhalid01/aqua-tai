@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function Navbar() {
   const { count } = useCart();
@@ -11,13 +11,18 @@ export default function Navbar() {
   const router = useRouter();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const handleLogout = () => { logout(); setDropdownOpen(false); router.push("/"); };
 
   const navLinks = [
     ["Home", "/"],
     ["Shop", "/shop"],
-    ...(state.clientUser ? [["My Orders", "/orders"]] : []),
+    ...(isClient && state.clientUser ? [["My Orders", "/orders"]] : []),
   ];
 
   return (
@@ -67,7 +72,7 @@ export default function Navbar() {
           </Link>
 
           {/* Auth */}
-          {state.clientUser ? (
+          {isClient && state.clientUser ? (
             <div style={{ position: "relative" }}>
               <button onClick={() => setDropdownOpen(!dropdownOpen)}
                 style={{ background: "#0057a8", border: "none", borderRadius: 8, padding: "8px 16px", color: "#fff", cursor: "pointer", fontSize: 14, fontWeight: 600, display: "flex", alignItems: "center", gap: 8 }}>

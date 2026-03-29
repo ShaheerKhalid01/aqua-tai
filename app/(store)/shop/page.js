@@ -6,7 +6,7 @@ import { useCart } from "@/context/CartContext";
 import ProductCard from "@/components/ProductCard";
 import { formatPrice } from "@/lib/utils";
 
-const MAX_PRICE = 100000;
+const MAX_PRICE = 150000;
 
 const CATEGORY_ICONS = {
   "Reverse Osmosis System": "🔬",
@@ -83,18 +83,14 @@ function ShopContent() {
   }, [products]);
 
   const filtered = useMemo(() => {
-    let result = products.filter(p => {
+    return products.filter(p => {
       const matchCat = activeCategory === "All" || p.category === activeCategory;
-      const matchSearch = p.name?.toLowerCase().includes(search.toLowerCase()) || p.category?.toLowerCase().includes(search.toLowerCase()) || p.description?.toLowerCase().includes(search.toLowerCase());
+      const matchSearch = !search || p.name?.toLowerCase().includes(search.toLowerCase()) || p.category?.toLowerCase().includes(search.toLowerCase()) || p.description?.toLowerCase().includes(search.toLowerCase());
       const matchPrice = p.price >= priceRange[0] && p.price <= priceRange[1];
       const matchStock = onlyInStock ? p.stock > 0 : true;
       return matchCat && matchSearch && matchPrice && matchStock;
     });
-    if (sortBy === "price-asc") result = [...result].sort((a, b) => a.price - b.price);
-    else if (sortBy === "price-desc") result = [...result].sort((a, b) => b.price - a.price);
-    else if (sortBy === "rating") result = [...result].sort((a, b) => (b.rating || 0) - (a.rating || 0));
-    return result;
-  }, [products, activeCategory, sortBy, search, priceRange, onlyInStock]);
+  }, [products, activeCategory, search, priceRange, onlyInStock]);
 
   const resetFilters = () => { setActiveCategory("All"); setSortBy("default"); setSearch(""); setPriceRange([0, MAX_PRICE]); setOnlyInStock(false); };
   const hasActiveFilters = activeCategory !== "All" || sortBy !== "default" || search !== "" || priceRange[0] > 0 || priceRange[1] < MAX_PRICE || onlyInStock;

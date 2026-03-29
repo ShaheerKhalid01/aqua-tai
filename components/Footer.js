@@ -18,7 +18,7 @@ export default function Footer() {
             <p style={{ color: "#94a3b8", fontSize: 14, lineHeight: 1.7, marginBottom: 20 }}>
               Rahim Yar Khan's trusted water filtration specialists since 2010. Delivering pure water to homes and businesses across Pakistan.
             </p>
-            <a href="https://wa.me/923294879030" target="_blank" rel="noreferrer"
+            <a href="https://wa.me/923042604217" target="_blank" rel="noreferrer"
               style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "#25D366", color: "#fff", padding: "8px 18px", borderRadius: 8, textDecoration: "none", fontSize: 13, fontWeight: 700 }}>
               💬 Chat on WhatsApp
             </a>

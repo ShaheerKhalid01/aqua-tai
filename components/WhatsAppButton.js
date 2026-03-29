@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 
-const WHATSAPP_NUMBER = "923294879030"; // without + sign
+const WHATSAPP_NUMBER = "923042604217"; // without + sign
 const WHATSAPP_MESSAGE = "Hello! I'm interested in your water filter products. Can you help me?";
 
 export default function WhatsAppButton() {
