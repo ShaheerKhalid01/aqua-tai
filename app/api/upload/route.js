@@ -45,14 +45,12 @@ export async function POST(req) {
     const timestamp = Date.now();
     const random = Math.random().toString(36).substring(2, 8);
     const extension = file.name.split('.').pop();
-    const publicId = `aqua-tai-${timestamp}_${random}`;
 
     // Upload to Cloudinary
     const result = await new Promise((resolve, reject) => {
       cloudinary.uploader.upload_stream(
         {
           resource_type: 'auto',
-          public_id: publicId,
           folder: 'aqua-tai/products',
         },
         (error, result) => {
@@ -64,7 +62,7 @@ export async function POST(req) {
 
     // Return Cloudinary URL
     const url = result.secure_url;
-    const filename = `${publicId}.${extension}`;
+    const filename = result.original_filename;
     
     console.log("File uploaded to Cloudinary:", url);
     return NextResponse.json({ url, filename });
