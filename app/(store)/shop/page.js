@@ -118,7 +118,7 @@ function ShopContent() {
           <div style={{ position: "relative", flex: 1, minWidth: 220 }}>
             <span style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: "#64748b" }}>🔍</span>
             <input type="text" placeholder="Search products..." value={search} onChange={e => setSearch(e.target.value)}
-              style={{ width: "100%", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(0,180,255,0.2)", borderRadius: 10, padding: "11px 16px 11px 40px", color: "#fff", fontSize: 14, outline: "none" }} />
+              style={{ width: "100%", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(0,180,255,0.2)", borderRadius: 10, padding: "11px 16px 11px 40px", color: "#000", fontSize: 14, outline: "none" }} />
             {search && <button onClick={() => setSearch("")} style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", color: "#64748b", cursor: "pointer", fontSize: 18 }}>×</button>}
           </div>
           <select value={sortBy} onChange={e => setSortBy(e.target.value)}
