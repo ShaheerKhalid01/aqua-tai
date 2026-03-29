@@ -130,7 +130,7 @@ export default function ProductPage({ params }) {
                 {product.features.map((f, i) => (
                   <div key={i} style={{ background: "rgba(0,180,255,0.05)", border: "1px solid rgba(0,180,255,0.15)", borderRadius: 12, padding: "14px 18px", display: "flex", alignItems: "center", gap: 10 }}>
                     <span style={{ color: "#10b981" }}>✓</span>
-                    <span style={{ color: "#cbd5e1", fontSize: 14 }}>{f}</span>
+                    <span style={{ color: "#000", fontSize: 14 }}>{f}</span>
                   </div>
                 ))}
               </div>
