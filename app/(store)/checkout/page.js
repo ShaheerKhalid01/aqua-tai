@@ -19,6 +19,13 @@ export default function CheckoutPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Check if user is authenticated
+    if (!authState.clientUser) {
+      alert("Please sign in to place an order.");
+      return;
+    }
+    
     setLoading(true);
     try {
       const order = await addOrder({
@@ -51,6 +58,29 @@ export default function CheckoutPage() {
       </div>
     </div>
   );
+
+  // Show authentication status
+  if (!authState.clientUser) {
+    return (
+      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg, #040d1a 0%, #0a2540 60%, #0d3060 100%)", padding: "40px 16px" }}>
+        <div style={{ textAlign: "center", background: "linear-gradient(145deg, #0d2545, #0a1e35)", border: "1px solid rgba(0,180,255,0.18)", borderRadius: 20, padding: 40, maxWidth: 400 }}>
+          <div style={{ fontSize: 60, marginBottom: 20 }}>🔐</div>
+          <h2 style={{ fontSize: 24, fontWeight: 800, color: "#00b4ff", marginBottom: 12 }}>Sign In Required</h2>
+          <p style={{ color: "#64748b", fontSize: 14, marginBottom: 24, lineHeight: 1.5 }}>
+            Please sign in to your account to place orders and track your purchases.
+          </p>
+          <div style={{ display: "flex", gap: 12, flexDirection: "column" }}>
+            <Link href="/login" style={{ background: "linear-gradient(135deg, #00b4ff, #0066cc)", color: "#fff", padding: "14px 24px", borderRadius: 12, textDecoration: "none", fontWeight: 700, fontSize: 15, textAlign: "center" }}>
+              Sign In →
+            </Link>
+            <Link href="/register" style={{ background: "rgba(0,180,255,0.1)", border: "1px solid rgba(0,180,255,0.3)", color: "#00b4ff", padding: "14px 24px", borderRadius: 12, textDecoration: "none", fontWeight: 700, fontSize: 15, textAlign: "center" }}>
+              Create Account
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const inputStyle = { width: "100%", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(0,180,255,0.2)", borderRadius: 10, padding: "12px 16px", color: "#fff", fontSize: 14, outline: "none", marginTop: 6 };
   const labelStyle = { color: "#00b4ff", fontSize: 13, display: "block", marginTop: 16 };

@@ -71,7 +71,7 @@ export default function LoginPage() {
             ))}
           </div>
 
-          <h2 style={{ fontWeight: 800, fontSize: 22, marginBottom: 6, fontFamily: "Georgia, serif" }}>
+          <h2 style={{ fontWeight: 800, fontSize: 22, marginBottom: 6, fontFamily: "Georgia, serif", color: "#00b4ff" }}>
             {tab === "login" ? "Welcome back" : "Create account"}
           </h2>
           <p style={{ color: "#64748b", fontSize: 13, marginBottom: 24 }}>
@@ -83,9 +83,9 @@ export default function LoginPage() {
 
           {tab === "login" ? (
             <form onSubmit={handleLogin}>
-              <label style={{ color: "#94a3b8", fontSize: 13 }}>Email Address</label>
+              <label style={{ color: "#00b4ff", fontSize: 13 }}>Email Address</label>
               <input style={inputStyle} type="email" name="email" value={form.email} onChange={handle} required placeholder="you@example.com" onFocus={focusIn} onBlur={focusOut} />
-              <label style={{ color: "#94a3b8", fontSize: 13, display: "block", marginTop: 14 }}>Password</label>
+              <label style={{ color: "#00b4ff", fontSize: 13, display: "block", marginTop: 14 }}>Password</label>
               <input style={inputStyle} type="password" name="password" value={form.password} onChange={handle} required placeholder="••••••••" onFocus={focusIn} onBlur={focusOut} />
               <button type="submit" disabled={loading}
                 style={{ width: "100%", background: loading ? "rgba(0,180,255,0.4)" : "linear-gradient(135deg,#00b4ff,#0066cc)", color: "#fff", border: "none", padding: "13px 0", borderRadius: 11, fontWeight: 700, fontSize: 15, cursor: loading ? "not-allowed" : "pointer", marginTop: 22 }}>
@@ -94,13 +94,13 @@ export default function LoginPage() {
             </form>
           ) : (
             <form onSubmit={handleRegister}>
-              <label style={{ color: "#94a3b8", fontSize: 13 }}>Full Name</label>
+              <label style={{ color: "#00b4ff", fontSize: 13 }}>Full Name</label>
               <input style={inputStyle} type="text" name="name" value={form.name} onChange={handle} required placeholder="Your full name" onFocus={focusIn} onBlur={focusOut} />
-              <label style={{ color: "#94a3b8", fontSize: 13, display: "block", marginTop: 14 }}>Email Address</label>
+              <label style={{ color: "#00b4ff", fontSize: 13, display: "block", marginTop: 14 }}>Email Address</label>
               <input style={inputStyle} type="email" name="email" value={form.email} onChange={handle} required placeholder="you@example.com" onFocus={focusIn} onBlur={focusOut} />
-              <label style={{ color: "#94a3b8", fontSize: 13, display: "block", marginTop: 14 }}>Password</label>
+              <label style={{ color: "#00b4ff", fontSize: 13, display: "block", marginTop: 14 }}>Password</label>
               <input style={inputStyle} type="password" name="password" value={form.password} onChange={handle} required placeholder="Min. 6 characters" onFocus={focusIn} onBlur={focusOut} />
-              <label style={{ color: "#94a3b8", fontSize: 13, display: "block", marginTop: 14 }}>Confirm Password</label>
+              <label style={{ color: "#00b4ff", fontSize: 13, display: "block", marginTop: 14 }}>Confirm Password</label>
               <input style={inputStyle} type="password" name="confirmPassword" value={form.confirmPassword} onChange={handle} required placeholder="Re-enter password" onFocus={focusIn} onBlur={focusOut} />
               <button type="submit" disabled={loading}
                 style={{ width: "100%", background: loading ? "rgba(0,180,255,0.4)" : "linear-gradient(135deg,#00b4ff,#0066cc)", color: "#fff", border: "none", padding: "13px 0", borderRadius: 11, fontWeight: 700, fontSize: 15, cursor: loading ? "not-allowed" : "pointer", marginTop: 22 }}>
