@@ -83,25 +83,13 @@ function ShopContent() {
   }, [products]);
 
   const filtered = useMemo(() => {
-    console.log("=== DEBUG: Shop Filtering ====");
-    console.log("Total products:", products.length);
-    console.log("Active category:", activeCategory);
-
     let result = products.filter(p => {
       const matchCat = activeCategory === "All" || p.category === activeCategory;
       const matchSearch = p.name?.toLowerCase().includes(search.toLowerCase()) || p.category?.toLowerCase().includes(search.toLowerCase()) || p.description?.toLowerCase().includes(search.toLowerCase());
       const matchPrice = p.price >= priceRange[0] && p.price <= priceRange[1];
       const matchStock = onlyInStock ? p.stock > 0 : true;
-
-      const matches = matchCat && matchSearch && matchPrice && matchStock;
-      if (p.category === "Commercial Water Plants") {
-        console.log(`Commercial Product: ${p.name}, matches: ${matches}, active: ${p.active}`);
-      }
-      return matches;
+      return matchCat && matchSearch && matchPrice && matchStock;
     });
-
-    console.log("Filtered result count:", result.length);
-
     if (sortBy === "price-asc") result = [...result].sort((a, b) => a.price - b.price);
     else if (sortBy === "price-desc") result = [...result].sort((a, b) => b.price - a.price);
     else if (sortBy === "rating") result = [...result].sort((a, b) => (b.rating || 0) - (a.rating || 0));
