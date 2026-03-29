@@ -46,7 +46,7 @@ function ListCard({ product }) {
       </div>
       <div style={{ flex: 1 }}>
         <div style={{ color: "#00b4ff", fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", marginBottom: 4 }}>{product.category}</div>
-        <div style={{ fontWeight: 700, fontSize: 16, marginBottom: 4 }}>{product.name}</div>
+        <div style={{ fontWeight: 700, fontSize: 16, marginBottom: 4, color: "#00b4ff" }}>{product.name}</div>
         <div style={{ color: "#64748b", fontSize: 13 }}>{product.description?.slice(0, 90)}…</div>
       </div>
       <div style={{ textAlign: "right", flexShrink: 0 }}>
