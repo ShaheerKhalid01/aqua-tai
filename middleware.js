@@ -1,12 +1,14 @@
 import { NextResponse } from 'next/server';
-import { addSecurityHeaders } from '@/lib/security';
+import { getSecurityHeaders } from '@/lib/security';
 
-// Global middleware to add security headers to all API responses
 export function middleware(request) {
   const response = NextResponse.next();
   
   // Add security headers to all responses
-  const headers = addSecurityHeaders(response);
+  const headers = getSecurityHeaders();
+  Object.entries(headers).forEach(([key, value]) => {
+    response.headers.set(key, value);
+  });
   
   // Force HTTPS in production
   if (process.env.NODE_ENV === 'production' && request.headers.get('x-forwarded-proto') !== 'https') {
@@ -17,7 +19,9 @@ export function middleware(request) {
   return response;
 }
 
-// Apply to all API routes
 export const config = {
-  matcher: '/api/:path*',
+  matcher: [
+    '/api/:path*',
+    '/((?!_next/static|_next/image|favicon.ico).*)',
+  ],
 };
