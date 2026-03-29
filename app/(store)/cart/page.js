@@ -36,9 +36,9 @@ export default function CartPage() {
                   <p style={{ color: "#00b4ff", fontWeight: 700, fontSize: 18 }}>{formatPrice(item.price)}</p>
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: 0, background: "rgba(255,255,255,0.05)", border: "1px solid rgba(0,180,255,0.2)", borderRadius: 10, overflow: "hidden" }}>
-                  <button onClick={() => dispatch({ type: "UPDATE_QTY", payload: { id: item.id, qty: item.qty - 1 } })} style={{ width: 38, height: 38, background: "none", border: "none", color: "#fff", fontSize: 18, cursor: "pointer" }}>−</button>
-                  <span style={{ width: 38, textAlign: "center", color: "#fff", fontWeight: 700 }}>{item.qty}</span>
-                  <button onClick={() => dispatch({ type: "UPDATE_QTY", payload: { id: item.id, qty: item.qty + 1 } })} style={{ width: 38, height: 38, background: "none", border: "none", color: "#fff", fontSize: 18, cursor: "pointer" }}>+</button>
+                  <button onClick={() => dispatch({ type: "UPDATE_QTY", payload: { id: item.id, qty: item.qty - 1 } })} style={{ width: 38, height: 38, background: "none", border: "none", color: "#1a1a2e", fontSize: 18, cursor: "pointer" }}>−</button>
+                  <span style={{ width: 38, textAlign: "center", color: "#1a1a2e", fontWeight: 700 }}>{item.qty}</span>
+                  <button onClick={() => dispatch({ type: "UPDATE_QTY", payload: { id: item.id, qty: item.qty + 1 } })} style={{ width: 38, height: 38, background: "none", border: "none", color: "#1a1a2e", fontSize: 18, cursor: "pointer" }}>+</button>
                 </div>
                 <div style={{ textAlign: "right", minWidth: 90 }}>
                   <p style={{ fontWeight: 700, color: "#fff", marginBottom: 8 }}>{formatPrice(item.price * item.qty)}</p>
