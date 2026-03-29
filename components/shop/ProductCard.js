@@ -17,7 +17,7 @@ export default function ProductCard({ product }) {
     e.stopPropagation();
     dispatch({
       type: "ADD_ITEM",
-      payload: { id: product.id, name: product.name, price: product.price, slug: product.slug },
+      payload: { id: product._id, name: product.name, price: product.price, slug: product.slug },
     });
     setAdded(true);
     setTimeout(() => setAdded(false), 1800);
