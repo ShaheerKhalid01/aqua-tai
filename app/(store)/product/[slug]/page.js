@@ -96,9 +96,9 @@ export default function ProductPage({ params }) {
             </div>
             <div style={{ display: "flex", gap: 14, alignItems: "center", marginBottom: 28 }}>
               <div style={{ display: "flex", alignItems: "center", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(0,180,255,0.2)", borderRadius: 10, overflow: "hidden" }}>
-                <button onClick={() => setQty(Math.max(1, qty-1))} style={{ width: 42, height: 42, background: "none", border: "none", color: "#fff", fontSize: 20, cursor: "pointer" }}>−</button>
-                <span style={{ width: 42, textAlign: "center", color: "#fff", fontWeight: 700 }}>{qty}</span>
-                <button onClick={() => setQty(Math.min(product.stock, qty+1))} style={{ width: 42, height: 42, background: "none", border: "none", color: "#fff", fontSize: 20, cursor: "pointer" }}>+</button>
+                <button onClick={() => setQty(Math.max(1, qty-1))} style={{ width: 42, height: 42, background: "#1a1a2e", border: "1px solid #0d2545", color: "#fff", fontSize: 20, cursor: "pointer", fontWeight: 700 }}>−</button>
+                <span style={{ width: 42, textAlign: "center", color: "#1a1a2e", fontWeight: 700 }}>{qty}</span>
+                <button onClick={() => setQty(Math.min(product.stock, qty+1))} style={{ width: 42, height: 42, background: "#1a1a2e", border: "1px solid #0d2545", color: "#fff", fontSize: 20, cursor: "pointer", fontWeight: 700 }}>+</button>
               </div>
               <button onClick={handleAdd} disabled={product.stock === 0}
                 style={{ flex: 1, background: added ? "#10b981" : "linear-gradient(135deg,#00b4ff,#0066cc)", color: "#fff", border: "none", borderRadius: 12, padding: "14px 0", fontWeight: 700, fontSize: 16, cursor: "pointer", transition: "all 0.3s" }}>
