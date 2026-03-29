@@ -144,6 +144,17 @@ export default function LoginPage() {
               {tab === "login" ? "Register" : "Sign In"}
             </button>
           </p>
+
+          {tab === "login" && (
+            <div style={{ textAlign: "center", marginTop: 12 }}>
+              <Link 
+                href="/forgot-password" 
+                style={{ color: "#00b4ff", textDecoration: "none", fontWeight: 600, fontSize: 13 }}
+              >
+                Forgot Password?
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </div>
