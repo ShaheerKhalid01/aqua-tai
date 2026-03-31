@@ -2,10 +2,8 @@
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams, Suspense } from "next/navigation";
 import Link from "next/link";
-import { useAuth } from "@/context/AuthContext";
 
 function LoginPageContent() {
-  const { login, register, googleSignIn } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -36,16 +34,28 @@ function LoginPageContent() {
     setLoading(true);
     
     try {
-      await login(form.email, form.password);
-      router.push("/");
-    } catch (err) {
-      if (err.message.includes("verify your email")) {
-        setNeedsVerification(true);
-        setVerificationEmail(form.email);
-        setError(err.message);
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: form.email,
+          password: form.password
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        localStorage.setItem("aquatai_token", data.token);
+        localStorage.setItem("aquatai_user", JSON.stringify(data.user));
+        router.push("/");
       } else {
-        setError(err.message);
+        setError(data.error);
       }
+    } catch (err) {
+      setError("Login failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -55,10 +65,10 @@ function LoginPageContent() {
     setError("");
     setLoading(true);
     try {
-      await googleSignIn();
-      router.push("/");
+      // Google sign-in not available, show message
+      setError("Google sign-in is not available at the moment.");
     } catch (err) { 
-      setError(err.message); 
+      setError("Failed to sign in with Google."); 
     } finally { 
       setLoading(false); 
     }
