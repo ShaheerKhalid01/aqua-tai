@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { connectDB, findUser } from "@/lib/mongodb";
 import jwt from "jsonwebtoken";
 import { rateLimit, addSecurityHeaders } from "@/lib/security";
+import bcrypt from "bcryptjs";
 
 export async function POST(req) {
   try {
@@ -28,7 +29,23 @@ export async function POST(req) {
       );
     }
 
-    if (id !== validId || password !== validPassword) {
+    if (id !== validId) {
+      return addSecurityHeaders(
+        NextResponse.json({ error: "Invalid admin credentials." }, { status: 401 })
+      );
+    }
+
+    // Check if password is a hash (starts with $2b$) or plain text
+    let isPasswordValid;
+    if (validPassword.startsWith('$2b$')) {
+      // Hashed password - use bcrypt comparison
+      isPasswordValid = await bcrypt.compare(password, validPassword);
+    } else {
+      // Plain text password - direct comparison
+      isPasswordValid = password === validPassword;
+    }
+    
+    if (!isPasswordValid) {
       return addSecurityHeaders(
         NextResponse.json({ error: "Invalid admin credentials." }, { status: 401 })
       );

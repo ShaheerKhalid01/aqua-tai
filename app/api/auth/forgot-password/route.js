@@ -34,7 +34,7 @@ export async function POST(req) {
     // Generate reset token
     const resetToken = createPasswordResetToken(email);
 
-    // Send reset email
+    // Send reset email (with fallback)
     const emailSent = await sendPasswordResetEmail(email, resetToken);
     
     if (!emailSent) {
@@ -43,8 +43,19 @@ export async function POST(req) {
       );
     }
 
+    // Check if we're using fallback (development mode)
+    const isUsingFallback = !process.env.EMAIL_USER || 
+                           process.env.EMAIL_USER === 'your_gmail_address@gmail.com' ||
+                           !process.env.EMAIL_PASS || 
+                           process.env.EMAIL_PASS === 'your_gmail_app_password';
+
     return addSecurityHeaders(
-      NextResponse.json({ message: "Password reset link sent to your email" })
+      NextResponse.json({ 
+        message: isUsingFallback 
+          ? "Password reset link generated (Development Mode: Check console for reset link)"
+          : "Password reset link sent to your email",
+        developmentMode: isUsingFallback
+      })
     );
 
   } catch (error) {

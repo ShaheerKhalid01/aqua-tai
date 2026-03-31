@@ -1,0 +1,283 @@
+{
+  "products": [
+    {
+      "_id": "product-1",
+      "name": "7-Stage Reverse Osmosis System",
+      "slug": "7-stage-reverse-osmosis-system",
+      "category": "Reverse Osmosis System",
+      "price": 35000,
+      "originalPrice": 45000,
+      "stock": 15,
+      "description": "Advanced 7-stage RO system with UV and mineral filters for pure, healthy drinking water.",
+      "features": [
+        "7-Stage Filtration",
+        "UV Sterilization",
+        "Mineral Addition",
+        "100 GPD Capacity",
+        "3-Year Warranty",
+        "Professional Installation"
+      ],
+      "images": [
+        "/1.jpeg"
+      ],
+      "badge": "Best Seller",
+      "rating": 4.8,
+      "reviews": 127,
+      "active": true
+    },
+    {
+      "_id": "product-2",
+      "name": "Domestic Water Filter 5-Stage",
+      "slug": "domestic-water-filter-5-stage",
+      "category": "Domestic Water Filter",
+      "price": 12000,
+      "originalPrice": 15000,
+      "stock": 25,
+      "description": "Compact 5-stage water filter perfect for home use with easy installation and maintenance.",
+      "features": [
+        "5-Stage Filtration",
+        "Easy Installation",
+        "Low Maintenance",
+        "NSF Certified",
+        "1-Year Warranty",
+        "White Color"
+      ],
+      "images": [
+        "/2.jpeg"
+      ],
+      "badge": "Popular",
+      "rating": 4.5,
+      "reviews": 89,
+      "active": true
+    },
+    {
+      "_id": "product-3",
+      "name": "Commercial RO System 1000 GPD",
+      "slug": "commercial-ro-system-1000-gpd",
+      "category": "Commercial RO System",
+      "price": 85000,
+      "originalPrice": 95000,
+      "stock": 8,
+      "description": "High-capacity commercial reverse osmosis system suitable for offices, restaurants, and small businesses.",
+      "features": [
+        "1000 GPD Capacity",
+        "Commercial Grade",
+        "Stainless Steel",
+        "Auto Flushing",
+        "2-Year Warranty",
+        "Professional Installation"
+      ],
+      "images": [
+        "/3.jpeg"
+      ],
+      "badge": "Heavy Duty",
+      "rating": 4.9,
+      "reviews": 43,
+      "active": true
+    },
+    {
+      "_id": "product-4",
+      "name": "UV Water Purifier",
+      "slug": "uv-water-purifier",
+      "category": "UV Water Purifier",
+      "price": 8000,
+      "originalPrice": 10000,
+      "stock": 30,
+      "description": "UV water purifier that eliminates bacteria and viruses without chemicals, perfect for pre-treated water.",
+      "features": [
+        "UV Sterilization",
+        "Chemical Free",
+        "Low Power",
+        "Compact Design",
+        "1-Year Warranty",
+        "Wall Mountable"
+      ],
+      "images": [
+        "/4.jpeg"
+      ],
+      "badge": "Eco Friendly",
+      "rating": 4.3,
+      "reviews": 156,
+      "active": true
+    },
+    {
+      "_id": "product-5",
+      "name": "Industrial Water Softener",
+      "slug": "industrial-water-softener",
+      "category": "Water Softener",
+      "price": 65000,
+      "originalPrice": 75000,
+      "stock": 5,
+      "description": "Industrial-grade water softener for large-scale water treatment applications with automatic regeneration.",
+      "features": [
+        "Industrial Grade",
+        "Automatic Regeneration",
+        "High Capacity",
+        "Digital Control",
+        "3-Year Warranty",
+        "Commercial Installation"
+      ],
+      "images": [
+        "/5.jpeg"
+      ],
+      "badge": "Value",
+      "rating": 4.3,
+      "reviews": 156,
+      "active": true
+    }
+  ],
+  "users": [
+    {
+      "name": "Test User",
+      "email": "persistent@test.com",
+      "password": "$2b$14$0GDzBVZOkb76hFCLXqQoY.YrVpSHozu4hK7vsYBtmSNCby8s1rfDS",
+      "role": "client",
+      "createdAt": "2026-03-29T16:35:59.549Z",
+      "_id": "1774802159549"
+    },
+    {
+      "name": "shaheer khalid",
+      "email": "www.shaheerkhalid88603@gmail.com",
+      "password": "$2b$14$Enr/ILXRTUN8kQBX0sR51upYlvJ86BBse4gbaKi1L4q5Ufa23gZSm",
+      "role": "client",
+      "createdAt": "2026-03-29T16:39:03.794Z",
+      "_id": "1774802343794"
+    },
+    {
+      "name": "Test Verified User",
+      "email": "verified@test.com",
+      "password": "$2b$14$jL1w3MWiHtKyV9VTVP.Wc.RxXBVpu8yFPbnVzDKrzHwmElDgTTpBu",
+      "role": "client",
+      "emailVerified": true,
+      "createdAt": "2026-03-29T17:10:06.060Z",
+      "_id": "1774804206061"
+    },
+    {
+      "name": "shaheer khalid",
+      "email": "www.shaheerkhalid88605@gmail.com",
+      "password": "$2b$14$GAYN.pBYr8Eld793Y7/Od.nTvzopAHGLTncRoe07yFeG0vWbCc29u",
+      "role": "client",
+      "emailVerified": false,
+      "createdAt": "2026-03-29T17:13:02.404Z",
+      "_id": "1774804382404"
+    },
+    {
+      "name": "shaheer khalid",
+      "email": "www.shaheerkhalid88606@gmail.com",
+      "password": "$2b$14$es8rGb5UdUcfiTawyKWVMu/u5NdXXr3kF3cD79V6rt9nCYpexeAKO",
+      "role": "client",
+      "emailVerified": false,
+      "createdAt": "2026-03-29T17:20:29.933Z",
+      "_id": "1774804829933"
+    },
+    {
+      "name": "shaheer khalid",
+      "email": "shaheerkhalid88606@gmail.com",
+      "password": "$2b$14$K.rqhAhenLaQ0B1/8.Ekm.sGgzM8Oeoz4anKnPdsO8dbimDQSuMAG",
+      "role": "client",
+      "emailVerified": true,
+      "createdAt": "2026-03-29T17:21:22.434Z",
+      "_id": "1774804882434"
+    },
+    {
+      "name": "Test User",
+      "email": "test@gmail.com",
+      "password": "$2b$14$7.qze4acoTSPclp27/Yj/u25AITtEdcLlV4knbDJQq5de7AqrKxRa",
+      "role": "client",
+      "emailVerified": false,
+      "createdAt": "2026-03-29T17:31:15.941Z",
+      "_id": "1774805475942"
+    },
+    {
+      "name": "New Test User",
+      "email": "newtest@gmail.com",
+      "password": "$2b$14$ryCPc48aii7kZ8STsTs0iuEGiTB814N6pq8pzFrIIPumBYwKUlc0S",
+      "role": "client",
+      "emailVerified": false,
+      "createdAt": "2026-03-29T17:32:01.189Z",
+      "_id": "1774805521189"
+    },
+    {
+      "name": "Test User Gmail",
+      "email": "testuser@gmail.com",
+      "password": "$2b$14$BXmSxpT7JbnCl2AkhCXtPOW4zSbTJVjdJXmioaKIV580rNcCk4HuS",
+      "role": "client",
+      "emailVerified": false,
+      "createdAt": "2026-03-29T17:33:34.990Z",
+      "_id": "1774805614990"
+    },
+    {
+      "name": "New Gmail Test",
+      "email": "newgmailtest@gmail.com",
+      "password": "$2b$14$g8GcE2X66c97IakOP6YWb.t5Yq01ZNK93p3tSmcDB8whb1AUOfOPm",
+      "role": "client",
+      "emailVerified": false,
+      "createdAt": "2026-03-29T17:36:13.671Z",
+      "_id": "1774805773671"
+    },
+    {
+      "name": "Email Test User",
+      "email": "testemail123@gmail.com",
+      "password": "$2b$14$rgRoOIflmNrxnX86puszF.scuCGaDALzttJfGMQ15yQccNAyWHRcq",
+      "role": "client",
+      "emailVerified": false,
+      "createdAt": "2026-03-29T17:47:03.348Z",
+      "_id": "1774806423349"
+    },
+    {
+      "name": "Fresh Verification Test",
+      "email": "freshverification@gmail.com",
+      "password": "$2b$14$/gnU32aRJVx/T1HGLkIzMe92GCkCTBdfK4q0tJSPIHuxZOv4jsMAW",
+      "role": "client",
+      "emailVerified": false,
+      "createdAt": "2026-03-29T17:52:18.947Z",
+      "_id": "1774806738947"
+    },
+    {
+      "name": "Test User",
+      "email": "testuser123@gmail.com",
+      "password": "$2b$14$7I1FhMOSDHqAQHNh6C8FOOMo7iEiXL6hDynIb8Uar7czmB8fjdkxK",
+      "role": "client",
+      "emailVerified": false,
+      "createdAt": "2026-03-29T18:06:18.113Z",
+      "_id": "1774807578113"
+    },
+    {
+      "name": "shaheer khalid",
+      "email": "shaheerkhalid78601@gmail.com",
+      "password": "$2b$14$OEnldhK9O7Ldhr2as6B4weo8WIImeWL.FDRPPABgXZQylaCEKJyOa",
+      "role": "client",
+      "emailVerified": true,
+      "createdAt": "2026-03-29T18:09:22.854Z",
+      "_id": "1774807762854"
+    },
+    {
+      "name": "shaheer",
+      "email": "shaheerkhalid78602@gmail.com",
+      "password": "$2b$14$ZNy21iX2RbC916DKjQSi1en4lzUDlWhkMHbYCs7tMFKcItS37gN9.",
+      "role": "client",
+      "emailVerified": true,
+      "createdAt": "2026-03-30T01:38:59.050Z",
+      "_id": "1774834739050"
+    },
+    {
+      "name": "shaheer khalid",
+      "email": "shaheerkhalid88602@gmail.com",
+      "password": "$2b$14$D67x9EJFfAoOTWHOJ9RugO1XRfFm8hbhy8snz.WY2ce0vj/gptt0O",
+      "role": "client",
+      "emailVerified": true,
+      "createdAt": "2026-03-30T03:37:11.357Z",
+      "_id": "1774841831357"
+    },
+    {
+      "name": "shaheer khalid",
+      "email": "www.shaheerkhalid88600@gmail.com",
+      "password": "$2b$14$U2Rigw5OnQVChuo8S3wEqu7LsfE0U4hs/zq9nfieCg/cYYABVcPeW",
+      "role": "client",
+      "emailVerified": true,
+      "createdAt": "2026-03-30T03:42:09.299Z",
+      "_id": "1774842129299"
+    }
+  ],
+  "orders": []
+}

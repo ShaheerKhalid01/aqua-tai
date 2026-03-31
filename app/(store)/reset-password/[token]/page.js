@@ -1,11 +1,12 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams, useParams } from "next/navigation";
 import Link from "next/link";
 
 export default function ResetPasswordPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const params = useParams();
   const [token, setToken] = useState("");
   const [email, setEmail] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -13,20 +14,27 @@ export default function ResetPasswordPage() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
-  const [isTokenValid, setIsTokenValid] = useState(true);
 
   useEffect(() => {
-    const tokenParam = searchParams.get("token");
+    // Get token from URL path (dynamic route parameter)
+    const tokenParam = params.token;
+    // Get email from query parameters
     const emailParam = searchParams.get("email");
     
-    if (!tokenParam || !emailParam) {
-      setError("Invalid reset link. Please request a new password reset.");
-      setIsTokenValid(false);
-    } else {
+    console.log('=== RESET PASSWORD DEBUG ===');
+    console.log('Token from path:', tokenParam);
+    console.log('Email from query:', emailParam);
+    console.log('Full URL:', typeof window !== 'undefined' ? window.location.href : 'N/A');
+    
+    if (tokenParam && emailParam) {
       setToken(tokenParam);
       setEmail(emailParam);
+      console.log('✅ Parameters set successfully');
+    } else {
+      console.log('❌ Missing token or email parameter');
+      setError("Invalid reset link. Please request a new password reset.");
     }
-  }, [searchParams]);
+  }, [searchParams, params]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -34,173 +42,200 @@ export default function ResetPasswordPage() {
     setError("");
     setMessage("");
 
-    if (newPassword !== confirmPassword) {
-      setError("Passwords do not match");
-      setLoading(false);
-      return;
-    }
-
     if (newPassword.length < 6) {
       setError("Password must be at least 6 characters long");
       setLoading(false);
       return;
     }
 
+    if (newPassword !== confirmPassword) {
+      setError("Passwords do not match");
+      setLoading(false);
+      return;
+    }
+
     try {
-      const response = await fetch("/api/auth/reset-password", {
-        method: "POST",
+      console.log('=== PASSWORD RESET SUBMISSION ===');
+      console.log('Token:', token);
+      console.log('Email:', email);
+      console.log('New password length:', newPassword.length);
+      
+      // Call simple password reset API
+      const response = await fetch('/api/auth/reset-password-simple', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, token, newPassword }),
+        body: JSON.stringify({
+          email: email,
+          token: token,
+          newPassword: newPassword
+        })
       });
 
       const data = await response.json();
 
-      if (response.ok) {
-        setMessage(data.message);
-        // Redirect to login after 3 seconds
-        setTimeout(() => {
-          router.push("/login");
-        }, 3000);
-      } else {
-        setError(data.error);
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to reset password');
       }
-    } catch (err) {
+
+      setMessage("Password reset successfully! Redirecting to login...");
+      console.log('✅ Password reset successful');
+      
+      // Redirect to login after successful reset
+      setTimeout(() => {
+        router.push('/login?reset=true');
+      }, 2000);
+      
+    } catch (error) {
+      console.error('❌ PASSWORD RESET ERROR:', error);
+      console.error('❌ ERROR DETAILS:', {
+        message: error.message,
+        stack: error.stack,
+        token: token,
+        email: email,
+        passwordLength: newPassword.length
+      });
       setError("Failed to reset password. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
-  const inputStyle = { 
-    width: "100%", 
-    background: "rgba(255,255,255,0.05)", 
-    border: "1px solid rgba(0,180,255,0.2)", 
-    borderRadius: 10, 
-    padding: "12px 16px", 
-    color: "#fff", 
-    fontSize: 14, 
-    outline: "none", 
-    marginTop: 6,
-    transition: "border 0.2s" 
-  };
-
-  const focusIn = (e) => e.target.style.border = "1px solid rgba(0,180,255,0.5)";
-  const focusOut = (e) => e.target.style.border = "1px solid rgba(0,180,255,0.2)";
-
-  if (!isTokenValid) {
-    return (
-      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg, #040d1a 0%, #0a2540 60%, #0d3060 100%)", padding: "40px 16px" }}>
-        <div style={{ textAlign: "center", background: "linear-gradient(145deg, #0d2545, #0a1e35)", border: "1px solid rgba(0,180,255,0.18)", borderRadius: 20, padding: 40, maxWidth: 400 }}>
-          <div style={{ fontSize: 60, marginBottom: 20 }}>❌</div>
-          <h2 style={{ fontSize: 24, fontWeight: 800, color: "#ef4444", marginBottom: 12 }}>Invalid Reset Link</h2>
-          <p style={{ color: "#64748b", fontSize: 14, marginBottom: 24, lineHeight: 1.5 }}>
-            {error}
-          </p>
-          <Link 
-            href="/forgot-password" 
-            style={{ background: "linear-gradient(135deg, #00b4ff, #0066cc)", color: "#fff", padding: "14px 24px", borderRadius: 12, textDecoration: "none", fontWeight: 700, fontSize: 15, display: "inline-block" }}
-          >
-            Request New Reset Link
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg, #040d1a 0%, #0a2540 60%, #0d3060 100%)", padding: "40px 16px", position: "relative", overflow: "hidden" }}>
-      <div style={{ position: "absolute", width: 500, height: 500, borderRadius: "50%", background: "radial-gradient(circle, rgba(0,180,255,0.06) 0%, transparent 70%)", top: -100, right: -100, pointerEvents: "none" }} />
-      <div style={{ position: "absolute", width: 400, height: 400, borderRadius: "50%", background: "radial-gradient(circle, rgba(0,102,204,0.07) 0%, transparent 70%)", bottom: -100, left: -100, pointerEvents: "none" }} />
-
-      <div style={{ width: "100%", maxWidth: 460, position: "relative", zIndex: 1 }}>
-        <div style={{ textAlign: "center", marginBottom: 32 }}>
-          <Link href="/" style={{ textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 10 }}>
-            <img src="/logo.jpeg" alt="AQUA R.O Filter" style={{ width: 48, height: 48, objectFit: "contain", borderRadius: 10 }} />
-            <div>
-              <div style={{ color: "#fff", fontWeight: 800, fontSize: 22, fontFamily: "Georgia, serif" }}>AQUA R.O Filter</div>
-              <div style={{ color: "#00b4ff", fontSize: 10, letterSpacing: 3, textTransform: "uppercase" }}>Pure Water Solutions</div>
-            </div>
-          </Link>
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f8fafc', padding: '20px' }}>
+      <div style={{ backgroundColor: 'white', padding: '40px', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', width: '100%', maxWidth: '400px' }}>
+        {/* Header */}
+        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '30px' }}>
+          <img src="/logo.jpeg" alt="Aqua R.O Water Filter" style={{ height: '60px', width: '60px', objectFit: 'contain', borderRadius: '8px' }} />
+          <div style={{ marginLeft: '15px' }}>
+            <div style={{ fontSize: '20px', fontWeight: 'bold', color: '#0057a8', marginBottom: '5px' }}>Aqua R.O Water Filter</div>
+            <div style={{ fontSize: '12px', color: '#64748b', textTransform: 'uppercase', letterSpacing: '1px' }}>Password Reset</div>
+          </div>
         </div>
 
-        <div style={{ background: "linear-gradient(145deg, #0d2545, #0a1e35)", border: "1px solid rgba(0,180,255,0.18)", borderRadius: 20, padding: 36, boxShadow: "0 24px 60px rgba(0,0,0,0.4)" }}>
-          <div style={{ textAlign: "center", marginBottom: 24 }}>
-            <div style={{ fontSize: 60, marginBottom: 16 }}>🔐</div>
-            <h2 style={{ fontWeight: 800, fontSize: 22, marginBottom: 6, fontFamily: "Georgia, serif", color: "#00b4ff" }}>
-              Reset Password
-            </h2>
-            <p style={{ color: "#64748b", fontSize: 13, lineHeight: 1.5 }}>
-              Enter your new password below.
-            </p>
+        <h2 style={{ textAlign: 'center', marginBottom: '30px', color: '#1f2937', fontSize: '24px' }}>Reset Password</h2>
+
+        {error && (
+          <div style={{ backgroundColor: '#fee2e2', color: '#dc2626', padding: '12px', borderRadius: '8px', marginBottom: '20px', textAlign: 'center', border: '1px solid #fecaca' }}>
+            ⚠️ {error}
+          </div>
+        )}
+
+        {message && (
+          <div style={{ backgroundColor: '#dcfce7', color: '#166534', padding: '12px', borderRadius: '8px', marginBottom: '20px', textAlign: 'center', border: '1px solid #bbf7d0' }}>
+            ✅ {message}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          <div>
+            <label style={{ display: 'block', marginBottom: '8px', color: '#374151', fontWeight: '500', fontSize: '14px' }}>Email Address</label>
+            <input
+              type="email"
+              value={email}
+              readOnly
+              style={{ 
+                width: '100%', 
+                padding: '12px 16px', 
+                border: '1px solid #d1d5db', 
+                borderRadius: '8px', 
+                fontSize: '14px',
+                backgroundColor: '#f8fafc',
+                color: '#6b7280',
+                outline: 'none',
+                transition: 'border 0.2s'
+              }}
+            />
           </div>
 
-          {error && (
-            <div style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)", color: "#ef4444", padding: "10px 14px", borderRadius: 8, fontSize: 13, marginBottom: 16 }}>
-              ⚠ {error}
-            </div>
-          )}
-
-          {message && (
-            <div style={{ background: "rgba(16,185,129,0.1)", border: "1px solid rgba(16,185,129,0.3)", color: "#10b981", padding: "10px 14px", borderRadius: 8, fontSize: 13, marginBottom: 16 }}>
-              ✓ {message}
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit}>
-            <label style={{ color: "#00b4ff", fontSize: 13 }}>New Password</label>
-            <input 
-              style={inputStyle} 
-              type="password" 
-              value={newPassword} 
-              onChange={(e) => setNewPassword(e.target.value)} 
-              required 
-              placeholder="Enter new password (min. 6 characters)"
-              onFocus={focusIn} 
-              onBlur={focusOut} 
-            />
-
-            <label style={{ color: "#00b4ff", fontSize: 13, display: "block", marginTop: 14 }}>Confirm New Password</label>
-            <input 
-              style={inputStyle} 
-              type="password" 
-              value={confirmPassword} 
-              onChange={(e) => setConfirmPassword(e.target.value)} 
-              required 
-              placeholder="Confirm new password"
-              onFocus={focusIn} 
-              onBlur={focusOut} 
-            />
-
-            <button 
-              type="submit" 
-              disabled={loading}
+          <div>
+            <label style={{ display: 'block', marginBottom: '8px', color: '#374151', fontWeight: '500', fontSize: '14px' }}>New Password (min. 6 characters)</label>
+            <input
+              type="password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              required
+              placeholder="Enter new password"
               style={{ 
-                width: "100%", 
-                background: loading ? "rgba(0,180,255,0.4)" : "linear-gradient(135deg,#00b4ff,#0066cc)", 
-                color: "#fff", 
-                border: "none", 
-                padding: "13px 0", 
-                borderRadius: 11, 
-                fontWeight: 700, 
-                fontSize: 15, 
-                cursor: loading ? "not-allowed" : "pointer", 
-                marginTop: 22,
-                transition: "background 0.2s" 
+                width: '100%', 
+                padding: '12px 16px', 
+                border: '1px solid #d1d5db', 
+                borderRadius: '8px', 
+                fontSize: '14px',
+                backgroundColor: '#f8fafc',
+                color: '#1f2937',
+                outline: 'none',
+                transition: 'border 0.2s'
               }}
-            >
-              {loading ? "Resetting..." : "Reset Password →"}
-            </button>
-          </form>
+            />
+          </div>
 
-          <div style={{ textAlign: "center", marginTop: 24 }}>
-            <Link 
-              href="/login" 
-              style={{ color: "#00b4ff", textDecoration: "none", fontWeight: 600, fontSize: 13 }}
-            >
-              ← Back to Sign In
+          <div>
+            <label style={{ display: 'block', marginBottom: '8px', color: '#374151', fontWeight: '500', fontSize: '14px' }}>Confirm New Password</label>
+            <input
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+              placeholder="Confirm new password"
+              style={{ 
+                width: '100%', 
+                padding: '12px 16px', 
+                border: '1px solid #d1d5db', 
+                borderRadius: '8px', 
+                fontSize: '14px',
+                backgroundColor: '#f8fafc',
+                color: '#1f2937',
+                outline: 'none',
+                transition: 'border 0.2s'
+              }}
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            style={{ 
+              width: '100%', 
+              padding: '12px 16px', 
+              backgroundColor: loading ? '#94a3b8' : '#0057a8', 
+              color: 'white', 
+              border: 'none', 
+              borderRadius: '8px', 
+              fontSize: '16px',
+              fontWeight: '600',
+              cursor: loading ? 'not-allowed' : 'pointer',
+              transition: 'all 0.2s'
+            }}
+          >
+            {loading ? 'Resetting Password...' : 'Reset Password'}
+          </button>
+        </form>
+
+        <div style={{ textAlign: 'center', marginTop: '30px', paddingTop: '20px', borderTop: '1px solid #e5e7eb' }}>
+          <div style={{ fontSize: '14px', color: '#6b7280', marginBottom: '15px' }}>
+            Remember your password?{' '}
+            <Link href="/login" style={{ color: '#0057a8', textDecoration: 'none', fontWeight: '600' }}>
+              Sign In
             </Link>
+          </div>
+          
+          <div style={{ fontSize: '12px', color: '#94a3b8' }}>
+            Don't have an account?{' '}
+            <Link href="/register" style={{ color: '#0057a8', textDecoration: 'none', fontWeight: '600' }}>
+              Sign Up
+            </Link>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div style={{ textAlign: 'center', marginTop: '30px', paddingTop: '20px', borderTop: '1px solid #e5e7eb' }}>
+          <div style={{ fontSize: '12px', color: '#6b7280', marginBottom: '10px' }}>
+            <span style={{ color: '#0057a8' }}>📞 0304-2604217</span>
+          </div>
+          <div style={{ fontSize: '12px', color: '#6b7280' }}>
+            <span style={{ color: '#0057a8' }}>✉️ aquarowaterfilter@gmail.com</span>
           </div>
         </div>
       </div>

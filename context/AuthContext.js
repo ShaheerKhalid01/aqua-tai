@@ -1,8 +1,6 @@
 "use client";
 import { createContext, useContext, useReducer, useEffect } from "react";
 import { loginUser, registerUser, loginAdmin } from "@/lib/api";
-import { signIn, signOut } from "next-auth/react";
-import { useSession } from "@/hooks/useSession";
 
 const AuthContext = createContext(null);
 
@@ -36,7 +34,6 @@ function getInitialState() {
 
 export function AuthProvider({ children }) {
   const [state, dispatch] = useReducer(authReducer, undefined, getInitialState);
-  const { data: session, status } = useSession();
 
   useEffect(() => {
     localStorage.removeItem("aquatai_auth"); // clean old pre-backend key
@@ -76,10 +73,11 @@ export function AuthProvider({ children }) {
     dispatch({ type: "LOGOUT_ADMIN" });
   };
 
-  // Google Sign-In
+  // Google Sign-In (removed NextAuth dependency)
   const googleSignIn = async () => {
     try {
-      await signIn("google", { callbackUrl: "/" });
+      // For now, just throw an error since Google auth is not configured
+      throw new Error("Google sign-in is not available");
     } catch (error) {
       console.error("Google sign-in error:", error);
       throw new Error("Failed to sign in with Google");
@@ -87,25 +85,10 @@ export function AuthProvider({ children }) {
   };
 
   const signOutAll = async () => {
-    // Sign out from NextAuth
-    if (status === "authenticated") {
-      await signOut();
-    }
-    // Clear local auth state
+    // Clear all local auth state
     logout();
     adminLogout();
   };
-
-  // Sync NextAuth session with local state
-  useEffect(() => {
-    if (status === "authenticated" && session?.user) {
-      localStorage.setItem("aquatai_token", "nextauth_" + Date.now());
-      localStorage.setItem("aquatai_user", JSON.stringify(session.user));
-      dispatch({ type: "SET_CLIENT", payload: session.user });
-    } else if (status === "unauthenticated") {
-      logout();
-    }
-  }, [session, status]);
 
   return (
     <AuthContext.Provider value={{ 

@@ -1,0 +1,56 @@
+[
+  {
+    "email": "www.shaheerkhalid88605@gmail.com",
+    "url": "http://localhost:3000/verify-email/TESTUNVERIFIED1234567890123456789012?email=www.shaheerkhalid88605@gmail.com",
+    "token": "TESTUNVERIFIED1234567890123456789012",
+    "expiry": "2026-03-30T19:00:00.000Z",
+    "created": "2026-03-30T08:31:00.000Z",
+    "type": "email-verification",
+    "userName": "shaheer khalid"
+  },
+  {
+    "email": "shaheerkhalid78602@gmail.com",
+    "url": "http://localhost:3000/verify-email/TESTVERIFY1234567890123456789012?email=shaheerkhalid78602@gmail.com",
+    "token": "TESTVERIFY1234567890123456789012",
+    "expiry": "2026-03-30T19:00:00.000Z",
+    "created": "2026-03-30T08:31:00.000Z",
+    "type": "email-verification",
+    "userName": "shaheer khalid"
+  },
+  {
+    "email": "shaheerkhalid88606@gmail.com",
+    "url": "http://localhost:3000/verify-email/332MVhKpLuT5iMVxaxO043GXrhBYSjiM?email=shaheerkhalid88606@gmail.com",
+    "token": "332MVhKpLuT5iMVxaxO043GXrhBYSjiM",
+    "expiry": "2026-03-30T17:21:22.439Z",
+    "created": "2026-03-29T17:21:22.439Z",
+    "type": "email-verification",
+    "userName": "shaheer khalid"
+  },
+  {
+    "email": "www.shaheerkhalid88606@gmail.com",
+    "url": "http://localhost:3000/verify-email/d5yZlnINfGWGVb5X2NxGleB0ry9KxJIg?email=www.shaheerkhalid88606@gmail.com",
+    "token": "d5yZlnINfGWGVb5X2NxGleB0ry9KxJIg",
+    "expiry": "2026-03-30T17:20:29.936Z",
+    "created": "2026-03-29T17:20:29.936Z",
+    "type": "email-verification",
+    "userName": "shaheer khalid"
+  },
+  {
+    "email": "www.shaheerkhalid88605@gmail.com",
+    "url": "http://localhost:3000/verify-email/k7M7P25fXYFhAkro5fmhRFGGA389ZqOs?email=www.shaheerkhalid88605@gmail.com",
+    "token": "k7M7P25fXYFhAkro5fmhRFGGA389ZqOs",
+    "expiry": "2026-03-30T17:13:02.411Z",
+    "created": "2026-03-29T17:13:02.411Z",
+    "type": "email-verification",
+    "userName": "shaheer khalid"
+  },
+  {
+    "email": "verified@test.com",
+    "url": "http://localhost:3000/verify-email/yk33SCHm5cbhOoOcFOMyQhjkTOA0YUOn?email=verified@test.com",
+    "token": "yk33SCHm5cbhOoOcFOMyQhjkTOA0YUOn",
+    "expiry": "2026-03-30T17:10:06.064Z",
+    "created": "2026-03-29T17:10:06.064Z",
+    "type": "email-verification",
+    "userName": "Test Verified User"
+  }
+]

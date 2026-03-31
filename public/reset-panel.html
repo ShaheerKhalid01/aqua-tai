@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Reset Development Panel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #040d1a 0%, #0a2540 60%, #0d3060 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .panel {
+            background: linear-gradient(145deg, #0d2545, #0a1e35);
+            border: 1px solid rgba(0,180,255,0.18);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 24px 60px rgba(0,0,0,0.4);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .logo img {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+        }
+        
+        .logo-text {
+            color: #fff;
+            font-weight: 800;
+            font-size: 18px;
+            font-family: Georgia, serif;
+        }
+        
+        .logo-subtitle {
+            color: #00b4ff;
+            font-size: 8px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        
+        h1 {
+            color: #00b4ff;
+            font-size: 24px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        
+        .reset-links {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .reset-item {
+            background: rgba(0,180,255,0.08);
+            border: 1px solid rgba(0,180,255,0.2);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .reset-item:hover {
+            background: rgba(0,180,255,0.12);
+            transform: translateY(-2px);
+        }
+        
+        .reset-email {
+            color: #00b4ff;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .reset-link {
+            color: #fff;
+            font-size: 12px;
+            word-break: break-all;
+            background: rgba(255,255,255,0.1);
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin: 8px 0;
+            border: 1px solid rgba(255,255,255,0.2);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .reset-link:hover {
+            background: rgba(255,255,255,0.2);
+            border-color: rgba(255,255,255,0.4);
+        }
+        
+        .reset-time {
+            color: #94a3b8;
+            font-size: 11px;
+            margin-top: 8px;
+        }
+        
+        .copy-btn {
+            background: linear-gradient(135deg,#00b4ff,#0066cc);
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 12px;
+            margin-top: 10px;
+            transition: all 0.2s ease;
+        }
+        
+        .copy-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,180,255,0.3);
+        }
+        
+        .copy-btn:active {
+            transform: translateY(0);
+        }
+        
+        .copied {
+            background: linear-gradient(135deg,#10b981,#059669) !important;
+        }
+        
+        .instructions {
+            background: rgba(16,185,129,0.1);
+            border: 1px solid rgba(16,185,129,0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .instructions h3 {
+            color: #10b981;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        
+        .instructions ol {
+            color: #64748b;
+            line-height: 1.6;
+            margin-left: 20px;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        
+        .status-active {
+            background: rgba(16,185,129,0.2);
+            color: #10b981;
+        }
+        
+        .status-expired {
+            background: rgba(239,68,68,0.2);
+            color: #ef4444;
+        }
+        
+        .empty-state {
+            text-align: center;
+            color: #64748b;
+            font-size: 16px;
+            padding: 40px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="panel">
+            <div class="header">
+                <div class="logo">
+                    <img src="/logo.jpeg" alt="AQUA R.O Filter">
+                    <div>
+                        <div class="logo-text">AQUA R.O Filter</div>
+                        <div class="logo-subtitle">Pure Water Solutions</div>
+                    </div>
+                </div>
+                <h1>🔐 Password Reset Development Panel</h1>
+                <div class="subtitle">Easy-to-use interface for password reset links in development</div>
+            </div>
+            
+            <div class="reset-links" id="resetLinks">
+                <div class="empty-state">
+                    <div>⏳ Waiting for password reset requests...</div>
+                    <div style="margin-top: 10px; font-size: 14px;">Request a password reset from the app to see links here</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="panel">
+            <div class="header">
+                <h1>📋 Instructions</h1>
+                <div class="subtitle">How to use this development tool</div>
+            </div>
+            
+            <div class="instructions">
+                <h3>🚀 Quick Start</h3>
+                <ol>
+                    <li>Go to <a href="http://localhost:3000/forgot-password" target="_blank" style="color: #00b4ff;">Forgot Password Page</a></li>
+                    <li>Enter your email and click "Send Reset Link"</li>
+                    <li>Come back here and click the link below</li>
+                    <li>Reset your password and login!</li>
+                </ol>
+                
+                <h3>💡 Features</h3>
+                <ol>
+                    <li><strong>One-Click Copy:</strong> Click the copy button next to any link</li>
+                    <li><strong>Auto-Refresh:</strong> Links update automatically</li>
+                    <li><strong>Expiration Status:</strong> See if links are still valid</li>
+                    <li><strong>Clean Interface:</strong> Much better than console scrolling!</li>
+                </ol>
+                
+                <h3>🔧 For Production</h3>
+                <ol>
+                    <li>Set up Gmail SMTP in <code>.env.local</code></li>
+                    <li>Users will receive real emails instead</li>
+                    <li>See <code>GMAIL_SETUP.md</code> for instructions</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let resetLinks = [];
+        
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                event.target.textContent = '✅ Copied!';
+                event.target.classList.add('copied');
+                setTimeout(() => {
+                    event.target.textContent = '📋 Copy Link';
+                    event.target.classList.remove('copied');
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+            });
+        }
+        
+        function checkExpiration(expiryTime) {
+            const now = new Date();
+            const expiry = new Date(expiryTime);
+            const diff = expiry - now;
+            
+            if (diff <= 0) {
+                return { expired: true, text: 'Expired' };
+            }
+            
+            const minutes = Math.floor(diff / (1000 * 60));
+            if (minutes < 1) {
+                return { expired: false, text: 'Expires soon' };
+            } else if (minutes < 30) {
+                return { expired: false, text: `${minutes} min left` };
+            } else {
+                return { expired: false, text: '30 min left' };
+            }
+        }
+        
+        function updateResetLinks() {
+            const container = document.getElementById('resetLinks');
+            
+            if (resetLinks.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div>⏳ Waiting for password reset requests...</div>
+                        <div style="margin-top: 10px; font-size: 14px;">Request a password reset from the app to see links here</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = resetLinks.map(link => {
+                const status = checkExpiration(link.expiry);
+                const statusClass = status.expired ? 'status-expired' : 'status-active';
+                
+                return `
+                    <div class="reset-item">
+                        <div class="reset-email">📧 ${link.email}</div>
+                        <div class="reset-link" onclick="copyToClipboard('${link.url}')">${link.url}</div>
+                        <div class="reset-time">⏰ ${status.text}</div>
+                        <span class="status ${statusClass}">${status.expired ? '⏰ EXPIRED' : '✅ ACTIVE'}</span>
+                        <button class="copy-btn" onclick="copyToClipboard('${link.url}')">📋 Copy Link</button>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // Auto-refresh every 5 seconds
+        setInterval(updateResetLinks, 5000);
+        
+        // Initial update
+        updateResetLinks();
+    </script>
+</body>
+</html>

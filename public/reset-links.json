@@ -1,0 +1,9 @@
+[
+  {
+    "email": "fresh@test.com",
+    "url": "http://localhost:3000/reset-password/TEST1234567890123456789012?email=fresh@test.com",
+    "token": "TEST1234567890123456789012",
+    "expiry": "2026-03-30T18:30:00.000Z",
+    "created": "2026-03-30T01:28:42.598Z"
+  }
+]

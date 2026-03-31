@@ -38,6 +38,16 @@ export async function POST(req) {
       );
     }
 
+    // Check if email is verified
+    if (!user.emailVerified) {
+      return addSecurityHeaders(
+        NextResponse.json({ 
+          error: "Please verify your email before logging in. Check your inbox for the verification link.",
+          requiresVerification: true
+        }, { status: 401 })
+      );
+    }
+
     // If password is not hashed (old localStorage data), reject clearly
     if (!user.password?.startsWith("$2")) {
       return addSecurityHeaders(
@@ -66,7 +76,7 @@ export async function POST(req) {
       NextResponse.json({
         message: "Logged in successfully.",
         token,
-        user: { id: user._id, name: user.name, email: user.email, role: user.role || "client" },
+        user: { id: user._id, name: user.name, email: user.email, role: user.role || "client", emailVerified: user.emailVerified },
       })
     );
 

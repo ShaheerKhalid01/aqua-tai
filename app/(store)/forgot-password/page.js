@@ -29,10 +29,18 @@ export default function ForgotPasswordPage() {
 
       if (response.ok) {
         setMessage(data.message);
+        
+        // If in development mode, show additional info
+        if (data.developmentMode) {
+          setTimeout(() => {
+            setMessage(prev => prev + "\n\n💡 Check the server console for the reset link!");
+          }, 1000);
+        }
+        
         // Redirect to login after 3 seconds
         setTimeout(() => {
           router.push("/login");
-        }, 3000);
+        }, 5000);
       } else {
         setError(data.error);
       }
