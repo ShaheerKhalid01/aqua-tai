@@ -1,67 +1,7 @@
 "use client";
-import { useState } from "react";
-import { useRouter, useSearchParams, Suspense } from "next/navigation";
 import Link from "next/link";
 
-// Force dynamic rendering to skip static generation
-export const dynamic = 'force-dynamic';
-
-function LoginPageContent() {
-  // Skip during build time
-  if (typeof window === 'undefined') {
-    return (
-      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg, #040d1a 0%, #0a2540 60%, #0d3060 100%)", padding: "40px 16px" }}>
-        <div style={{ width: "100%", maxWidth: 400, background: "linear-gradient(145deg, #0d2545, #0a1e35)", border: "1px solid rgba(0,180,255,0.18)", borderRadius: 20, padding: 36, textAlign: "center" }}>
-          <div style={{ color: "#fff", fontWeight: 800, fontSize: 22, fontFamily: "Georgia, serif", marginBottom: 20 }}>
-            AQUA R.O Filter
-          </div>
-          <div style={{ color: "#00b4ff", fontSize: 16, marginBottom: 20 }}>
-            Login Page
-          </div>
-          <div style={{ color: "#64748b", fontSize: 14 }}>
-            Loading...
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  const router = useRouter();
-  const searchParams = useSearchParams();
-
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    
-    try {
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        localStorage.setItem("aquatai_token", data.token);
-        localStorage.setItem("aquatai_user", JSON.stringify(data.user));
-        router.push("/");
-      } else {
-        alert(data.error || "Login failed");
-      }
-    } catch (err) {
-      alert("Login failed. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
+export default function LoginPage() {
   return (
     <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg, #040d1a 0%, #0a2540 60%, #0d3060 100%)", padding: "40px 16px" }}>
       <div style={{ width: "100%", maxWidth: 400, background: "linear-gradient(145deg, #0d2545, #0a1e35)", border: "1px solid rgba(0,180,255,0.18)", borderRadius: 20, padding: 36 }}>
@@ -79,9 +19,10 @@ function LoginPageContent() {
           Sign in to your AQUA R.O Filter account.
         </p>
 
-        <form onSubmit={handleSubmit}>
+        <div id="login-form">
           <div style={{ marginBottom: 16 }}>
             <input 
+              id="email"
               style={{ 
                 width: "100%", 
                 background: "rgba(255,255,255,0.05)", 
@@ -93,15 +34,13 @@ function LoginPageContent() {
                 outline: "none" 
               }} 
               type="email" 
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required 
               placeholder="you@example.com" 
             />
           </div>
           
           <div style={{ marginBottom: 24 }}>
             <input 
+              id="password"
               style={{ 
                 width: "100%", 
                 background: "rgba(255,255,255,0.05)", 
@@ -113,32 +52,28 @@ function LoginPageContent() {
                 outline: "none" 
               }} 
               type="password" 
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required 
               placeholder="••••••" 
             />
           </div>
 
           <button 
-            type="submit" 
-            disabled={loading}
+            id="login-btn"
             style={{ 
               width: "100%", 
-              background: loading ? "rgba(0,180,255,0.4)" : "linear-gradient(135deg,#00b4ff,#0066cc)", 
+              background: "linear-gradient(135deg,#00b4ff,#0066cc)", 
               color: "#fff", 
               border: "none", 
               padding: "13px 0", 
               borderRadius: 11, 
               fontWeight: 700, 
               fontSize: 15, 
-              cursor: loading ? "not-allowed" : "pointer", 
+              cursor: "pointer", 
               marginBottom: 16 
             }}
           >
-            {loading ? "Signing in..." : "Sign In →"}
+            Sign In →
           </button>
-        </form>
+        </div>
 
         <p style={{ textAlign: "center", color: "#64748b", fontSize: 13, marginBottom: 12 }}>
           Don't have an account? <Link href="/login" style={{ color: "#00b4ff", textDecoration: "none", fontWeight: 600 }}>Register</Link>
@@ -154,22 +89,53 @@ function LoginPageContent() {
   );
 }
 
-export default function LoginPage() {
-  return (
-    <Suspense fallback={
-      <div style={{ 
-        minHeight: "100vh", 
-        display: "flex", 
-        alignItems: "center", 
-        justifyContent: "center", 
-        background: "linear-gradient(135deg, #040d1a 0%, #0a2540 60%, #0d3060 100%)",
-        color: "#fff",
-        fontSize: 16
-      }}>
-        Loading login page...
-      </div>
-    }>
-      <LoginPageContent />
-    </Suspense>
-  );
+// Add client-side script
+if (typeof window !== 'undefined') {
+  document.addEventListener('DOMContentLoaded', function() {
+    const loginBtn = document.getElementById('login-btn');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    
+    if (loginBtn && emailInput && passwordInput) {
+      loginBtn.addEventListener('click', async function(e) {
+        e.preventDefault();
+        
+        const email = emailInput.value;
+        const password = passwordInput.value;
+        
+        if (!email || !password) {
+          alert('Please fill in all fields');
+          return;
+        }
+        
+        loginBtn.textContent = 'Signing in...';
+        loginBtn.disabled = true;
+        
+        try {
+          const response = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, password }),
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            localStorage.setItem('aquatai_token', data.token);
+            localStorage.setItem('aquatai_user', JSON.stringify(data.user));
+            window.location.href = '/';
+          } else {
+            alert(data.error || 'Login failed');
+          }
+        } catch (err) {
+          alert('Login failed. Please try again.');
+        } finally {
+          loginBtn.textContent = 'Sign In →';
+          loginBtn.disabled = false;
+        }
+      });
+    }
+  });
 }
