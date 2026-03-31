@@ -1,10 +1,10 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams, Suspense } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 
-export default function LoginPage() {
+function LoginPageContent() {
   const { login, register, googleSignIn } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -469,5 +469,25 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div style={{ 
+        minHeight: "100vh", 
+        display: "flex", 
+        alignItems: "center", 
+        justifyContent: "center", 
+        background: "linear-gradient(135deg, #040d1a 0%, #0a2540 60%, #0d3060 100%)",
+        color: "#fff",
+        fontSize: 16
+      }}>
+        Loading login page...
+      </div>
+    }>
+      <LoginPageContent />
+    </Suspense>
   );
 }
