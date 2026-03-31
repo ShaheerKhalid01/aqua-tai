@@ -7,6 +7,25 @@ import Link from "next/link";
 export const dynamic = 'force-dynamic';
 
 function LoginPageContent() {
+  // Skip during build time
+  if (typeof window === 'undefined') {
+    return (
+      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg, #040d1a 0%, #0a2540 60%, #0d3060 100%)", padding: "40px 16px" }}>
+        <div style={{ width: "100%", maxWidth: 400, background: "linear-gradient(145deg, #0d2545, #0a1e35)", border: "1px solid rgba(0,180,255,0.18)", borderRadius: 20, padding: 36, textAlign: "center" }}>
+          <div style={{ color: "#fff", fontWeight: 800, fontSize: 22, fontFamily: "Georgia, serif", marginBottom: 20 }}>
+            AQUA R.O Filter
+          </div>
+          <div style={{ color: "#00b4ff", fontSize: 16, marginBottom: 20 }}>
+            Login Page
+          </div>
+          <div style={{ color: "#64748b", fontSize: 14 }}>
+            Loading...
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const router = useRouter();
   const searchParams = useSearchParams();
 
