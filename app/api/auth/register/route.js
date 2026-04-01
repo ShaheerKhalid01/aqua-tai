@@ -75,21 +75,65 @@ export async function POST(req) {
 
     // Normalize email
     const normalizedEmail = email.toLowerCase().trim();
+    console.log('Registration attempt for email:', normalizedEmail);
 
-    // Check if user already exists
+    // Force fresh data read to check for existing users
+    await connectDB();
+    
+    // Read fresh data from file to get latest users
+    try {
+      const fs = require('fs');
+      const path = require('path');
+      const dbPath = path.join(process.cwd(), 'data', 'database.json');
+      
+      if (fs.existsSync(dbPath)) {
+        const freshData = JSON.parse(fs.readFileSync(dbPath, 'utf8'));
+        const allUsers = freshData.users || [];
+        console.log('Total users in database:', allUsers.length);
+        console.log('User emails in database:', allUsers.map(u => u.email));
+        
+        // Check if user already exists in fresh data
+        const existingUser = allUsers.find(u => u.email.toLowerCase() === normalizedEmail);
+        console.log('Existing user found:', existingUser ? existingUser.email : 'None');
+        
+        if (existingUser) {
+          console.log('Registration blocked - user already exists:', existingUser.email);
+          if (existingUser.emailVerified) {
+            return addSecurityHeaders(
+              NextResponse.json(
+                { error: "This email is already registered and verified. Please login instead." },
+                { status: 400 }
+              )
+            );
+          } else {
+            return addSecurityHeaders(
+              NextResponse.json(
+                { error: "Email already registered but not verified. Please check your email for verification link or contact support." },
+                { status: 400 }
+              )
+            );
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error reading fresh data for duplicate check:', error);
+    }
+
+    // Also check with findUser as backup
     const existingUser = await findUser(normalizedEmail);
     if (existingUser) {
+      console.log('Registration blocked - user found via findUser:', existingUser.email);
       if (existingUser.emailVerified) {
         return addSecurityHeaders(
           NextResponse.json(
-            { error: "Email already registered and verified" },
+            { error: "This email is already registered and verified. Please login instead." },
             { status: 400 }
           )
         );
       } else {
         return addSecurityHeaders(
           NextResponse.json(
-            { error: "Email already registered but not verified. Please check your email for verification link." },
+            { error: "Email already registered but not verified. Please check your email for verification link or contact support." },
             { status: 400 }
           )
         );

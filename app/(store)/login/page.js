@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from 'react';
+import { useNotification } from '@/context/NotificationContext';
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
+  const { addNotification } = useNotification();
   
   return (
     <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg, #040d1a 0%, #0a2540 60%, #0d3060 100%)", padding: "40px 16px" }}>
@@ -29,12 +31,15 @@ export default function LoginPage() {
             if (data.token) {
               localStorage.setItem('aquatai_token', data.token);
               localStorage.setItem('aquatai_user', JSON.stringify(data.user));
-              window.location.href = '/';
+              addNotification('Login successful! Welcome back!', 'success', 3000);
+              setTimeout(() => {
+                window.location.href = '/';
+              }, 1000);
             } else {
-              alert(data.error || 'Login failed');
+              addNotification(data.error || 'Login failed', 'error', 5000);
             }
           }).catch(() => {
-            alert('Login failed');
+            addNotification('Login failed. Please try again.', 'error', 5000);
           });
         }}>
           <div style={{ marginBottom: 16 }}>

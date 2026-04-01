@@ -3,8 +3,12 @@ import { getAllUsers } from '@/lib/mongodb';
 
 export async function GET() {
   try {
+    console.log('GET /api/admin/users - Fetching all users...');
+    
     // Get all users from database
     const users = await getAllUsers();
+    console.log('Raw users from database:', users.length);
+    console.log('User emails:', users.map(u => u.email));
     
     // Transform user data for display
     const transformedUsers = users.map(user => ({
@@ -19,6 +23,9 @@ export async function GET() {
       role: user.role || 'client',
       createdAt: user.createdAt || '—'
     }));
+    
+    console.log('Transformed users:', transformedUsers.length);
+    console.log('Transformed user emails:', transformedUsers.map(u => u.email));
     
     return NextResponse.json({
       success: true,

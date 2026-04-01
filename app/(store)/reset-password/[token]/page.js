@@ -14,6 +14,8 @@ export default function ResetPasswordPage() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   useEffect(() => {
     // Get token from URL path (dynamic route parameter)
@@ -151,46 +153,96 @@ export default function ResetPasswordPage() {
 
           <div>
             <label style={{ display: 'block', marginBottom: '8px', color: '#374151', fontWeight: '500', fontSize: '14px' }}>New Password (min. 6 characters)</label>
-            <input
-              type="password"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              required
-              placeholder="Enter new password"
-              style={{ 
-                width: '100%', 
-                padding: '12px 16px', 
-                border: '1px solid #d1d5db', 
-                borderRadius: '8px', 
-                fontSize: '14px',
-                backgroundColor: '#f8fafc',
-                color: '#1f2937',
-                outline: 'none',
-                transition: 'border 0.2s'
-              }}
-            />
+            <div style={{ position: 'relative' }}>
+              <input
+                type={showNewPassword ? "text" : "password"}
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                required
+                placeholder="Enter new password"
+                style={{ 
+                  width: '100%', 
+                  padding: '12px 16px', 
+                  border: '1px solid #d1d5db', 
+                  borderRadius: '8px', 
+                  fontSize: '14px',
+                  backgroundColor: '#f8fafc',
+                  color: '#1f2937',
+                  outline: 'none',
+                  transition: 'border 0.2s',
+                  paddingRight: '45px'
+                }}
+              />
+              <button
+                type="button"
+                onClick={() => setShowNewPassword(!showNewPassword)}
+                style={{
+                  position: 'absolute',
+                  right: '12px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'none',
+                  border: 'none',
+                  color: '#6b7280',
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                  padding: '4px',
+                  borderRadius: '4px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+              >
+                {showNewPassword ? "👁️" : "👁️‍🗨️"}
+              </button>
+            </div>
           </div>
 
           <div>
             <label style={{ display: 'block', marginBottom: '8px', color: '#374151', fontWeight: '500', fontSize: '14px' }}>Confirm New Password</label>
-            <input
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-              placeholder="Confirm new password"
-              style={{ 
-                width: '100%', 
-                padding: '12px 16px', 
-                border: '1px solid #d1d5db', 
-                borderRadius: '8px', 
-                fontSize: '14px',
-                backgroundColor: '#f8fafc',
-                color: '#1f2937',
-                outline: 'none',
-                transition: 'border 0.2s'
-              }}
-            />
+            <div style={{ position: 'relative' }}>
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+                placeholder="Confirm new password"
+                style={{ 
+                  width: '100%', 
+                  padding: '12px 16px', 
+                  border: '1px solid #d1d5db', 
+                  borderRadius: '8px', 
+                  fontSize: '14px',
+                  backgroundColor: '#f8fafc',
+                  color: '#1f2937',
+                  outline: 'none',
+                  transition: 'border 0.2s',
+                  paddingRight: '45px'
+                }}
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                style={{
+                  position: 'absolute',
+                  right: '12px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'none',
+                  border: 'none',
+                  color: '#6b7280',
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                  padding: '4px',
+                  borderRadius: '4px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+              >
+                {showConfirmPassword ? "👁️" : "👁️‍🗨️"}
+              </button>
+            </div>
           </div>
 
           <button

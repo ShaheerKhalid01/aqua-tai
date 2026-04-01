@@ -13,6 +13,8 @@ function ordersReducer(state, action) {
       return { ...state, orders: [action.payload, ...state.orders] };
     case "UPDATE_STATUS":
       return { ...state, orders: state.orders.map((o) => o.orderId === action.payload.orderId || o.id === action.payload.orderId ? { ...o, status: action.payload.status } : o) };
+    case "DELETE":
+      return { ...state, orders: state.orders.filter((o) => o.orderId !== action.payload && o.id !== action.payload) };
     case "SET_LOADING":
       return { ...state, loading: action.payload };
     default:
@@ -77,8 +79,28 @@ export function OrdersProvider({ children }) {
     ));
   };
 
+  // Delete order — tries API, always updates locally too
+  const deleteOrder = async (orderId) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (token) {
+        await fetch(`/api/orders?id=${orderId}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+      }
+    } catch (err) {
+      console.warn("API unavailable, deleting order locally:", err.message);
+    }
+    dispatch({ type: "DELETE", payload: orderId });
+    _saveLocal(state.orders.filter((o) => o.orderId !== orderId && o.id !== orderId));
+  };
+
   return (
-    <OrdersContext.Provider value={{ orders: state.orders, loading: state.loading, loadOrders, addOrder, changeStatus }}>
+    <OrdersContext.Provider value={{ orders: state.orders, loading: state.loading, loadOrders, addOrder, changeStatus, deleteOrder }}>
       {children}
     </OrdersContext.Provider>
   );

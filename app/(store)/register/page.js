@@ -1,10 +1,12 @@
 "use client";
 import { useState } from 'react';
 import Link from "next/link";
+import { useNotification } from '@/context/NotificationContext';
 
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const { addNotification } = useNotification();
   
   return (
     <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg, #040d1a 0%, #0a2540 60%, #0d3060 100%)", padding: "40px 16px" }}>
@@ -33,7 +35,7 @@ export default function RegisterPage() {
           
           // Simple validation
           if (password !== confirmPassword) {
-            alert('Passwords do not match');
+            addNotification('Passwords do not match', 'error', 5000);
             return;
           }
           
@@ -45,14 +47,16 @@ export default function RegisterPage() {
               body: JSON.stringify({ name, email, password })
             }).then(res => res.json()).then(data => {
               if (data.user) {
-                alert(data.message || 'Registration successful! Please check your email for verification.');
-                window.location.href = '/login';
+                addNotification(data.message || 'Registration successful! Please check your email for verification.', 'success', 5000);
+                setTimeout(() => {
+                  window.location.href = '/login';
+                }, 2000);
               } else {
-                alert(data.error || 'Registration failed');
+                addNotification(data.error || 'Registration failed', 'error', 5000);
               }
             }).catch((error) => {
               console.error('Registration error:', error);
-              alert('Registration failed');
+              addNotification('Registration failed. Please try again.', 'error', 5000);
             });
           }
         }}>

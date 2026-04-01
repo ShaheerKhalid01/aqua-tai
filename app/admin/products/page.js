@@ -17,6 +17,7 @@ export default function AdminProducts() {
   const [saving, setSaving] = useState(false);
   const [search, setSearch] = useState("");
   const [error, setError] = useState("");
+  const [selectedProducts, setSelectedProducts] = useState(new Set());
   const fileRef = useRef();
 
   useEffect(() => { 
@@ -118,6 +119,49 @@ export default function AdminProducts() {
     try { await removeProduct(id); } catch (err) { alert(err.message); }
   };
 
+  const handleSelectProduct = (productId) => {
+    const newSelected = new Set(selectedProducts);
+    if (newSelected.has(productId)) {
+      newSelected.delete(productId);
+    } else {
+      newSelected.add(productId);
+    }
+    setSelectedProducts(newSelected);
+  };
+  
+  const handleSelectAll = () => {
+    if (selectedProducts.size === filtered.length) {
+      setSelectedProducts(new Set());
+    } else {
+      setSelectedProducts(new Set(filtered.map(p => p._id)));
+    }
+  };
+  
+  const deleteSelectedProducts = async () => {
+    if (selectedProducts.size === 0) {
+      alert('No products selected');
+      return;
+    }
+    
+    if (!confirm(`Are you sure you want to delete ${selectedProducts.size} product(s)? This action cannot be undone.`)) {
+      return;
+    }
+    
+    try {
+      const deletePromises = Array.from(selectedProducts).map(productId =>
+        removeProduct(productId)
+      );
+      
+      await Promise.all(deletePromises);
+      alert(`Successfully deleted ${selectedProducts.size} product(s)`);
+      setSelectedProducts(new Set());
+      await loadProducts();
+    } catch (error) {
+      console.error('Error deleting products:', error);
+      alert('Failed to delete some products. Please try again.');
+    }
+  };
+
   const selectStyle = { width:"100%", background:"#f8fafc", border:"2px solid #e2e8f0", borderRadius:8, padding:"10px 14px", color:"#1a1a2e", fontSize:14, outline:"none", marginTop:6, cursor:"pointer", appearance:"none", backgroundImage:`url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%230057a8' d='M6 8L1 3h10z'/%3E%3C/svg%3E")`, backgroundRepeat:"no-repeat", backgroundPosition:"right 14px center" };
   const inputStyle = { width:"100%", background:"#f8fafc", border:"2px solid #e2e8f0", borderRadius:8, padding:"10px 14px", color:"#1a1a2e", fontSize:14, outline:"none", marginTop:6, transition:"border 0.2s" };
   const labelStyle = { color:"#475569", fontSize:13, fontWeight:600, display:"block", marginTop:16 };
@@ -125,19 +169,50 @@ export default function AdminProducts() {
   return (
     <div style={{ padding:32 }}>
       {/* Header */}
-      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:28 }}>
-        <div>
-          <h1 style={{ fontSize:28, fontWeight:900, color:"#1a1a2e", marginBottom:6 }}>Products</h1>
-          <p style={{ color:"#64748b", fontSize:14 }}>{products.length} products in store</p>
+      <div style={{ marginBottom:28 }}>
+        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:6 }}>
+          <div>
+            <h1 style={{ fontSize:28, fontWeight:900, color:"#1a1a2e", margin:0 }}>Products</h1>
+          </div>
+          <div style={{ display:"flex", gap:12, alignItems: "center" }}>
+            {selectedProducts.size > 0 && (
+              <>
+                <span style={{ color:"#64748b", fontSize:14 }}>
+                  {selectedProducts.size} selected
+                </span>
+                <button
+                  onClick={deleteSelectedProducts}
+                  style={{
+                    background: '#ef4444',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '8px',
+                    padding: '8px 16px',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease'
+                  }}
+                  onMouseEnter={e => {
+                    e.target.style.backgroundColor = '#dc2626';
+                  }}
+                  onMouseLeave={e => {
+                    e.target.style.backgroundColor = '#ef4444';
+                  }}
+                >
+                  Delete Selected
+                </button>
+              </>
+            )}
+            <button onClick={forceRefresh} style={{ background:"#f8fafc", color:"#64748b", border:"1px solid #e2e8f0", padding:"11px 22px", borderRadius:10, fontWeight:600, cursor:"pointer", fontSize:14, display:"flex", alignItems:"center", gap:8 }}>
+              🔄 Refresh
+            </button>
+            <button onClick={openAdd} style={{ background:"#0057a8", color:"#fff", border:"none", padding:"11px 22px", borderRadius:10, fontWeight:700, cursor:"pointer", fontSize:14, display:"flex", alignItems:"center", gap:8 }}>
+              ➕ Add Product
+            </button>
+          </div>
         </div>
-        <div style={{ display:"flex", gap:12 }}>
-          <button onClick={forceRefresh} style={{ background:"#f8fafc", color:"#64748b", border:"1px solid #e2e8f0", padding:"11px 22px", borderRadius:10, fontWeight:600, cursor:"pointer", fontSize:14, display:"flex", alignItems:"center", gap:8 }}>
-            🔄 Refresh
-          </button>
-          <button onClick={openAdd} style={{ background:"#0057a8", color:"#fff", border:"none", padding:"11px 22px", borderRadius:10, fontWeight:700, cursor:"pointer", fontSize:14, display:"flex", alignItems:"center", gap:8 }}>
-            ➕ Add Product
-          </button>
-        </div>
+        <p style={{ color:"#64748b", fontSize:14, margin:0 }}>{products.length} products in store</p>
       </div>
 
       {/* Search */}
@@ -166,6 +241,14 @@ export default function AdminProducts() {
           <table style={{ width:"100%", borderCollapse:"collapse" }}>
             <thead>
               <tr style={{ background:"#f8fafc" }}>
+                <th style={{ padding:"14px 16px", textAlign:"center", color:"#64748b", fontSize:11, fontWeight:700, letterSpacing:1, textTransform:"uppercase", borderBottom:"1px solid #e8f0fe", width: "60px" }}>
+                  <input
+                    type="checkbox"
+                    checked={selectedProducts.size === filtered.length && filtered.length > 0}
+                    onChange={handleSelectAll}
+                    style={{ cursor: 'pointer' }}
+                  />
+                </th>
                 {["Image","Product","Category","Price","Stock","Badge","Actions"].map(h => (
                   <th key={h} style={{ padding:"14px 16px", textAlign:"left", color:"#64748b", fontSize:11, fontWeight:700, letterSpacing:1, textTransform:"uppercase", borderBottom:"1px solid #e8f0fe" }}>{h}</th>
                 ))}
@@ -176,6 +259,14 @@ export default function AdminProducts() {
                 <tr key={p._id} style={{ borderBottom:"1px solid #f1f5f9", transition:"background 0.1s" }}
                   onMouseEnter={e=>e.currentTarget.style.background="#f8fafc"}
                   onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
+                  <td style={{ padding:"12px 16px", textAlign: "center" }}>
+                    <input
+                      type="checkbox"
+                      checked={selectedProducts.has(p._id)}
+                      onChange={() => handleSelectProduct(p._id)}
+                      style={{ cursor: 'pointer' }}
+                    />
+                  </td>
                   <td style={{ padding:"12px 16px" }}>
                     {p.images?.[0] ? (
                       <img src={p.images[0]} alt={p.name} style={{ width:52, height:52, objectFit:"cover", borderRadius:10, border:"1px solid #e8f0fe" }} />

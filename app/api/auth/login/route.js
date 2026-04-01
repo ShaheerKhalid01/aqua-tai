@@ -9,6 +9,10 @@ export async function POST(req) {
     await connectDB();
     const { email, password } = await req.json();
 
+    console.log('=== LOGIN ATTEMPT DEBUG ===');
+    console.log('Raw email:', email);
+    console.log('Password length:', password?.length || 0);
+
     // Input validation
     if (!email || !password) {
       return addSecurityHeaders(
@@ -17,6 +21,7 @@ export async function POST(req) {
     }
 
     const normalizedEmail = email.toLowerCase().trim();
+    console.log('Normalized email:', normalizedEmail);
 
     // Check rate limiting and login attempts
     const loginAttempt = trackLoginAttempt(normalizedEmail, false);
@@ -31,8 +36,15 @@ export async function POST(req) {
     }
 
     const user = await findUser(normalizedEmail);
+    console.log('Found user:', !!user);
+    if (user) {
+      console.log('User email:', user.email);
+      console.log('User emailVerified:', user.emailVerified);
+      console.log('Password starts with $2:', user.password?.startsWith("$2"));
+    }
 
     if (!user) {
+      console.log('❌ User not found');
       return addSecurityHeaders(
         NextResponse.json({ error: "Invalid email or password." }, { status: 401 })
       );
@@ -40,6 +52,7 @@ export async function POST(req) {
 
     // Check if email is verified
     if (!user.emailVerified) {
+      console.log('❌ Email not verified');
       return addSecurityHeaders(
         NextResponse.json({ 
           error: "Please verify your email before logging in. Check your inbox for the verification link.",
@@ -50,18 +63,23 @@ export async function POST(req) {
 
     // If password is not hashed (old localStorage data), reject clearly
     if (!user.password?.startsWith("$2")) {
+      console.log('❌ Password not hashed');
       return addSecurityHeaders(
         NextResponse.json({ error: "Account corrupted. Please register again." }, { status: 401 })
       );
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
+    console.log('Password comparison result:', isMatch);
 
     if (!isMatch) {
+      console.log('❌ Password does not match');
       return addSecurityHeaders(
         NextResponse.json({ error: "Invalid email or password." }, { status: 401 })
       );
     }
+
+    console.log('✅ Login successful');
 
     // Track successful login
     trackLoginAttempt(normalizedEmail, true);

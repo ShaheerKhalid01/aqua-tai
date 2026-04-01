@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { connectDB, getOrders, createOrder, updateOrder } from "@/lib/mongodb";
+import { connectDB, getOrders, createOrder, updateOrder, deleteOrder } from "@/lib/mongodb";
 import jwt from "jsonwebtoken";
 
 function verifyToken(req) {
@@ -63,6 +63,35 @@ export async function POST(req) {
 
   } catch (err) {
     console.error("Order error:", err);
+    return NextResponse.json({ error: "Server error: " + err.message }, { status: 500 });
+  }
+}
+
+// DELETE /api/orders — admin only
+export async function DELETE(req) {
+  const decoded = verifyToken(req);
+  if (!decoded || decoded.role !== "admin")
+    return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
+
+  try {
+    await connectDB();
+    const { searchParams } = new URL(req.url);
+    const orderId = searchParams.get('id');
+    
+    if (!orderId) {
+      return NextResponse.json({ error: "Order ID is required." }, { status: 400 });
+    }
+
+    const deletedOrder = await deleteOrder(orderId);
+    if (!deletedOrder) {
+      return NextResponse.json({ error: "Order not found." }, { status: 404 });
+    }
+
+    console.log("Order deleted:", orderId);
+    return NextResponse.json({ message: "Order deleted successfully.", order: deletedOrder });
+
+  } catch (err) {
+    console.error("Delete order error:", err);
     return NextResponse.json({ error: "Server error: " + err.message }, { status: 500 });
   }
 }

@@ -128,22 +128,6 @@
   ],
   "users": [
     {
-      "name": "Test User",
-      "email": "persistent@test.com",
-      "password": "$2b$14$0GDzBVZOkb76hFCLXqQoY.YrVpSHozu4hK7vsYBtmSNCby8s1rfDS",
-      "role": "client",
-      "createdAt": "2026-03-29T16:35:59.549Z",
-      "_id": "1774802159549"
-    },
-    {
-      "name": "shaheer khalid",
-      "email": "www.shaheerkhalid88603@gmail.com",
-      "password": "$2b$14$Enr/ILXRTUN8kQBX0sR51upYlvJ86BBse4gbaKi1L4q5Ufa23gZSm",
-      "role": "client",
-      "createdAt": "2026-03-29T16:39:03.794Z",
-      "_id": "1774802343794"
-    },
-    {
       "name": "Test Verified User",
       "email": "verified@test.com",
       "password": "$2b$14$jL1w3MWiHtKyV9VTVP.Wc.RxXBVpu8yFPbnVzDKrzHwmElDgTTpBu",
@@ -154,111 +138,12 @@
     },
     {
       "name": "shaheer khalid",
-      "email": "www.shaheerkhalid88605@gmail.com",
-      "password": "$2b$14$GAYN.pBYr8Eld793Y7/Od.nTvzopAHGLTncRoe07yFeG0vWbCc29u",
-      "role": "client",
-      "emailVerified": false,
-      "createdAt": "2026-03-29T17:13:02.404Z",
-      "_id": "1774804382404"
-    },
-    {
-      "name": "shaheer khalid",
-      "email": "www.shaheerkhalid88606@gmail.com",
-      "password": "$2b$14$es8rGb5UdUcfiTawyKWVMu/u5NdXXr3kF3cD79V6rt9nCYpexeAKO",
-      "role": "client",
-      "emailVerified": false,
-      "createdAt": "2026-03-29T17:20:29.933Z",
-      "_id": "1774804829933"
-    },
-    {
-      "name": "shaheer khalid",
       "email": "shaheerkhalid88606@gmail.com",
       "password": "$2b$14$K.rqhAhenLaQ0B1/8.Ekm.sGgzM8Oeoz4anKnPdsO8dbimDQSuMAG",
       "role": "client",
       "emailVerified": true,
       "createdAt": "2026-03-29T17:21:22.434Z",
       "_id": "1774804882434"
-    },
-    {
-      "name": "Test User",
-      "email": "test@gmail.com",
-      "password": "$2b$14$7.qze4acoTSPclp27/Yj/u25AITtEdcLlV4knbDJQq5de7AqrKxRa",
-      "role": "client",
-      "emailVerified": false,
-      "createdAt": "2026-03-29T17:31:15.941Z",
-      "_id": "1774805475942"
-    },
-    {
-      "name": "New Test User",
-      "email": "newtest@gmail.com",
-      "password": "$2b$14$ryCPc48aii7kZ8STsTs0iuEGiTB814N6pq8pzFrIIPumBYwKUlc0S",
-      "role": "client",
-      "emailVerified": false,
-      "createdAt": "2026-03-29T17:32:01.189Z",
-      "_id": "1774805521189"
-    },
-    {
-      "name": "Test User Gmail",
-      "email": "testuser@gmail.com",
-      "password": "$2b$14$BXmSxpT7JbnCl2AkhCXtPOW4zSbTJVjdJXmioaKIV580rNcCk4HuS",
-      "role": "client",
-      "emailVerified": false,
-      "createdAt": "2026-03-29T17:33:34.990Z",
-      "_id": "1774805614990"
-    },
-    {
-      "name": "New Gmail Test",
-      "email": "newgmailtest@gmail.com",
-      "password": "$2b$14$g8GcE2X66c97IakOP6YWb.t5Yq01ZNK93p3tSmcDB8whb1AUOfOPm",
-      "role": "client",
-      "emailVerified": false,
-      "createdAt": "2026-03-29T17:36:13.671Z",
-      "_id": "1774805773671"
-    },
-    {
-      "name": "Email Test User",
-      "email": "testemail123@gmail.com",
-      "password": "$2b$14$rgRoOIflmNrxnX86puszF.scuCGaDALzttJfGMQ15yQccNAyWHRcq",
-      "role": "client",
-      "emailVerified": false,
-      "createdAt": "2026-03-29T17:47:03.348Z",
-      "_id": "1774806423349"
-    },
-    {
-      "name": "Fresh Verification Test",
-      "email": "freshverification@gmail.com",
-      "password": "$2b$14$/gnU32aRJVx/T1HGLkIzMe92GCkCTBdfK4q0tJSPIHuxZOv4jsMAW",
-      "role": "client",
-      "emailVerified": false,
-      "createdAt": "2026-03-29T17:52:18.947Z",
-      "_id": "1774806738947"
-    },
-    {
-      "name": "Test User",
-      "email": "testuser123@gmail.com",
-      "password": "$2b$14$7I1FhMOSDHqAQHNh6C8FOOMo7iEiXL6hDynIb8Uar7czmB8fjdkxK",
-      "role": "client",
-      "emailVerified": false,
-      "createdAt": "2026-03-29T18:06:18.113Z",
-      "_id": "1774807578113"
-    },
-    {
-      "name": "shaheer khalid",
-      "email": "shaheerkhalid78601@gmail.com",
-      "password": "$2b$14$OEnldhK9O7Ldhr2as6B4weo8WIImeWL.FDRPPABgXZQylaCEKJyOa",
-      "role": "client",
-      "emailVerified": true,
-      "createdAt": "2026-03-29T18:09:22.854Z",
-      "_id": "1774807762854"
-    },
-    {
-      "name": "shaheer",
-      "email": "shaheerkhalid78602@gmail.com",
-      "password": "$2b$14$ZNy21iX2RbC916DKjQSi1en4lzUDlWhkMHbYCs7tMFKcItS37gN9.",
-      "role": "client",
-      "emailVerified": true,
-      "createdAt": "2026-03-30T01:38:59.050Z",
-      "_id": "1774834739050"
     },
     {
       "name": "shaheer khalid",
@@ -280,13 +165,44 @@
     },
     {
       "name": "shaheer khalid",
-      "email": "www.shaheerkhalid78601@gmail.com",
-      "password": "$2b$14$O0zPbNk4itWVyeDevAmUY.YJKNnvHvm3rKLq3B0NVClwxOq7hhso.",
+      "email": "shaheerkhalid78602@gmail.com",
+      "password": "$2b$14$KdLH6YdqD9RD2bQfOGXfoOxgzFnrB7H/x2Acd8t6C/bZj81B4qWOy",
       "role": "client",
-      "emailVerified": false,
-      "createdAt": "2026-04-01T05:17:13.727Z",
-      "_id": "1775020633727"
+      "emailVerified": true,
+      "createdAt": "2026-04-01T06:03:36.101Z",
+      "_id": "1775023416101"
+    },
+    {
+      "name": "shaheer khalid",
+      "email": "shaheerkhalid78601@gmail.com",
+      "password": "$2b$14$h7AHaJBQ/EuhDNg/jwVlYukuzkq6pV8Y5VZBxgTrvsk6A7LEUnSN.",
+      "role": "client",
+      "emailVerified": true,
+      "createdAt": "2026-04-01T06:24:16.966Z",
+      "_id": "1775024656966"
     }
   ],
-  "orders": []
+  "orders": [
+    {
+      "orderId": "ORD-935864",
+      "customer": "shaheer khalid",
+      "email": "www.shaheerkhalid88600@gmail.com",
+      "phone": "+923006737222",
+      "address": "863-76/13",
+      "city": "haleem colony",
+      "payment": "cod",
+      "total": 35000,
+      "items": [
+        {
+          "name": "7-Stage Reverse Osmosis System",
+          "qty": 1,
+          "price": 35000
+        }
+      ],
+      "status": "Pending",
+      "date": "2026-04-01",
+      "userId": "1774842129299",
+      "_id": "1775024935864"
+    }
+  ]
 }
