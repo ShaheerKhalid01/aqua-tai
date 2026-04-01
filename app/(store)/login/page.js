@@ -1,9 +1,31 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 
-export default function LoginPage() {
+function LoginPageContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // Handle Google OAuth callback
+  useEffect(() => {
+    const googleAuthSuccess = searchParams.get('google_auth_success');
+    const googleAuthError = searchParams.get('error');
+    const email = searchParams.get('email');
+
+    if (googleAuthSuccess === 'true' && email) {
+      setSuccess(`Successfully signed in with Google! Welcome ${email}`);
+      // In a real app, you would handle the token here
+      setTimeout(() => {
+        router.push('/');
+      }, 2000);
+    } else if (googleAuthError) {
+      setError(`Google sign-in failed: ${googleAuthError.replace(/_/g, ' ')}`);
+    }
+  }, [searchParams, router]);
   
   return (
     <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg, #040d1a 0%, #0a2540 60%, #0d3060 100%)", padding: "40px 16px" }}>
@@ -169,5 +191,25 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div style={{ 
+        minHeight: "100vh", 
+        display: "flex", 
+        alignItems: "center", 
+        justifyContent: "center", 
+        background: "linear-gradient(135deg, #040d1a 0%, #0a2540 60%, #0d3060 100%)",
+        color: "#fff",
+        fontSize: 16
+      }}>
+        Loading login page...
+      </div>
+    }>
+      <LoginPageContent />
+    </Suspense>
   );
 }
