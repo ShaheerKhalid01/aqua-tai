@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useNotification } from '@/context/NotificationContext';
+import { useNotifications } from '@/components/Notifications';
 import { formatPrice } from "@/lib/utils";
 
 export default function AdminCustomers() {
@@ -8,7 +8,7 @@ export default function AdminCustomers() {
   const [loading, setLoading] = useState(true);
   const [confirmDialog, setConfirmDialog] = useState(null);
   const [selectedCustomers, setSelectedCustomers] = useState(new Set());
-  const { addNotification } = useNotification();
+  const { success, error, warning } = useNotifications();
   
   useEffect(() => {
     fetchCustomers();
@@ -74,16 +74,16 @@ export default function AdminCustomers() {
       console.log('Delete response:', data);
       
       if (data.success) {
-        addNotification('Customer deleted successfully', 'success', 3000);
+        success('Customer deleted successfully');
         // Force refresh by clearing cache and refetching
         setCustomers([]);
         await fetchCustomers();
       } else {
-        addNotification(data.error || 'Failed to delete customer', 'error', 5000);
+        error(data.error || 'Failed to delete customer');
       }
     } catch (error) {
       console.error('Error deleting customer:', error);
-      addNotification('Failed to delete customer. Please try again.', 'error', 5000);
+      error('Failed to delete customer. Please try again.');
     }
   };
   
@@ -107,7 +107,7 @@ export default function AdminCustomers() {
   
   const deleteSelectedCustomers = async () => {
     if (selectedCustomers.size === 0) {
-      addNotification('No customers selected', 'warning', 3000);
+      warning('No customers selected');
       return;
     }
     
@@ -131,9 +131,9 @@ export default function AdminCustomers() {
       const failedDeletes = results.filter(res => !res.ok).length;
       
       if (failedDeletes === 0) {
-        addNotification(`Successfully deleted ${selectedCustomers.size} customer(s)`, 'success', 3000);
+        success(`Successfully deleted ${selectedCustomers.size} customer(s)`);
       } else {
-        addNotification(`Deleted ${selectedCustomers.size - failedDeletes} customer(s), ${failedDeletes} failed`, 'warning', 5000);
+        warning(`Deleted ${selectedCustomers.size - failedDeletes} customer(s), ${failedDeletes} failed`);
       }
       
       setSelectedCustomers(new Set());
@@ -141,7 +141,7 @@ export default function AdminCustomers() {
       await fetchCustomers();
     } catch (error) {
       console.error('Error deleting customers:', error);
-      addNotification('Failed to delete some customers. Please try again.', 'error', 5000);
+      error('Failed to delete some customers. Please try again.');
     }
   };
 

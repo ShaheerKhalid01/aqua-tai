@@ -1,12 +1,12 @@
 "use client";
 import { useState } from 'react';
 import Link from "next/link";
-import { useNotification } from '@/context/NotificationContext';
+import { useNotifications } from '@/components/Notifications';
 
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const { addNotification } = useNotification();
+  const { success, error } = useNotifications();
   
   return (
     <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg, #040d1a 0%, #0a2540 60%, #0d3060 100%)", padding: "40px 16px" }}>
@@ -35,7 +35,7 @@ export default function RegisterPage() {
           
           // Simple validation
           if (password !== confirmPassword) {
-            addNotification('Passwords do not match', 'error', 5000);
+            error('Passwords do not match');
             return;
           }
           
@@ -47,16 +47,16 @@ export default function RegisterPage() {
               body: JSON.stringify({ name, email, password })
             }).then(res => res.json()).then(data => {
               if (data.user) {
-                addNotification(data.message || 'Registration successful! Please check your email for verification.', 'success', 5000);
+                success(data.message || 'Registration successful! Please check your email for verification.');
                 setTimeout(() => {
                   window.location.href = '/login';
                 }, 2000);
               } else {
-                addNotification(data.error || 'Registration failed', 'error', 5000);
+                error(data.error || 'Registration failed');
               }
             }).catch((error) => {
               console.error('Registration error:', error);
-              addNotification('Registration failed. Please try again.', 'error', 5000);
+              error('Registration failed. Please try again.');
             });
           }
         }}>
