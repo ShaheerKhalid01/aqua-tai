@@ -277,6 +277,15 @@
       "emailVerified": true,
       "createdAt": "2026-03-30T03:42:09.299Z",
       "_id": "1774842129299"
+    },
+    {
+      "name": "shaheer khalid",
+      "email": "www.shaheerkhalid78601@gmail.com",
+      "password": "$2b$14$O0zPbNk4itWVyeDevAmUY.YJKNnvHvm3rKLq3B0NVClwxOq7hhso.",
+      "role": "client",
+      "emailVerified": false,
+      "createdAt": "2026-04-01T05:17:13.727Z",
+      "_id": "1775020633727"
     }
   ],
   "orders": []
