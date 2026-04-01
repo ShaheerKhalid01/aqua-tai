@@ -1,6 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useOrders } from "@/context/OrdersContext";
+import { useNotifications } from "@/components/Notifications";
+import { useConfirmDialog } from "@/components/ConfirmDialog";
 import { formatPrice } from "@/lib/utils";
 
 const statusColors = {
@@ -14,6 +16,8 @@ const allStatuses = ["Pending", "Processing", "Shipped", "Delivered", "Cancelled
 
 export default function AdminOrders() {
   const { orders, loading, loadOrders, changeStatus, deleteOrder } = useOrders();
+  const { success, error, warning } = useNotifications();
+  const { showConfirm } = useConfirmDialog();
   const [filter, setFilter] = useState("All");
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [selectedOrders, setSelectedOrders] = useState(new Set());
@@ -49,26 +53,60 @@ export default function AdminOrders() {
   
   const deleteSelectedOrders = async () => {
     if (selectedOrders.size === 0) {
-      alert('No orders selected');
+      warning('No orders selected');
       return;
     }
     
-    if (!confirm(`Are you sure you want to delete ${selectedOrders.size} order(s)? This action cannot be undone.`)) {
+    const confirmed = await showConfirm(`Are you sure you want to delete ${selectedOrders.size} order(s)? This action cannot be undone.`);
+    if (!confirmed) {
       return;
     }
     
     try {
+      console.log('=== DELETING MULTIPLE ORDERS ===');
+      console.log('Orders to delete:', Array.from(selectedOrders));
+      
       const deletePromises = Array.from(selectedOrders).map(orderId =>
         deleteOrder(orderId)
       );
       
       await Promise.all(deletePromises);
-      alert(`Successfully deleted ${selectedOrders.size} order(s)`);
+      success(`Successfully deleted ${selectedOrders.size} order(s)`);
       setSelectedOrders(new Set());
-      await loadOrders();
+      
+      console.log('✅ Bulk delete completed, not reloading to prevent restoration');
+      
+      // Don't call loadOrders() here as it might restore the deleted orders
+      // The local state should already be updated by the deleteOrder function
+      
     } catch (error) {
       console.error('Error deleting orders:', error);
-      alert('Failed to delete some orders. Please try again.');
+      error('Failed to delete some orders. Please try again.');
+    }
+  };
+
+  const deleteSingleOrder = async (orderId) => {
+    const confirmed = await showConfirm('Are you sure you want to delete this order? This action cannot be undone.');
+    if (!confirmed) {
+      return;
+    }
+    
+    try {
+      console.log('=== DELETING SINGLE ORDER ===');
+      console.log('Order ID:', orderId);
+      
+      await deleteOrder(orderId);
+      success('Order deleted successfully');
+      setSelectedOrder(null);
+      
+      console.log('✅ Order deleted successfully, not reloading to prevent restoration');
+      
+      // Don't call loadOrders() here as it might restore the deleted order
+      // The local state should already be updated by the deleteOrder function
+      
+    } catch (error) {
+      console.error('Error deleting order:', error);
+      error('Failed to delete order. Please try again.');
     }
   };
 
@@ -135,22 +173,27 @@ export default function AdminOrders() {
             <p>No orders found.</p>
           </div>
         ) : (
-          <table style={{ width: "100%", borderCollapse: "collapse" }}>
-            <thead>
-              <tr style={{ background: "#f8fafc" }}>
-                <th style={{ padding: "14px 20px", textAlign: "center", color: "#64748b", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", borderBottom: "1px solid #e8f0fe", width: "60px" }}>
-                  <input
-                    type="checkbox"
-                    checked={selectedOrders.size === filtered.length && filtered.length > 0}
-                    onChange={handleSelectAll}
-                    style={{ cursor: 'pointer' }}
-                  />
-                </th>
-                {["Order ID", "Customer", "Date", "Items", "Total", "Status", "Actions"].map(h => (
-                  <th key={h} style={{ padding: "14px 20px", textAlign: "left", color: "#64748b", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", borderBottom: "1px solid #e8f0fe" }}>{h}</th>
-                ))}
-              </tr>
-            </thead>
+          <div style={{ overflowX: "auto", overflowY: "visible" }}>
+            <table style={{ width: "100%", minWidth: "1000px", borderCollapse: "collapse" }}>
+              <thead>
+                <tr style={{ background: "#f8fafc" }}>
+                  <th style={{ padding: "14px 16px", textAlign: "center", color: "#64748b", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", borderBottom: "1px solid #e8f0fe", width: "60px", minWidth: "60px" }}>
+                    <input
+                      type="checkbox"
+                      checked={selectedOrders.size === filtered.length && filtered.length > 0}
+                      onChange={handleSelectAll}
+                      style={{ cursor: 'pointer' }}
+                    />
+                  </th>
+                  <th style={{ padding: "14px 16px", textAlign: "left", color: "#64748b", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", borderBottom: "1px solid #e8f0fe", width: "120px", minWidth: "120px" }}>Order ID</th>
+                  <th style={{ padding: "14px 16px", textAlign: "left", color: "#64748b", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", borderBottom: "1px solid #e8f0fe", width: "200px", minWidth: "200px" }}>Customer</th>
+                  <th style={{ padding: "14px 16px", textAlign: "left", color: "#64748b", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", borderBottom: "1px solid #e8f0fe", width: "100px", minWidth: "100px" }}>Date</th>
+                  <th style={{ padding: "14px 16px", textAlign: "left", color: "#64748b", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", borderBottom: "1px solid #e8f0fe", width: "80px", minWidth: "80px" }}>Items</th>
+                  <th style={{ padding: "14px 16px", textAlign: "left", color: "#64748b", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", borderBottom: "1px solid #e8f0fe", width: "100px", minWidth: "100px" }}>Total</th>
+                  <th style={{ padding: "14px 16px", textAlign: "left", color: "#64748b", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", borderBottom: "1px solid #e8f0fe", width: "100px", minWidth: "100px" }}>Status</th>
+                  <th style={{ padding: "14px 16px", textAlign: "left", color: "#64748b", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", borderBottom: "1px solid #e8f0fe", width: "240px", minWidth: "240px" }}>Actions</th>
+                </tr>
+              </thead>
             <tbody>
               {filtered.map((order, i) => {
                 const sc = statusColors[order.status] || statusColors.Pending;
@@ -159,7 +202,7 @@ export default function AdminOrders() {
                   <tr key={oid} style={{ borderBottom: "1px solid #f1f5f9", transition: "background 0.1s" }}
                     onMouseEnter={e => e.currentTarget.style.background = "#f8fafc"}
                     onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
-                    <td style={{ padding: "14px 20px", textAlign: "center" }}>
+                    <td style={{ padding: "14px 16px", textAlign: "center" }}>
                       <input
                         type="checkbox"
                         checked={selectedOrders.has(oid)}
@@ -167,23 +210,23 @@ export default function AdminOrders() {
                         style={{ cursor: 'pointer' }}
                       />
                     </td>
-                    <td style={{ padding: "14px 20px" }}>
+                    <td style={{ padding: "14px 16px" }}>
                       <span style={{ color: "#0057a8", fontWeight: 700, fontSize: 13 }}>{oid}</span>
                       {i === 0 && <span style={{ marginLeft: 6, background: "#f0fdf4", color: "#16a34a", fontSize: 9, fontWeight: 700, padding: "2px 6px", borderRadius: 4, border: "1px solid #bbf7d0" }}>NEW</span>}
                     </td>
-                    <td style={{ padding: "14px 20px" }}>
+                    <td style={{ padding: "14px 16px" }}>
                       <div style={{ fontWeight: 600, fontSize: 13, color: "#1a1a2e" }}>{order.customer}</div>
                       <div style={{ color: "#94a3b8", fontSize: 11 }}>{order.email}</div>
                       {order.city && <div style={{ color: "#94a3b8", fontSize: 11 }}>📍 {order.city}</div>}
                     </td>
-                    <td style={{ padding: "14px 20px", color: "#64748b", fontSize: 12 }}>{order.date}</td>
-                    <td style={{ padding: "14px 20px", color: "#64748b", fontSize: 13 }}>{order.items?.length || 0} item{order.items?.length !== 1 ? "s" : ""}</td>
-                    <td style={{ padding: "14px 20px", fontWeight: 700, color: "#1a1a2e", fontSize: 14 }}>{formatPrice(order.total)}</td>
-                    <td style={{ padding: "14px 20px" }}>
+                    <td style={{ padding: "14px 16px", color: "#64748b", fontSize: 12 }}>{order.date}</td>
+                    <td style={{ padding: "14px 16px", color: "#64748b", fontSize: 13 }}>{order.items?.length || 0} item{order.items?.length !== 1 ? "s" : ""}</td>
+                    <td style={{ padding: "14px 16px", fontWeight: 700, color: "#1a1a2e", fontSize: 14 }}>{formatPrice(order.total)}</td>
+                    <td style={{ padding: "14px 16px" }}>
                       <span style={{ background: sc.bg, color: sc.color, border: `1px solid ${sc.border}`, padding: "4px 12px", borderRadius: 20, fontSize: 11, fontWeight: 700 }}>{order.status}</span>
                     </td>
-                    <td style={{ padding: "14px 20px" }}>
-                      <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+                    <td style={{ padding: "14px 16px" }}>
+                      <div style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
                         <button onClick={() => setSelectedOrder(order)}
                           style={{ background: "#eff6ff", border: "1px solid #bfdbfe", color: "#0057a8", padding: "5px 12px", borderRadius: 6, cursor: "pointer", fontSize: 12, fontWeight: 600 }}>View</button>
                         <select value={order.status} onChange={e => updateStatus(oid, e.target.value)}
@@ -194,6 +237,8 @@ export default function AdminOrders() {
                           <button onClick={() => updateStatus(oid, "Cancelled")}
                             style={{ background: "#fff5f5", border: "1px solid #fecaca", color: "#dc2626", padding: "5px 10px", borderRadius: 6, cursor: "pointer", fontSize: 11, fontWeight: 600 }}>Cancel</button>
                         )}
+                        <button onClick={() => deleteSingleOrder(oid)}
+                          style={{ background: "#fee2e2", border: "1px solid #fecaca", color: "#dc2626", padding: "5px 10px", borderRadius: 6, cursor: "pointer", fontSize: 11, fontWeight: 600 }}>Delete</button>
                       </div>
                     </td>
                   </tr>
@@ -201,6 +246,7 @@ export default function AdminOrders() {
               })}
             </tbody>
           </table>
+        </div>
         )}
       </div>
 
@@ -257,6 +303,13 @@ export default function AdminOrders() {
                   );
                 })}
               </div>
+            </div>
+
+            <div style={{ marginTop: 20, paddingTop: 16, borderTop: "1px solid #e2e8f0" }}>
+              <button onClick={() => deleteSingleOrder(selectedOrder.orderId || selectedOrder.id)}
+                style={{ background: "#dc2626", color: "white", border: "none", padding: "10px 20px", borderRadius: 8, cursor: "pointer", fontSize: 14, fontWeight: 600, width: "100%" }}>
+                🗑️ Delete Order
+              </button>
             </div>
           </div>
         </div>

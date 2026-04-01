@@ -43,8 +43,24 @@ export function ProductsProvider({ children }) {
   };
 
   const removeProduct = async (id) => {
-    await deleteProduct(id);
-    dispatch({ type: "DELETE", payload: id });
+    console.log('=== PRODUCTS CONTEXT REMOVE PRODUCT ===');
+    console.log('Product ID to remove:', id);
+    console.log('Current products in context:', state.products.length);
+    
+    try {
+      console.log('Making API call to delete product...');
+      const data = await deleteProduct(id);
+      console.log('✅ API delete successful:', data);
+      
+      // Update local state after successful API call
+      dispatch({ type: "DELETE", payload: id });
+      console.log('Products after delete:', state.products.length);
+      console.log('✅ Product removal completed');
+      
+    } catch (err) {
+      console.error('❌ Failed to delete product:', err.message);
+      throw err; // Re-throw to let the calling function handle the error
+    }
   };
 
   return (

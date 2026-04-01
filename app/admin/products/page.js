@@ -3,6 +3,8 @@ import { useState, useEffect, useRef } from "react";
 import { useProducts } from "@/context/ProductsContext";
 import { uploadImage } from "@/lib/api";
 import { formatPrice } from "@/lib/utils";
+import { useNotifications } from "@/components/Notifications";
+import { useConfirmDialog } from "@/components/ConfirmDialog";
 
 const CATEGORIES = ["Reverse Osmosis System","Cartridges & Accessories","Whole House Water Softener","Domestic Water Filter","Commercial Water Plants"];
 const BADGES = ["","Best Seller","Popular","Premium","New","Top Rated"];
@@ -10,13 +12,15 @@ const emptyForm = { name:"", category:"", price:"", originalPrice:"", stock:"", 
 
 export default function AdminProducts() {
   const { products, loading, loadProducts, addProduct, editProduct, removeProduct } = useProducts();
+  const { success: showSuccess, error: showError, warning: showWarning } = useNotifications();
+  const { showConfirm } = useConfirmDialog();
   const [showModal, setShowModal] = useState(false);
   const [editId, setEditId] = useState(null);
   const [form, setForm] = useState(emptyForm);
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [search, setSearch] = useState("");
-  const [error, setError] = useState("");
+  const [formError, setFormError] = useState("");
   const [selectedProducts, setSelectedProducts] = useState(new Set());
   const fileRef = useRef();
 
@@ -139,11 +143,12 @@ export default function AdminProducts() {
   
   const deleteSelectedProducts = async () => {
     if (selectedProducts.size === 0) {
-      alert('No products selected');
+      showWarning('No products selected');
       return;
     }
     
-    if (!confirm(`Are you sure you want to delete ${selectedProducts.size} product(s)? This action cannot be undone.`)) {
+    const confirmed = await showConfirm(`Are you sure you want to delete ${selectedProducts.size} product(s)? This action cannot be undone.`);
+    if (!confirmed) {
       return;
     }
     
@@ -153,12 +158,12 @@ export default function AdminProducts() {
       );
       
       await Promise.all(deletePromises);
-      alert(`Successfully deleted ${selectedProducts.size} product(s)`);
+      showSuccess(`Successfully deleted ${selectedProducts.size} product(s)`);
       setSelectedProducts(new Set());
       await loadProducts();
     } catch (error) {
       console.error('Error deleting products:', error);
-      alert('Failed to delete some products. Please try again.');
+      showError('Failed to delete some products. Please try again.');
     }
   };
 

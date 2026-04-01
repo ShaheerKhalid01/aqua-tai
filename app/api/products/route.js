@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { connectDB, getProducts, createProduct } from "@/lib/mongodb";
+import { connectDB, getProducts, createProduct, deleteProduct } from "@/lib/mongodb";
 import jwt from "jsonwebtoken";
 
 function verifyAdmin(req) {
@@ -67,5 +67,41 @@ export async function POST(req) {
     return NextResponse.json({ message: "Product created.", product }, { status: 201 });
   } catch (err) {
     return NextResponse.json({ error: err.message }, { status: 500 });
+  }
+}
+
+// DELETE /api/products — admin only, delete product
+export async function DELETE(req) {
+  console.log('=== DELETE PRODUCT API CALLED ===');
+  
+  if (!verifyAdmin(req)) {
+    console.log('❌ Unauthorized access attempt');
+    return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
+  }
+
+  try {
+    await connectDB();
+    const { searchParams } = new URL(req.url);
+    const productId = searchParams.get('id');
+    
+    console.log('Product ID to delete:', productId);
+    
+    if (!productId) {
+      console.log('❌ No product ID provided');
+      return NextResponse.json({ error: "Product ID is required." }, { status: 400 });
+    }
+
+    const deletedProduct = await deleteProduct(productId);
+    if (!deletedProduct) {
+      console.log('❌ Product not found:', productId);
+      return NextResponse.json({ error: "Product not found." }, { status: 404 });
+    }
+
+    console.log('✅ Product deleted successfully:', productId);
+    return NextResponse.json({ message: "Product deleted successfully.", product: deletedProduct });
+
+  } catch (err) {
+    console.error('❌ Delete product error:', err);
+    return NextResponse.json({ error: "Server error: " + err.message }, { status: 500 });
   }
 }

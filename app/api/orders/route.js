@@ -69,29 +69,37 @@ export async function POST(req) {
 
 // DELETE /api/orders — admin only
 export async function DELETE(req) {
+  console.log('=== DELETE ORDER API CALLED ===');
+  
   const decoded = verifyToken(req);
-  if (!decoded || decoded.role !== "admin")
+  if (!decoded || decoded.role !== "admin") {
+    console.log('❌ Unauthorized access attempt');
     return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
+  }
 
   try {
     await connectDB();
     const { searchParams } = new URL(req.url);
     const orderId = searchParams.get('id');
     
+    console.log('Order ID to delete:', orderId);
+    
     if (!orderId) {
+      console.log('❌ No order ID provided');
       return NextResponse.json({ error: "Order ID is required." }, { status: 400 });
     }
 
     const deletedOrder = await deleteOrder(orderId);
     if (!deletedOrder) {
+      console.log('❌ Order not found:', orderId);
       return NextResponse.json({ error: "Order not found." }, { status: 404 });
     }
 
-    console.log("Order deleted:", orderId);
+    console.log('✅ Order deleted successfully:', orderId);
     return NextResponse.json({ message: "Order deleted successfully.", order: deletedOrder });
 
   } catch (err) {
-    console.error("Delete order error:", err);
+    console.error('❌ Delete order error:', err);
     return NextResponse.json({ error: "Server error: " + err.message }, { status: 500 });
   }
 }

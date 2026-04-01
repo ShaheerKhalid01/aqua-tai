@@ -3,7 +3,8 @@ import { CartProvider } from "@/context/CartContext";
 import { AuthProvider } from "@/context/AuthContext";
 import { OrdersProvider } from "@/context/OrdersContext";
 import { ProductsProvider } from "@/context/ProductsContext";
-import { NotificationProvider } from "@/context/NotificationContext";
+import { NotificationProvider } from "@/components/Notifications";
+import { ConfirmDialogProvider } from "@/components/ConfirmDialog";
 
 export const metadata = {
   title: "Aqua R.O Water Filter - Pure Water Solutions",
@@ -14,17 +15,19 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <NotificationProvider>
-          <AuthProvider>
-            <ProductsProvider>
-              <OrdersProvider>
-                <CartProvider>
-                  {children}
-                </CartProvider>
-              </OrdersProvider>
-            </ProductsProvider>
-          </AuthProvider>
-        </NotificationProvider>
+        <ConfirmDialogProvider>
+          <NotificationProvider>
+            <AuthProvider>
+              <ProductsProvider>
+                <OrdersProvider>
+                  <CartProvider>
+                    {children}
+                  </CartProvider>
+                </OrdersProvider>
+              </ProductsProvider>
+            </AuthProvider>
+          </NotificationProvider>
+        </ConfirmDialogProvider>
       </body>
     </html>
   );

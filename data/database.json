@@ -1,31 +1,6 @@
 {
   "products": [
     {
-      "_id": "product-1",
-      "name": "7-Stage Reverse Osmosis System",
-      "slug": "7-stage-reverse-osmosis-system",
-      "category": "Reverse Osmosis System",
-      "price": 35000,
-      "originalPrice": 45000,
-      "stock": 15,
-      "description": "Advanced 7-stage RO system with UV and mineral filters for pure, healthy drinking water.",
-      "features": [
-        "7-Stage Filtration",
-        "UV Sterilization",
-        "Mineral Addition",
-        "100 GPD Capacity",
-        "3-Year Warranty",
-        "Professional Installation"
-      ],
-      "images": [
-        "/1.jpeg"
-      ],
-      "badge": "Best Seller",
-      "rating": 4.8,
-      "reviews": 127,
-      "active": true
-    },
-    {
       "_id": "product-2",
       "name": "Domestic Water Filter 5-Stage",
       "slug": "domestic-water-filter-5-stage",
@@ -128,24 +103,6 @@
   ],
   "users": [
     {
-      "name": "Test Verified User",
-      "email": "verified@test.com",
-      "password": "$2b$14$jL1w3MWiHtKyV9VTVP.Wc.RxXBVpu8yFPbnVzDKrzHwmElDgTTpBu",
-      "role": "client",
-      "emailVerified": true,
-      "createdAt": "2026-03-29T17:10:06.060Z",
-      "_id": "1774804206061"
-    },
-    {
-      "name": "shaheer khalid",
-      "email": "shaheerkhalid88606@gmail.com",
-      "password": "$2b$14$K.rqhAhenLaQ0B1/8.Ekm.sGgzM8Oeoz4anKnPdsO8dbimDQSuMAG",
-      "role": "client",
-      "emailVerified": true,
-      "createdAt": "2026-03-29T17:21:22.434Z",
-      "_id": "1774804882434"
-    },
-    {
       "name": "shaheer khalid",
       "email": "shaheerkhalid88602@gmail.com",
       "password": "$2b$14$D67x9EJFfAoOTWHOJ9RugO1XRfFm8hbhy8snz.WY2ce0vj/gptt0O",
@@ -203,6 +160,69 @@
       "date": "2026-04-01",
       "userId": "1774842129299",
       "_id": "1775024935864"
+    },
+    {
+      "orderId": "ORD-123456",
+      "customer": "Test Customer 1",
+      "email": "test1@example.com",
+      "phone": "+1234567890",
+      "address": "123 Test Street",
+      "city": "Test City",
+      "payment": "cod",
+      "total": 25000,
+      "items": [
+        {
+          "name": "Domestic Water Filter 5-Stage",
+          "qty": 1,
+          "price": 25000
+        }
+      ],
+      "status": "Processing",
+      "date": "2026-04-01",
+      "userId": "1774842129299",
+      "_id": "1775024935865"
+    },
+    {
+      "orderId": "ORD-789012",
+      "customer": "Test Customer 2",
+      "email": "test2@example.com",
+      "phone": "+0987654321",
+      "address": "456 Test Avenue",
+      "city": "Test Town",
+      "payment": "bank",
+      "total": 45000,
+      "items": [
+        {
+          "name": "Commercial RO System",
+          "qty": 1,
+          "price": 45000
+        }
+      ],
+      "status": "Shipped",
+      "date": "2026-04-01",
+      "userId": "1774842129299",
+      "_id": "1775024935866"
+    },
+    {
+      "orderId": "ORD-345678",
+      "customer": "Test Customer 3",
+      "email": "test3@example.com",
+      "phone": "+1122334455",
+      "address": "789 Test Boulevard",
+      "city": "Test Village",
+      "payment": "cod",
+      "total": 15000,
+      "items": [
+        {
+          "name": "Water Filter Cartridge",
+          "qty": 2,
+          "price": 7500
+        }
+      ],
+      "status": "Delivered",
+      "date": "2026-04-01",
+      "userId": "1774842129299",
+      "_id": "1775024935867"
     }
   ]
 }

@@ -81,22 +81,47 @@ export function OrdersProvider({ children }) {
 
   // Delete order — tries API, always updates locally too
   const deleteOrder = async (orderId) => {
+    console.log('=== ORDERS CONTEXT DELETE ORDER ===');
+    console.log('Order ID to delete:', orderId);
+    console.log('Current orders in context:', state.orders.length);
+    
     try {
       const token = localStorage.getItem('token');
       if (token) {
-        await fetch(`/api/orders?id=${orderId}`, {
+        console.log('Making API call to delete order...');
+        const response = await fetch(`/api/orders?id=${orderId}`, {
           method: 'DELETE',
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
           }
         });
+        
+        console.log('API response status:', response.status);
+        
+        if (!response.ok) {
+          throw new Error(`API error: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log('✅ API delete successful:', data);
+      } else {
+        console.log('No token found, skipping API call');
       }
     } catch (err) {
-      console.warn("API unavailable, deleting order locally:", err.message);
+      console.warn("❌ API unavailable, deleting order locally:", err.message);
+      throw err; // Re-throw to let the calling function handle the error
     }
+    
+    console.log('Updating local state...');
+    console.log('Orders before delete:', state.orders.length);
+    
+    // Only update local state if API call succeeded or we're in fallback mode
     dispatch({ type: "DELETE", payload: orderId });
     _saveLocal(state.orders.filter((o) => o.orderId !== orderId && o.id !== orderId));
+    
+    console.log('Orders after delete:', state.orders.length);
+    console.log('✅ Order deletion completed');
   };
 
   return (
