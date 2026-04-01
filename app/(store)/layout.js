@@ -8,15 +8,15 @@ import "../globals.css";
 export default function StoreLayout({ children }) {
   const pathname = usePathname();
   
-  // Hide navbar, footer, and WhatsApp button on login page
-  const isLoginPage = pathname === "/login";
+  // Hide navbar, footer, and WhatsApp button on login and register pages
+  const isAuthPage = pathname === "/login" || pathname === "/register";
   
   return (
     <>
-      {!isLoginPage && <Navbar />}
+      {!isAuthPage && <Navbar />}
       <main>{children}</main>
-      {!isLoginPage && <Footer />}
-      {!isLoginPage && <WhatsAppButton />}
+      {!isAuthPage && <Footer />}
+      {!isAuthPage && <WhatsAppButton />}
     </>
   );
 }
