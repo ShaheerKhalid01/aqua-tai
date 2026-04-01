@@ -98,23 +98,27 @@ export default function LoginPage() {
             </button>
           </div>
 
-          <button 
-            type="submit"
-            style={{ 
-              width: "100%", 
-              background: "linear-gradient(135deg,#00b4ff,#0066cc)", 
-              color: "#fff", 
-              border: "none", 
-              padding: "13px 0", 
-              borderRadius: 11, 
-              fontWeight: 700, 
-              fontSize: 15, 
-              cursor: "pointer", 
-              marginBottom: 16 
-            }}
-          >
-            Sign In →
-          </button>
+          <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "20px" }}>
+            <button 
+              type="submit"
+              style={{ 
+                flex: 1,
+                background: "linear-gradient(135deg,#00b4ff,#0066cc)", 
+                color: "#fff", 
+                border: "none", 
+                padding: "13px 0", 
+                borderRadius: 11, 
+                fontWeight: 700, 
+                fontSize: 15, 
+                cursor: "pointer" 
+              }}
+            >
+              Sign In →
+            </button>
+            <span style={{ color: "#64748b", fontSize: 13 }}>
+              Don't have an account? <a href="/register" style={{ color: "#00b4ff", textDecoration: "none", fontWeight: 600 }}>Register</a>
+            </span>
+          </div>
         </form>
 
         <div style={{ textAlign: "center", margin: "20px 0" }}>
@@ -165,10 +169,6 @@ export default function LoginPage() {
           </svg>
           Continue with Google
         </button>
-
-        <p style={{ textAlign: "center", color: "#64748b", fontSize: 13, marginBottom: 12 }}>
-          Don't have an account? <a href="/register" style={{ color: "#00b4ff", textDecoration: "none", fontWeight: 600 }}>Register</a>
-        </p>
 
         <div style={{ textAlign: "center" }}>
           <a href="/forgot-password" style={{ color: "#00b4ff", textDecoration: "none", fontWeight: 600, fontSize: 13 }}>
