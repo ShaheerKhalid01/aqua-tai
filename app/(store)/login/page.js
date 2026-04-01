@@ -1,7 +1,10 @@
 "use client";
 import Link from "next/link";
+import { useState } from "react";
 
 export default function LoginPage() {
+  const [loading, setLoading] = useState(false);
+  
   return (
     <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg, #040d1a 0%, #0a2540 60%, #0d3060 100%)", padding: "40px 16px" }}>
       <div style={{ width: "100%", maxWidth: 400, background: "linear-gradient(145deg, #0d2545, #0a1e35)", border: "1px solid rgba(0,180,255,0.18)", borderRadius: 20, padding: 36 }}>
@@ -25,6 +28,7 @@ export default function LoginPage() {
           const email = formData.get('email');
           const password = formData.get('password');
           
+          setLoading(true);
           fetch('/api/auth/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -37,7 +41,7 @@ export default function LoginPage() {
             } else {
               alert(data.error || 'Login failed');
             }
-          }).catch(() => alert('Login failed'));
+          }).catch(() => alert('Login failed')).finally(() => setLoading(false));
         }}>
           <div style={{ marginBottom: 16 }}>
             <input 
@@ -79,20 +83,21 @@ export default function LoginPage() {
 
           <button 
             type="submit"
+            disabled={loading}
             style={{ 
               width: "100%", 
-              background: "linear-gradient(135deg,#00b4ff,#0066cc)", 
+              background: loading ? "rgba(0,180,255,0.4)" : "linear-gradient(135deg,#00b4ff,#0066cc)", 
               color: "#fff", 
               border: "none", 
               padding: "13px 0", 
               borderRadius: 11, 
               fontWeight: 700, 
               fontSize: 15, 
-              cursor: "pointer", 
+              cursor: loading ? "not-allowed" : "pointer", 
               marginBottom: 16 
             }}
           >
-            Sign In →
+            {loading ? "Signing in..." : "Sign In →"}
           </button>
         </form>
 
@@ -106,8 +111,30 @@ export default function LoginPage() {
         
         <button 
           type="button"
-          onClick={() => {
-            alert('Google sign-in is not available at the moment. Please use email login.');
+          onClick={async () => {
+            setLoading(true);
+            try {
+              // Try to use Google sign-in if available
+              const response = await fetch('/api/auth/google', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+              });
+              
+              const data = await response.json();
+              
+              if (response.ok && data.url) {
+                // Redirect to Google OAuth
+                window.location.href = data.url;
+              } else {
+                // Fallback to manual Google sign-in process
+                alert('Google sign-in is being set up. Please try again in a few minutes or use email login.');
+              }
+            } catch (error) {
+              console.error('Google sign-in error:', error);
+              alert('Google sign-in temporarily unavailable. Please use email login.');
+            } finally {
+              setLoading(false);
+            }
           }}
           style={{ 
             width: "100%", 
@@ -131,7 +158,7 @@ export default function LoginPage() {
             <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
             <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
           </svg>
-          Continue with Google
+          {loading ? "Connecting..." : "Continue with Google"}
         </button>
 
         <div style={{ textAlign: "center" }}>
