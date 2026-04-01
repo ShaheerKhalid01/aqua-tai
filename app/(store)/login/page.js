@@ -1,6 +1,10 @@
 "use client";
 
+import { useState } from 'react';
+
 export default function LoginPage() {
+  const [showPassword, setShowPassword] = useState(false);
+  
   return (
     <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg, #040d1a 0%, #0a2540 60%, #0d3060 100%)", padding: "40px 16px" }}>
       <div style={{ width: "100%", maxWidth: 400, background: "linear-gradient(145deg, #0d2545, #0a1e35)", border: "1px solid rgba(0,180,255,0.18)", borderRadius: 20, padding: 36 }}>
@@ -52,7 +56,7 @@ export default function LoginPage() {
             />
           </div>
           
-          <div style={{ marginBottom: 24 }}>
+          <div style={{ marginBottom: 24, position: "relative" }}>
             <input 
               name="password"
               style={{ 
@@ -63,12 +67,35 @@ export default function LoginPage() {
                 padding: "12px 16px", 
                 color: "#fff", 
                 fontSize: 14, 
-                outline: "none" 
+                outline: "none",
+                paddingRight: "45px"
               }} 
-              type="password" 
+              type={showPassword ? "text" : "password"}
               placeholder="••••••" 
               required
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              style={{
+                position: "absolute",
+                right: "12px",
+                top: "50%",
+                transform: "translateY(-50%)",
+                background: "none",
+                border: "none",
+                color: "#00b4ff",
+                cursor: "pointer",
+                fontSize: "14px",
+                padding: "4px",
+                borderRadius: "4px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center"
+              }}
+            >
+              {showPassword ? "👁️" : "👁️‍🗨️"}
+            </button>
           </div>
 
           <button 
