@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET(request: NextRequest) {
+export async function GET(request) {
   try {
     const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } = process.env;
     
