@@ -2,7 +2,6 @@
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams, Suspense } from "next/navigation";
 import Link from "next/link";
-import { useAuth } from "@/context/AuthContext";
 
 // Force dynamic rendering to skip static generation
 export const dynamic = 'force-dynamic';
@@ -10,7 +9,11 @@ export const dynamic = 'force-dynamic';
 function LoginPageContent() {
   // Safe auth context access with fallbacks
   let login, register, googleSignIn;
+  
+  // Try to get auth context, but don't crash if it fails
   try {
+    // Dynamic import to avoid build issues
+    const { useAuth } = require("@/context/AuthContext");
     const auth = useAuth();
     login = auth.login;
     register = auth.register;
