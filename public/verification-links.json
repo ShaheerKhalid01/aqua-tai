@@ -36,19 +36,10 @@
     "userName": "shaheer khalid"
   },
   {
-    "email": "www.shaheerkhalid88605@gmail.com",
-    "url": "http://localhost:3000/verify-email/k7M7P25fXYFhAkro5fmhRFGGA389ZqOs?email=www.shaheerkhalid88605@gmail.com",
-    "token": "k7M7P25fXYFhAkro5fmhRFGGA389ZqOs",
-    "expiry": "2026-03-30T17:13:02.411Z",
-    "created": "2026-03-29T17:13:02.411Z",
-    "type": "email-verification",
-    "userName": "shaheer khalid"
-  },
-  {
     "email": "verified@test.com",
     "url": "http://localhost:3000/verify-email/yk33SCHm5cbhOoOcFOMyQhjkTOA0YUOn?email=verified@test.com",
     "token": "yk33SCHm5cbhOoOcFOMyQhjkTOA0YUOn",
-    "expiry": "2026-03-30T17:10:06.064Z",
+    "expiry": "2026-03-30T17:13:02.411Z",
     "created": "2026-03-29T17:10:06.064Z",
     "type": "email-verification",
     "userName": "Test Verified User"
