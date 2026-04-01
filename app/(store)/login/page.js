@@ -163,27 +163,34 @@ function LoginPageContent() {
           type="button"
           onClick={async () => {
             setLoading(true);
+            setError('');
             try {
-              // Try to use Google sign-in if available
+              console.log('Attempting Google sign-in...');
               const response = await fetch('/api/auth/google', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
               });
               
+              console.log('Response status:', response.status);
+              console.log('Response headers:', response.headers.get('content-type'));
+              
               // Check if response is valid JSON before parsing
               const contentType = response.headers.get('content-type');
               if (!contentType || !contentType.includes('application/json')) {
+                console.error('Invalid content type:', contentType);
                 throw new Error('Google sign-in service unavailable');
               }
               
               const data = await response.json();
+              console.log('Response data:', data);
               
               if (response.ok && data.url) {
                 // Redirect to Google OAuth
+                console.log('Redirecting to Google OAuth URL:', data.url);
                 window.location.href = data.url;
               } else {
                 // Fallback to manual Google sign-in process
-                setError('Google sign-in is being set up. Please try again in a few minutes or use email login.');
+                setError(data.error || 'Google sign-in is being set up. Please try again in a few minutes or use email login.');
               }
             } catch (error) {
               console.error('Google sign-in error:', error);
