@@ -44,6 +44,36 @@ function LoginPageContent() {
           Sign in to your AQUA R.O Filter account.
         </p>
 
+        {success && (
+          <div style={{ 
+            background: "rgba(34, 197, 94, 0.1)", 
+            border: "1px solid rgba(34, 197, 94, 0.3)", 
+            borderRadius: 8, 
+            padding: "12px 16px", 
+            marginBottom: 16, 
+            color: "#22c55e", 
+            fontSize: 13, 
+            textAlign: "center" 
+          }}>
+            {success}
+          </div>
+        )}
+
+        {error && (
+          <div style={{ 
+            background: "rgba(239, 68, 68, 0.1)", 
+            border: "1px solid rgba(239, 68, 68, 0.3)", 
+            borderRadius: 8, 
+            padding: "12px 16px", 
+            marginBottom: 16, 
+            color: "#ef4444", 
+            fontSize: 13, 
+            textAlign: "center" 
+          }}>
+            {error}
+          </div>
+        )}
+
         <form onSubmit={(e) => {
           e.preventDefault();
           const formData = new FormData(e.target);
@@ -61,9 +91,11 @@ function LoginPageContent() {
               localStorage.setItem('aquatai_user', JSON.stringify(data.user));
               window.location.href = '/';
             } else {
-              alert(data.error || 'Login failed');
+              setError(data.error || 'Login failed');
             }
-          }).catch(() => alert('Login failed')).finally(() => setLoading(false));
+          }).catch(() => {
+            setError('Login failed');
+          }).finally(() => setLoading(false));
         }}>
           <div style={{ marginBottom: 16 }}>
             <input 
@@ -123,10 +155,6 @@ function LoginPageContent() {
           </button>
         </form>
 
-        <p style={{ textAlign: "center", color: "#64748b", fontSize: 13, marginBottom: 12 }}>
-          Don't have an account? <Link href="/login" style={{ color: "#00b4ff", textDecoration: "none", fontWeight: 600 }}>Register</Link>
-        </p>
-
         <div style={{ textAlign: "center", margin: "20px 0" }}>
           <span style={{ color: "#64748b", fontSize: 12 }}>OR</span>
         </div>
@@ -155,11 +183,11 @@ function LoginPageContent() {
                 window.location.href = data.url;
               } else {
                 // Fallback to manual Google sign-in process
-                alert('Google sign-in is being set up. Please try again in a few minutes or use email login.');
+                setError('Google sign-in is being set up. Please try again in a few minutes or use email login.');
               }
             } catch (error) {
               console.error('Google sign-in error:', error);
-              alert('Google sign-in temporarily unavailable. Please use email login.');
+              setError('Google sign-in temporarily unavailable. Please use email login.');
             } finally {
               setLoading(false);
             }
@@ -183,6 +211,10 @@ function LoginPageContent() {
           <span style={{ fontSize: 16 }}>🔗</span>
           {loading ? "Connecting..." : "Continue with Google"}
         </button>
+
+        <p style={{ textAlign: "center", color: "#64748b", fontSize: 13, marginBottom: 12 }}>
+          Don't have an account? <Link href="/login" style={{ color: "#00b4ff", textDecoration: "none", fontWeight: 600 }}>Register</Link>
+        </p>
 
         <div style={{ textAlign: "center" }}>
           <Link href="/forgot-password" style={{ color: "#00b4ff", textDecoration: "none", fontWeight: 600, fontSize: 13 }}>
