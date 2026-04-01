@@ -42,9 +42,7 @@ export async function GET(request) {
         client_secret: GOOGLE_CLIENT_SECRET,
         code,
         grant_type: 'authorization_code',
-        redirect_uri: `${process.env.NODE_ENV === 'production' 
-          ? 'https://your-app-domain.com/api/auth/google/callback' 
-          : 'http://localhost:3000/api/auth/google/callback'}`,
+        redirect_uri: 'http://localhost:3000/api/auth/google/callback',
       }),
     });
 

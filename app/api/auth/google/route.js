@@ -21,9 +21,7 @@ export async function POST(request) {
     }
 
     // Google OAuth configuration
-    const redirectUri = `${process.env.NODE_ENV === 'production' 
-      ? 'https://your-app-domain.com/api/auth/google/callback' 
-      : 'http://localhost:3000/api/auth/google/callback'}`;
+    const redirectUri = 'http://localhost:3000/api/auth/google/callback';
     
     console.log('Redirect URI:', redirectUri);
     
