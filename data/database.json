@@ -1,104 +1,23 @@
 {
   "products": [
     {
-      "_id": "product-2",
-      "name": "Domestic Water Filter 5-Stage",
-      "slug": "domestic-water-filter-5-stage",
-      "category": "Domestic Water Filter",
-      "price": 12000,
-      "originalPrice": 15000,
-      "stock": 25,
-      "description": "Compact 5-stage water filter perfect for home use with easy installation and maintenance.",
+      "name": "777",
+      "category": "Reverse Osmosis System",
+      "price": 11,
+      "originalPrice": 22,
+      "stock": 20,
+      "badge": "Best Seller",
+      "description": "ww",
       "features": [
-        "5-Stage Filtration",
-        "Easy Installation",
-        "Low Maintenance",
-        "NSF Certified",
-        "1-Year Warranty",
-        "White Color"
+        "www"
       ],
-      "images": [
-        "/2.jpeg"
-      ],
-      "badge": "Popular",
-      "rating": 4.5,
-      "reviews": 89,
-      "active": true
-    },
-    {
-      "_id": "product-3",
-      "name": "Commercial RO System 1000 GPD",
-      "slug": "commercial-ro-system-1000-gpd",
-      "category": "Commercial RO System",
-      "price": 85000,
-      "originalPrice": 95000,
-      "stock": 8,
-      "description": "High-capacity commercial reverse osmosis system suitable for offices, restaurants, and small businesses.",
-      "features": [
-        "1000 GPD Capacity",
-        "Commercial Grade",
-        "Stainless Steel",
-        "Auto Flushing",
-        "2-Year Warranty",
-        "Professional Installation"
-      ],
-      "images": [
-        "/3.jpeg"
-      ],
-      "badge": "Heavy Duty",
-      "rating": 4.9,
-      "reviews": 43,
-      "active": true
-    },
-    {
-      "_id": "product-4",
-      "name": "UV Water Purifier",
-      "slug": "uv-water-purifier",
-      "category": "UV Water Purifier",
-      "price": 8000,
-      "originalPrice": 10000,
-      "stock": 30,
-      "description": "UV water purifier that eliminates bacteria and viruses without chemicals, perfect for pre-treated water.",
-      "features": [
-        "UV Sterilization",
-        "Chemical Free",
-        "Low Power",
-        "Compact Design",
-        "1-Year Warranty",
-        "Wall Mountable"
-      ],
-      "images": [
-        "/4.jpeg"
-      ],
-      "badge": "Eco Friendly",
-      "rating": 4.3,
-      "reviews": 156,
-      "active": true
-    },
-    {
-      "_id": "product-5",
-      "name": "Industrial Water Softener",
-      "slug": "industrial-water-softener",
-      "category": "Water Softener",
-      "price": 65000,
-      "originalPrice": 75000,
-      "stock": 5,
-      "description": "Industrial-grade water softener for large-scale water treatment applications with automatic regeneration.",
-      "features": [
-        "Industrial Grade",
-        "Automatic Regeneration",
-        "High Capacity",
-        "Digital Control",
-        "3-Year Warranty",
-        "Commercial Installation"
-      ],
-      "images": [
-        "/5.jpeg"
-      ],
-      "badge": "Value",
-      "rating": 4.3,
-      "reviews": 156,
-      "active": true
+      "images": [],
+      "slug": "777",
+      "active": true,
+      "rating": 0,
+      "reviews": 0,
+      "_id": "1775107040578",
+      "createdAt": "2026-04-02T05:17:20.578Z"
     }
   ],
   "users": [

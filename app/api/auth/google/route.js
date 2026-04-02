@@ -21,7 +21,10 @@ export async function POST(request) {
     }
 
     // Google OAuth configuration
-    const redirectUri = 'http://localhost:3000/api/auth/google/callback';
+    const baseUrl = process.env.NODE_ENV === 'production' 
+      ? 'https://aqua-tai.vercel.app' 
+      : 'http://localhost:3000';
+    const redirectUri = `${baseUrl}/api/auth/google/callback`;
     
     console.log('Redirect URI:', redirectUri);
     

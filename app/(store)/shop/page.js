@@ -10,10 +10,10 @@ const MAX_PRICE = 150000;
 
 const CATEGORY_ICONS = {
   "Reverse Osmosis System": "",
-  "Cartridges & Accessories": "",
-  "Whole House Water Softener": "",
   "Domestic Water Filter": "",
-  "Commercial Water Plants": "",
+  "Commercial RO System": "",
+  "UV Water Purifier": "",
+  "Water Softener": "",
 };
 
 function FilterTag({ label, onRemove }) {

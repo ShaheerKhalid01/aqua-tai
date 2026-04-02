@@ -1,11 +1,35 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { useNotifications } from '@/components/Notifications';
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const { success, error } = useNotifications();
+  const searchParams = useSearchParams();
+  
+  useEffect(() => {
+    const googleError = searchParams.get('error');
+    if (googleError) {
+      switch (googleError) {
+        case 'google_auth_failed':
+          error('Google sign-in was cancelled or failed');
+          break;
+        case 'no_code':
+          error('Google sign-in failed - no authorization code received');
+          break;
+        case 'token_exchange_failed':
+          error('Google sign-in failed - could not exchange authorization code');
+          break;
+        case 'callback_failed':
+          error('Google sign-in failed - server error occurred');
+          break;
+        default:
+          error('Google sign-in failed');
+      }
+    }
+  }, [searchParams, error]);
   
   return (
     <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg, #040d1a 0%, #0a2540 60%, #0d3060 100%)", padding: "40px 16px" }}>
@@ -144,10 +168,11 @@ export default function LoginPage() {
               if (response.ok && data.url) {
                 window.location.href = data.url;
               } else {
-                alert('Google sign-in temporarily unavailable');
+                error(data.error || 'Google sign-in temporarily unavailable');
               }
             } catch (error) {
-              alert('Google sign-in temporarily unavailable');
+              console.error('Google sign-in error:', error);
+              error('Google sign-in temporarily unavailable');
             }
           }}
           style={{ 

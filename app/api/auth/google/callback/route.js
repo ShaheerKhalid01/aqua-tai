@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
+import jwt from 'jsonwebtoken';
+import { findUser, createUser } from '@/lib/mongodb';
 
 export async function GET(request) {
   try {
-    const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } = process.env;
+    const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, JWT_SECRET } = process.env;
     
     if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) {
       return NextResponse.json(
@@ -15,20 +17,16 @@ export async function GET(request) {
     const code = searchParams.get('code');
     const error = searchParams.get('error');
 
+    const baseUrl = process.env.NODE_ENV === 'production' 
+      ? 'https://aqua-tai.vercel.app' 
+      : 'http://localhost:3000';
+
     if (error) {
-      return NextResponse.redirect(
-        `${process.env.NODE_ENV === 'production' 
-          ? 'https://your-app-domain.com/login?error=google_auth_failed' 
-          : 'http://localhost:3000/login?error=google_auth_failed'}`
-      );
+      return NextResponse.redirect(`${baseUrl}/login?error=google_auth_failed`);
     }
 
     if (!code) {
-      return NextResponse.redirect(
-        `${process.env.NODE_ENV === 'production' 
-          ? 'https://your-app-domain.com/login?error=no_code' 
-          : 'http://localhost:3000/login?error=no_code'}`
-      );
+      return NextResponse.redirect(`${baseUrl}/login?error=no_code`);
     }
 
     // Exchange authorization code for access token
@@ -42,18 +40,15 @@ export async function GET(request) {
         client_secret: GOOGLE_CLIENT_SECRET,
         code,
         grant_type: 'authorization_code',
-        redirect_uri: 'http://localhost:3000/api/auth/google/callback',
+        redirect_uri: `${baseUrl}/api/auth/google/callback`,
       }),
     });
 
     const tokenData = await tokenResponse.json();
 
     if (tokenData.error) {
-      return NextResponse.redirect(
-        `${process.env.NODE_ENV === 'production' 
-          ? 'https://your-app-domain.com/login?error=token_exchange_failed' 
-          : 'http://localhost:3000/login?error=token_exchange_failed'}`
-      );
+      console.error('Token exchange failed:', tokenData);
+      return NextResponse.redirect(`${baseUrl}/login?error=token_exchange_failed`);
     }
 
     // Get user info from Google
@@ -65,33 +60,69 @@ export async function GET(request) {
 
     const userData = await userResponse.json();
 
-    // Here you would typically:
-    // 1. Check if user exists in your database
-    // 2. Create or update user record
-    // 3. Create JWT token for your app
-    // 4. Redirect back to your app with the token
+    // Check if user exists in database
+    let existingUser = await findUser(userData.email);
+    
+    if (!existingUser) {
+      // Create new user
+      existingUser = await createUser({
+        name: userData.name,
+        email: userData.email,
+        password: 'google_oauth_user', // Placeholder password
+        role: 'client',
+        emailVerified: userData.verified_email || true,
+        avatar: userData.picture
+      });
+    }
 
-    // For now, we'll create a simple response
-    const userInfo = {
-      id: userData.id,
-      email: userData.email,
-      name: userData.name,
-      picture: userData.picture,
-      verified: userData.verified_email
+    // Create JWT token
+    const token = jwt.sign(
+      { 
+        id: existingUser._id, 
+        email: existingUser.email, 
+        role: existingUser.role 
+      },
+      JWT_SECRET || 'aquatai_fallback_secret',
+      { expiresIn: '7d' }
+    );
+
+    // Create response with token
+    const response = NextResponse.redirect(`${baseUrl}/`);
+    
+    // Prepare user data for localStorage
+    const userDataForStorage = {
+      id: existingUser._id,
+      email: existingUser.email,
+      name: existingUser.name,
+      role: existingUser.role
     };
+    
+    // Set secure cookies
+    response.cookies.set('aquatai_token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
 
-    // Redirect to login page with user info (in production, you'd set cookies/tokens)
-    const redirectUrl = `${process.env.NODE_ENV === 'production' 
-      ? 'https://your-app-domain.com/login?google_auth_success=true&email=' + encodeURIComponent(userData.email)
-      : 'http://localhost:3000/login?google_auth_success=true&email=' + encodeURIComponent(userData.email)}`;
+    response.cookies.set('aquatai_user', JSON.stringify(userDataForStorage), {
+      httpOnly: false,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+    
+    // Also set localStorage via redirect URL parameters for immediate detection
+    const userDataParam = encodeURIComponent(JSON.stringify(userDataForStorage));
+    const tokenParam = encodeURIComponent(token);
+    const redirectUrlWithAuth = `${baseUrl}/?auth_success=true&user=${userDataParam}&token=${tokenParam}`;
 
-    return NextResponse.redirect(redirectUrl);
+    return NextResponse.redirect(redirectUrlWithAuth);
   } catch (error) {
     console.error('Google OAuth callback error:', error);
-    return NextResponse.redirect(
-      `${process.env.NODE_ENV === 'production' 
-        ? 'https://your-app-domain.com/login?error=callback_failed' 
-        : 'http://localhost:3000/login?error=callback_failed'}`
-    );
+    const baseUrl = process.env.NODE_ENV === 'production' 
+      ? 'https://aqua-tai.vercel.app' 
+      : 'http://localhost:3000';
+    return NextResponse.redirect(`${baseUrl}/login?error=callback_failed`);
   }
 }

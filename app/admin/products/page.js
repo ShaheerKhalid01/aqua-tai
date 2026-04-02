@@ -6,7 +6,7 @@ import { formatPrice } from "@/lib/utils";
 import { useNotifications } from "@/components/Notifications";
 import { useConfirmDialog } from "@/components/ConfirmDialog";
 
-const CATEGORIES = ["Reverse Osmosis System","Cartridges & Accessories","Whole House Water Softener","Domestic Water Filter","Commercial Water Plants"];
+const CATEGORIES = ["Reverse Osmosis System","Domestic Water Filter","Commercial RO System","UV Water Purifier","Water Softener"];
 const BADGES = ["","Best Seller","Popular","Premium","New","Top Rated"];
 const emptyForm = { name:"", category:"", price:"", originalPrice:"", stock:"", badge:"", description:"", features:"", images:[] };
 
@@ -47,10 +47,10 @@ export default function AdminProducts() {
     }
   };
 
-  const openAdd = () => { setForm(emptyForm); setEditId(null); setError(""); setShowModal(true); };
+  const openAdd = () => { setForm(emptyForm); setEditId(null); setFormError(""); setShowModal(true); };
   const openEdit = p => {
     setForm({ name:p.name||"", category:p.category||"", price:p.price||"", originalPrice:p.originalPrice||"", stock:p.stock||"", badge:p.badge||"", description:p.description||"", features:Array.isArray(p.features)?p.features.join("\n"):"", images:p.images||[] });
-    setEditId(p._id); setError(""); setShowModal(true);
+    setEditId(p._id); setFormError(""); setShowModal(true);
   };
 
   const handleImageUpload = async e => {
@@ -60,14 +60,14 @@ export default function AdminProducts() {
     try {
       const urls = await Promise.all(files.map(f => uploadImage(f).then(r => r.url)));
       setForm(prev => ({ ...prev, images: [...prev.images, ...urls] }));
-    } catch (err) { setError("Image upload failed: " + err.message); }
+    } catch (err) { setFormError("Image upload failed: " + err.message); }
     finally { setUploading(false); }
   };
 
   const handleSave = async () => {
-    setError("");
+    setFormError("");
     if (!form.name || !form.category || !form.price || !form.stock || !form.description)
-      return setError("Name, category, price, stock and description are required.");
+      return setFormError("Name, category, price, stock and description are required.");
     
     // Debug logging
     console.log("=== SAVE PROCESS DEBUG ===");
@@ -109,10 +109,10 @@ export default function AdminProducts() {
       if (err.message.includes("404") || err.message.includes("Not Found")) {
         console.log("Product not found - reloading products data...");
         await loadProducts();
-        setError("Product data was stale. Please try again.");
+        setFormError("Product data was stale. Please try again.");
       } else {
         console.log("Save error:", err);
-        setError(err.message);
+        setFormError(err.message);
       }
     }
     finally { setSaving(false); }
@@ -318,7 +318,7 @@ export default function AdminProducts() {
               <button onClick={()=>setShowModal(false)} style={{ background:"#f8fafc", border:"1px solid #e2e8f0", color:"#64748b", width:36, height:36, borderRadius:8, fontSize:18, cursor:"pointer" }}>×</button>
             </div>
 
-            {error && <div style={{ background:"#fff5f5", border:"1px solid #fecaca", color:"#dc2626", padding:"10px 14px", borderRadius:8, fontSize:13, marginBottom:16 }}>⚠ {error}</div>}
+            {formError && <div style={{ background:"#fff5f5", border:"1px solid #fecaca", color:"#dc2626", padding:"10px 14px", borderRadius:8, fontSize:13, marginBottom:16 }}>⚠ {formError}</div>}
 
             {/* Images */}
             <div style={{ marginBottom:8 }}>

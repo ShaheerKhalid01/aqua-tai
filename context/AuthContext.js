@@ -90,6 +90,12 @@ export function AuthProvider({ children }) {
     adminLogout();
   };
 
+  // Method to manually set client user (for Google OAuth)
+  const setClientUser = (userData) => {
+    localStorage.setItem('aquatai_user', JSON.stringify(userData));
+    dispatch({ type: 'SET_CLIENT', payload: userData });
+  };
+
   return (
     <AuthContext.Provider value={{ 
       state, 
@@ -99,7 +105,8 @@ export function AuthProvider({ children }) {
       adminLogin, 
       adminLogout, 
       googleSignIn,
-      signOutAll 
+      signOutAll,
+      setClientUser 
     }}>
       {children}
     </AuthContext.Provider>
