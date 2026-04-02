@@ -2,8 +2,9 @@
 import { useCart } from "@/context/CartContext";
 import { formatPrice } from "@/lib/utils";
 import Link from "next/link";
+import { Suspense } from "react";
 
-export default function CartPage() {
+function CartContent() {
   const { items, total, dispatch } = useCart();
 
   if (items.length === 0) return (
@@ -80,5 +81,13 @@ export default function CartPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function CartPage() {
+  return (
+    <Suspense fallback={<div style={{ minHeight: "80vh", display: "flex", alignItems: "center", justifyContent: "center" }}><div style={{ fontSize: 40 }}>⏳</div></div>}>
+      <CartContent />
+    </Suspense>
   );
 }
