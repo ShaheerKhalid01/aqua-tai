@@ -9,6 +9,21 @@ export async function POST(req) {
   try {
     const { name, email, password, resendVerification } = await req.json();
 
+    // Debug logging to file
+    const fs = require('fs');
+    const path = require('path');
+    const logFile = path.join(process.cwd(), 'temp-auth-debug.log');
+    const log = (msg) => {
+      try {
+        fs.appendFileSync(logFile, `${new Date().toISOString()} - [REGISTER] ${msg}\n`);
+      } catch (e) { }
+    };
+
+    log(`=== REGISTER/VERIFY ATTEMPT: ${email} ===`);
+    log(`Email length: ${email?.length || 0}`);
+    log(`Password length: ${password?.length || 0}`);
+    log(`Resend verification: ${!!resendVerification}`);
+
     // Handle resend verification
     if (resendVerification && email) {
       // Normalize email
@@ -25,7 +40,7 @@ export async function POST(req) {
       // Check if already verified
       if (user.emailVerified) {
         return addSecurityHeaders(
-          NextResponse.json({ 
+          NextResponse.json({
             message: "Email is already verified. You can login.",
             alreadyVerified: true
           })
@@ -79,23 +94,23 @@ export async function POST(req) {
 
     // Force fresh data read to check for existing users
     await connectDB();
-    
+
     // Read fresh data from file to get latest users
     try {
       const fs = require('fs');
       const path = require('path');
       const dbPath = path.join(process.cwd(), 'data', 'database.json');
-      
+
       if (fs.existsSync(dbPath)) {
         const freshData = JSON.parse(fs.readFileSync(dbPath, 'utf8'));
         const allUsers = freshData.users || [];
         console.log('Total users in database:', allUsers.length);
         console.log('User emails in database:', allUsers.map(u => u.email));
-        
+
         // Check if user already exists in fresh data
         const existingUser = allUsers.find(u => u.email.toLowerCase() === normalizedEmail);
         console.log('Existing user found:', existingUser ? existingUser.email : 'None');
-        
+
         if (existingUser) {
           console.log('Registration blocked - user already exists:', existingUser.email);
           if (existingUser.emailVerified) {
@@ -150,8 +165,8 @@ export async function POST(req) {
       );
     }
 
-    // Hash password with higher salt rounds
-    const hashedPassword = await bcrypt.hash(password, 14);
+    // Hash password with high salt rounds (Standard: 12)
+    const hashedPassword = await bcrypt.hash(password, 12);
 
     // Create user with emailVerified = false
     const user = await createUser({
@@ -168,7 +183,7 @@ export async function POST(req) {
 
     // Send verification email
     const emailSent = await sendVerificationEmail(normalizedEmail, verificationToken, name.trim());
-    
+
     if (!emailSent) {
       return addSecurityHeaders(
         NextResponse.json(
@@ -179,14 +194,14 @@ export async function POST(req) {
     }
 
     // Check if we're using fallback (development mode)
-    const isUsingFallback = !process.env.EMAIL_USER || 
-                           process.env.EMAIL_USER === 'your_gmail_address@gmail.com' ||
-                           !process.env.EMAIL_PASS || 
-                           process.env.EMAIL_PASS === 'your_gmail_app_password';
+    const isUsingFallback = !process.env.EMAIL_USER ||
+      process.env.EMAIL_USER === 'your_gmail_address@gmail.com' ||
+      !process.env.EMAIL_PASS ||
+      process.env.EMAIL_PASS === 'your_gmail_app_password';
 
     return addSecurityHeaders(
       NextResponse.json({
-        message: isUsingFallback 
+        message: isUsingFallback
           ? "Account created! Please verify your email (Development Mode: Check console for verification link)"
           : "Account created! Please check your email to verify your account",
         user: {

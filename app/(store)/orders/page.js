@@ -7,11 +7,11 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 const statusColors = {
-  Pending:    { bg: "rgba(239,68,68,0.12)",   color: "#ef4444" },
-  Processing: { bg: "rgba(245,158,11,0.12)",  color: "#f59e0b" },
-  Shipped:    { bg: "rgba(59,130,246,0.12)",  color: "#3b82f6" },
-  Delivered:  { bg: "rgba(16,185,129,0.12)",  color: "#10b981" },
-  Cancelled:  { bg: "rgba(100,116,139,0.12)", color: "#64748b" },
+  Pending: { bg: "rgba(239,68,68,0.12)", color: "#ef4444" },
+  Processing: { bg: "rgba(245,158,11,0.12)", color: "#f59e0b" },
+  Shipped: { bg: "rgba(59,130,246,0.12)", color: "#3b82f6" },
+  Delivered: { bg: "rgba(16,185,129,0.12)", color: "#10b981" },
+  Cancelled: { bg: "rgba(100,116,139,0.12)", color: "#64748b" },
 };
 
 const canCancel = (status) => ["Pending", "Processing"].includes(status);
@@ -24,21 +24,61 @@ export default function MyOrdersPage() {
   const [cancelling, setCancelling] = useState(null);
   const [error, setError] = useState("");
   const [expandedOrder, setExpandedOrder] = useState(null);
-
-  useEffect(() => {
-    if (!state.clientUser) { router.push("/login"); return; }
-    loadOrders();
-  }, [state.clientUser]);
+  const [mounted, setMounted] = useState(false);
 
   const loadOrders = async () => {
     setLoading(true);
     try {
+      // 1. Fetch from API
       const data = await fetchMyOrders();
-      setOrders(data.orders);
+      const apiOrders = data.orders || [];
+
+      // 2. Fetch from localStorage (fallback/local orders)
+      let localOrders = [];
+      try {
+        const saved = localStorage.getItem("aquatai_orders");
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          localOrders = parsed.filter(o =>
+            o.email?.toLowerCase().trim() === state.clientUser?.email?.toLowerCase().trim()
+          );
+        }
+      } catch (e) {
+        console.error("Local orders load error:", e);
+      }
+
+      // 3. Merge avoiding duplicates (prefer API data)
+      const merged = [...apiOrders];
+      localOrders.forEach(lo => {
+        if (!merged.some(ao => ao.orderId === lo.orderId || ao.id === lo.orderId)) {
+          merged.push(lo);
+        }
+      });
+
+      // 4. Sort by date
+      merged.sort((a, b) => new Date(b.createdAt || b.date) - new Date(a.createdAt || a.date));
+
+      setOrders(merged);
     } catch (err) {
       setError(err.message);
-    } finally { setLoading(false); }
+    } finally {
+      setLoading(false);
+    }
   };
+
+  useEffect(() => {
+    setMounted(true);
+    if (!state.clientUser) {
+      const stored = localStorage.getItem("aquatai_user");
+      if (!stored) {
+        router.push("/login");
+      }
+      return;
+    }
+    loadOrders();
+  }, [state.clientUser, router]);
+
+  if (!mounted) return null;
 
   const handleCancel = async (orderId) => {
     if (!confirm("Are you sure you want to cancel this order?")) return;

@@ -1,0 +1,15 @@
+2026-04-02T06:18:40.214Z - [LOGIN] === LOGIN ATTEMPT: www.shaheerkhalid88601@gmail.com ===
+2026-04-02T06:18:40.215Z - [LOGIN] Password length: 10
+2026-04-02T06:18:46.207Z - [LOGIN] === LOGIN ATTEMPT: www.shaheerkhalid88601@gmail.com ===
+2026-04-02T06:18:46.207Z - [LOGIN] Password length: 10
+2026-04-02T06:19:12.426Z - [REGISTER] === REGISTER/VERIFY ATTEMPT: www.shaheerkhalid88601@gmail.com ===
+2026-04-02T06:19:12.427Z - [REGISTER] Email length: 32
+2026-04-02T06:19:12.427Z - [REGISTER] Password length: 10
+2026-04-02T06:19:12.427Z - [REGISTER] Resend verification: false
+2026-04-02T06:20:15.047Z - [LOGIN] === LOGIN ATTEMPT: www.shaheerkhalid88601@gmail.com ===
+2026-04-02T06:20:15.050Z - [LOGIN] Password length: 0
+2026-04-02T06:20:21.206Z - [LOGIN] === LOGIN ATTEMPT: www.shaheerkhalid88601@gmail.com ===
+2026-04-02T06:20:21.206Z - [LOGIN] Password length: 10
+2026-04-02T06:26:31.022Z - [LOGIN] === LOGIN ATTEMPT: www.shaheerkhalid88601@gmail.com ===
+2026-04-02T06:26:31.023Z - [LOGIN] Password length: 10
+2026-04-02T06:26:31.724Z - [LOGIN] Bcrypt match result: true

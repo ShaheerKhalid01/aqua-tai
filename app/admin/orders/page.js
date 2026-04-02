@@ -6,11 +6,11 @@ import { useConfirmDialog } from "@/components/ConfirmDialog";
 import { formatPrice } from "@/lib/utils";
 
 const statusColors = {
-  Delivered:  { bg: "#f0fdf4", color: "#16a34a", border: "#bbf7d0" },
+  Delivered: { bg: "#f0fdf4", color: "#16a34a", border: "#bbf7d0" },
   Processing: { bg: "#fffbeb", color: "#d97706", border: "#fde68a" },
-  Shipped:    { bg: "#eff6ff", color: "#2563eb", border: "#bfdbfe" },
-  Pending:    { bg: "#fff7ed", color: "#ea580c", border: "#fed7aa" },
-  Cancelled:  { bg: "#f8fafc", color: "#64748b", border: "#e2e8f0" },
+  Shipped: { bg: "#eff6ff", color: "#2563eb", border: "#bfdbfe" },
+  Pending: { bg: "#fff7ed", color: "#ea580c", border: "#fed7aa" },
+  Cancelled: { bg: "#f8fafc", color: "#64748b", border: "#e2e8f0" },
 };
 const allStatuses = ["Pending", "Processing", "Shipped", "Delivered", "Cancelled"];
 
@@ -42,7 +42,7 @@ export default function AdminOrders() {
     }
     setSelectedOrders(newSelected);
   };
-  
+
   const handleSelectAll = () => {
     if (selectedOrders.size === filtered.length) {
       setSelectedOrders(new Set());
@@ -50,35 +50,35 @@ export default function AdminOrders() {
       setSelectedOrders(new Set(filtered.map(o => o.orderId || o.id)));
     }
   };
-  
+
   const deleteSelectedOrders = async () => {
     if (selectedOrders.size === 0) {
       warning('No orders selected');
       return;
     }
-    
+
     const confirmed = await showConfirm(`Are you sure you want to delete ${selectedOrders.size} order(s)? This action cannot be undone.`);
     if (!confirmed) {
       return;
     }
-    
+
     try {
       console.log('=== DELETING MULTIPLE ORDERS ===');
       console.log('Orders to delete:', Array.from(selectedOrders));
-      
+
       const deletePromises = Array.from(selectedOrders).map(orderId =>
         deleteOrder(orderId)
       );
-      
+
       await Promise.all(deletePromises);
       success(`Successfully deleted ${selectedOrders.size} order(s)`);
       setSelectedOrders(new Set());
-      
+
       console.log('✅ Bulk delete completed, not reloading to prevent restoration');
-      
+
       // Don't call loadOrders() here as it might restore the deleted orders
       // The local state should already be updated by the deleteOrder function
-      
+
     } catch (error) {
       console.error('Error deleting orders:', error);
       error('Failed to delete some orders. Please try again.');
@@ -86,24 +86,31 @@ export default function AdminOrders() {
   };
 
   const deleteSingleOrder = async (orderId) => {
+    // UI Safeguard: Check status before attempting delete
+    const order = orders.find(o => o.orderId === orderId || o.id === orderId);
+    if (order && !["Cancelled", "Delivered"].includes(order.status)) {
+      warning(`Cannot delete an active order. Please mark it as 'Cancelled' or 'Delivered' first. Current status: ${order.status}`);
+      return;
+    }
+
     const confirmed = await showConfirm('Are you sure you want to delete this order? This action cannot be undone.');
     if (!confirmed) {
       return;
     }
-    
+
     try {
       console.log('=== DELETING SINGLE ORDER ===');
       console.log('Order ID:', orderId);
-      
+
       await deleteOrder(orderId);
       success('Order deleted successfully');
       setSelectedOrder(null);
-      
+
       console.log('✅ Order deleted successfully, not reloading to prevent restoration');
-      
+
       // Don't call loadOrders() here as it might restore the deleted order
       // The local state should already be updated by the deleteOrder function
-      
+
     } catch (error) {
       console.error('Error deleting order:', error);
       error('Failed to delete order. Please try again.');
@@ -117,7 +124,7 @@ export default function AdminOrders() {
           <h1 style={{ fontSize: 28, fontWeight: 900, color: "#1a1a2e", margin: 0 }}>Orders</h1>
           {selectedOrders.size > 0 && (
             <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-              <span style={{ color:"#64748b", fontSize:14 }}>
+              <span style={{ color: "#64748b", fontSize: 14 }}>
                 {selectedOrders.size} selected
               </span>
               <button
@@ -194,59 +201,59 @@ export default function AdminOrders() {
                   <th style={{ padding: "14px 16px", textAlign: "left", color: "#64748b", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", borderBottom: "1px solid #e8f0fe", width: "240px", minWidth: "240px" }}>Actions</th>
                 </tr>
               </thead>
-            <tbody>
-              {filtered.map((order, i) => {
-                const sc = statusColors[order.status] || statusColors.Pending;
-                const oid = order.orderId || order.id;
-                return (
-                  <tr key={oid} style={{ borderBottom: "1px solid #f1f5f9", transition: "background 0.1s" }}
-                    onMouseEnter={e => e.currentTarget.style.background = "#f8fafc"}
-                    onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
-                    <td style={{ padding: "14px 16px", textAlign: "center" }}>
-                      <input
-                        type="checkbox"
-                        checked={selectedOrders.has(oid)}
-                        onChange={() => handleSelectOrder(oid)}
-                        style={{ cursor: 'pointer' }}
-                      />
-                    </td>
-                    <td style={{ padding: "14px 16px" }}>
-                      <span style={{ color: "#0057a8", fontWeight: 700, fontSize: 13 }}>{oid}</span>
-                      {i === 0 && <span style={{ marginLeft: 6, background: "#f0fdf4", color: "#16a34a", fontSize: 9, fontWeight: 700, padding: "2px 6px", borderRadius: 4, border: "1px solid #bbf7d0" }}>NEW</span>}
-                    </td>
-                    <td style={{ padding: "14px 16px" }}>
-                      <div style={{ fontWeight: 600, fontSize: 13, color: "#1a1a2e" }}>{order.customer}</div>
-                      <div style={{ color: "#94a3b8", fontSize: 11 }}>{order.email}</div>
-                      {order.city && <div style={{ color: "#94a3b8", fontSize: 11 }}>📍 {order.city}</div>}
-                    </td>
-                    <td style={{ padding: "14px 16px", color: "#64748b", fontSize: 12 }}>{order.date}</td>
-                    <td style={{ padding: "14px 16px", color: "#64748b", fontSize: 13 }}>{order.items?.length || 0} item{order.items?.length !== 1 ? "s" : ""}</td>
-                    <td style={{ padding: "14px 16px", fontWeight: 700, color: "#1a1a2e", fontSize: 14 }}>{formatPrice(order.total)}</td>
-                    <td style={{ padding: "14px 16px" }}>
-                      <span style={{ background: sc.bg, color: sc.color, border: `1px solid ${sc.border}`, padding: "4px 12px", borderRadius: 20, fontSize: 11, fontWeight: 700 }}>{order.status}</span>
-                    </td>
-                    <td style={{ padding: "14px 16px" }}>
-                      <div style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
-                        <button onClick={() => setSelectedOrder(order)}
-                          style={{ background: "#eff6ff", border: "1px solid #bfdbfe", color: "#0057a8", padding: "5px 12px", borderRadius: 6, cursor: "pointer", fontSize: 12, fontWeight: 600 }}>View</button>
-                        <select value={order.status} onChange={e => updateStatus(oid, e.target.value)}
-                          style={{ background: "#f8fafc", border: "1px solid #e2e8f0", color: "#334155", padding: "5px 8px", borderRadius: 6, cursor: "pointer", fontSize: 11, outline: "none" }}>
-                          {allStatuses.map(s => <option key={s} value={s}>{s}</option>)}
-                        </select>
-                        {order.status !== "Cancelled" && order.status !== "Delivered" && (
-                          <button onClick={() => updateStatus(oid, "Cancelled")}
-                            style={{ background: "#fff5f5", border: "1px solid #fecaca", color: "#dc2626", padding: "5px 10px", borderRadius: 6, cursor: "pointer", fontSize: 11, fontWeight: 600 }}>Cancel</button>
-                        )}
-                        <button onClick={() => deleteSingleOrder(oid)}
-                          style={{ background: "#fee2e2", border: "1px solid #fecaca", color: "#dc2626", padding: "5px 10px", borderRadius: 6, cursor: "pointer", fontSize: 11, fontWeight: 600 }}>Delete</button>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+              <tbody>
+                {filtered.map((order, i) => {
+                  const sc = statusColors[order.status] || statusColors.Pending;
+                  const oid = order.orderId || order.id;
+                  return (
+                    <tr key={oid} style={{ borderBottom: "1px solid #f1f5f9", transition: "background 0.1s" }}
+                      onMouseEnter={e => e.currentTarget.style.background = "#f8fafc"}
+                      onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
+                      <td style={{ padding: "14px 16px", textAlign: "center" }}>
+                        <input
+                          type="checkbox"
+                          checked={selectedOrders.has(oid)}
+                          onChange={() => handleSelectOrder(oid)}
+                          style={{ cursor: 'pointer' }}
+                        />
+                      </td>
+                      <td style={{ padding: "14px 16px" }}>
+                        <span style={{ color: "#0057a8", fontWeight: 700, fontSize: 13 }}>{oid}</span>
+                        {i === 0 && <span style={{ marginLeft: 6, background: "#f0fdf4", color: "#16a34a", fontSize: 9, fontWeight: 700, padding: "2px 6px", borderRadius: 4, border: "1px solid #bbf7d0" }}>NEW</span>}
+                      </td>
+                      <td style={{ padding: "14px 16px" }}>
+                        <div style={{ fontWeight: 600, fontSize: 13, color: "#1a1a2e" }}>{order.customer}</div>
+                        <div style={{ color: "#94a3b8", fontSize: 11 }}>{order.email}</div>
+                        {order.city && <div style={{ color: "#94a3b8", fontSize: 11 }}>📍 {order.city}</div>}
+                      </td>
+                      <td style={{ padding: "14px 16px", color: "#64748b", fontSize: 12 }}>{order.date}</td>
+                      <td style={{ padding: "14px 16px", color: "#64748b", fontSize: 13 }}>{order.items?.length || 0} item{order.items?.length !== 1 ? "s" : ""}</td>
+                      <td style={{ padding: "14px 16px", fontWeight: 700, color: "#1a1a2e", fontSize: 14 }}>{formatPrice(order.total)}</td>
+                      <td style={{ padding: "14px 16px" }}>
+                        <span style={{ background: sc.bg, color: sc.color, border: `1px solid ${sc.border}`, padding: "4px 12px", borderRadius: 20, fontSize: 11, fontWeight: 700 }}>{order.status}</span>
+                      </td>
+                      <td style={{ padding: "14px 16px" }}>
+                        <div style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
+                          <button onClick={() => setSelectedOrder(order)}
+                            style={{ background: "#eff6ff", border: "1px solid #bfdbfe", color: "#0057a8", padding: "5px 12px", borderRadius: 6, cursor: "pointer", fontSize: 12, fontWeight: 600 }}>View</button>
+                          <select value={order.status} onChange={e => updateStatus(oid, e.target.value)}
+                            style={{ background: "#f8fafc", border: "1px solid #e2e8f0", color: "#334155", padding: "5px 8px", borderRadius: 6, cursor: "pointer", fontSize: 11, outline: "none" }}>
+                            {allStatuses.map(s => <option key={s} value={s}>{s}</option>)}
+                          </select>
+                          {order.status !== "Cancelled" && order.status !== "Delivered" && (
+                            <button onClick={() => updateStatus(oid, "Cancelled")}
+                              style={{ background: "#fff5f5", border: "1px solid #fecaca", color: "#dc2626", padding: "5px 10px", borderRadius: 6, cursor: "pointer", fontSize: 11, fontWeight: 600 }}>Cancel</button>
+                          )}
+                          <button onClick={() => deleteSingleOrder(oid)}
+                            style={{ background: "#fee2e2", border: "1px solid #fecaca", color: "#dc2626", padding: "5px 10px", borderRadius: 6, cursor: "pointer", fontSize: 11, fontWeight: 600 }}>Delete</button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
 

@@ -14,9 +14,10 @@ export async function GET(req) {
     const decoded = jwt.verify(auth.slice(7), JWT_SECRET);
     await connectDB();
 
+    const userEmail = decoded.email.toLowerCase().trim();
     const allOrders = await getOrders();
     const orders = allOrders
-      .filter(o => o.email === decoded.email)
+      .filter(o => o.email && o.email.toLowerCase().trim() === userEmail)
       .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
     const normalized = orders.map(o => ({ ...o, id: o.orderId }));

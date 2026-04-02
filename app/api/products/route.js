@@ -9,9 +9,9 @@ function verifyAdmin(req) {
     const decoded = jwt.verify(auth.slice(7), process.env.JWT_SECRET || "aquatai_fallback_secret");
     console.log("Verified admin token:", decoded);
     return decoded.role === "admin";
-  } catch { 
+  } catch {
     console.error("Error verifying admin token");
-    return false; 
+    return false;
   }
 }
 
@@ -73,7 +73,7 @@ export async function POST(req) {
 // DELETE /api/products — admin only, delete product
 export async function DELETE(req) {
   console.log('=== DELETE PRODUCT API CALLED ===');
-  
+
   if (!verifyAdmin(req)) {
     console.log('❌ Unauthorized access attempt');
     return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
@@ -83,20 +83,30 @@ export async function DELETE(req) {
     await connectDB();
     const { searchParams } = new URL(req.url);
     const productId = searchParams.get('id');
-    
+
     console.log('Product ID to delete:', productId);
-    
+
     if (!productId) {
       console.log('❌ No product ID provided');
       return NextResponse.json({ error: "Product ID is required." }, { status: 400 });
     }
 
-    const deletedProduct = await deleteProduct(productId);
-    if (!deletedProduct) {
-      console.log('❌ Product not found:', productId);
-      return NextResponse.json({ error: "Product not found." }, { status: 404 });
+    // Safeguard: Check if product is in any active (non-terminal) orders
+    const { getOrders } = await import("@/lib/mongodb");
+    const allOrders = await getOrders();
+    const activeOrders = allOrders.filter(o =>
+      !["Cancelled", "Delivered"].includes(o.status) &&
+      o.items?.some(item => item.id === productId || item.slug === productId || item.name === productId)
+    );
+
+    if (activeOrders.length > 0) {
+      console.log(`❌ Attempted to delete product ${productId} linked to ${activeOrders.length} active orders`);
+      return NextResponse.json({
+        error: `Cannot delete product. It is part of ${activeOrders.length} active order(s). Please cancel or complete them first.`
+      }, { status: 400 });
     }
 
+    const deletedProduct = await deleteProduct(productId);
     console.log('✅ Product deleted successfully:', productId);
     return NextResponse.json({ message: "Product deleted successfully.", product: deletedProduct });
 

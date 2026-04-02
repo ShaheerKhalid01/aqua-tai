@@ -9,11 +9,19 @@ export async function POST(req) {
     await connectDB();
     const { email, password } = await req.json();
 
-    console.log('=== LOGIN ATTEMPT DEBUG ===');
-    console.log('Raw email:', email);
-    console.log('Password length:', password?.length || 0);
+    // Debug logging to file
+    const fs = require('fs');
+    const path = require('path');
+    const logFile = path.join(process.cwd(), 'temp-auth-debug.log');
+    const log = (msg) => {
+      try {
+        fs.appendFileSync(logFile, `${new Date().toISOString()} - [LOGIN] ${msg}\n`);
+      } catch (e) { }
+    };
 
-    // Input validation
+    log(`=== LOGIN ATTEMPT: ${email} ===`);
+    log(`Password length: ${password?.length || 0}`);
+
     if (!email || !password) {
       return addSecurityHeaders(
         NextResponse.json({ error: "Email and password are required." }, { status: 400 })
@@ -21,30 +29,23 @@ export async function POST(req) {
     }
 
     const normalizedEmail = email.toLowerCase().trim();
-    console.log('Normalized email:', normalizedEmail);
 
     // Check rate limiting and login attempts
-    const loginAttempt = trackLoginAttempt(normalizedEmail, false);
-    
-    if (loginAttempt.lockoutUntil > Date.now()) {
-      const remainingTime = Math.ceil((loginAttempt.lockoutUntil - Date.now()) / 60000);
+    const initialCheck = trackLoginAttempt(normalizedEmail, undefined);
+
+    if (initialCheck.lockoutUntil > Date.now()) {
+      const remainingTime = Math.ceil((initialCheck.lockoutUntil - Date.now()) / 60000);
       return addSecurityHeaders(
-        NextResponse.json({ 
-          error: `Account temporarily locked. Try again in ${remainingTime} minutes.` 
+        NextResponse.json({
+          error: `Account temporarily locked. Try again in ${remainingTime} minutes.`
         }, { status: 429 })
       );
     }
 
     const user = await findUser(normalizedEmail);
-    console.log('Found user:', !!user);
-    if (user) {
-      console.log('User email:', user.email);
-      console.log('User emailVerified:', user.emailVerified);
-      console.log('Password starts with $2:', user.password?.startsWith("$2"));
-    }
 
     if (!user) {
-      console.log('❌ User not found');
+      trackLoginAttempt(normalizedEmail, false);
       return addSecurityHeaders(
         NextResponse.json({ error: "Invalid email or password." }, { status: 401 })
       );
@@ -52,34 +53,41 @@ export async function POST(req) {
 
     // Check if email is verified
     if (!user.emailVerified) {
-      console.log('❌ Email not verified');
       return addSecurityHeaders(
-        NextResponse.json({ 
+        NextResponse.json({
           error: "Please verify your email before logging in. Check your inbox for the verification link.",
           requiresVerification: true
         }, { status: 401 })
       );
     }
 
-    // If password is not hashed (old localStorage data), reject clearly
-    if (!user.password?.startsWith("$2")) {
-      console.log('❌ Password not hashed');
+    // Check for Google OAuth accounts
+    if (user.password && user.password.startsWith("googl")) {
       return addSecurityHeaders(
-        NextResponse.json({ error: "Account corrupted. Please register again." }, { status: 401 })
+        NextResponse.json({
+          error: "This account was created with Google. Please use the 'Continue with Google' button.",
+        }, { status: 401 })
+      );
+    }
+
+    // Standard hashed password check
+    if (!user.password || !user.password.startsWith("$2")) {
+      return addSecurityHeaders(
+        NextResponse.json({ error: "Account security error. Please reset your password." }, { status: 401 })
       );
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
-    console.log('Password comparison result:', isMatch);
+    log(`Bcrypt match result: ${isMatch}`);
 
     if (!isMatch) {
-      console.log('❌ Password does not match');
+      log(`❌ Password mismatch for user: ${normalizedEmail}`);
+      log(`Bcrypt version check: ${user.password.substring(0, 7)}`);
+      trackLoginAttempt(normalizedEmail, false);
       return addSecurityHeaders(
         NextResponse.json({ error: "Invalid email or password." }, { status: 401 })
       );
     }
-
-    console.log('✅ Login successful');
 
     // Track successful login
     trackLoginAttempt(normalizedEmail, true);
@@ -99,8 +107,7 @@ export async function POST(req) {
     );
 
   } catch (err) {
-    // Don't log sensitive authentication data
-    console.error("Login error occurred");
+    console.error("Login error occurred:", err);
     return addSecurityHeaders(
       NextResponse.json({ error: "Authentication failed" }, { status: 500 })
     );

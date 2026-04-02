@@ -13,19 +13,28 @@ export default function CheckoutPage() {
   const [placed, setPlaced] = useState(false);
   const [orderId, setOrderId] = useState("");
   const [loading, setLoading] = useState(false);
-  const [form, setForm] = useState({ name: "", email: "", phone: "", address: "", city: "", payment: "cod" });
+
+  // Initialize form with user data if available
+  const [form, setForm] = useState({
+    name: authState.clientUser?.name || "",
+    email: authState.clientUser?.email || "",
+    phone: "",
+    address: "",
+    city: "",
+    payment: "cod"
+  });
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     // Check if user is authenticated
     if (!authState.clientUser) {
       alert("Please sign in to place an order.");
       return;
     }
-    
+
     setLoading(true);
     try {
       const order = await addOrder({

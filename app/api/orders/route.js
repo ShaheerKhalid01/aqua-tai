@@ -35,18 +35,13 @@ export async function POST(req) {
   try {
     await connectDB();
     const body = await req.json();
-    const { customer, email, phone, address, city, payment, total, items, userId } = body;
-
-    if (!customer || !email || !total || !items?.length)
-      return NextResponse.json({ error: "Missing required order fields." }, { status: 400 });
-
-    const orderId = "ORD-" + String(Date.now()).slice(-6);
     const today = new Date().toISOString().slice(0, 10);
+    const normalizedEmail = email.toLowerCase().trim();
 
     const order = await createOrder({
       orderId,
       customer,
-      email,
+      email: normalizedEmail,
       phone: phone || "",
       address: address || "",
       city: city || "",
@@ -70,7 +65,7 @@ export async function POST(req) {
 // DELETE /api/orders — admin only
 export async function DELETE(req) {
   console.log('=== DELETE ORDER API CALLED ===');
-  
+
   const decoded = verifyToken(req);
   if (!decoded || decoded.role !== "admin") {
     console.log('❌ Unauthorized access attempt');
@@ -81,22 +76,34 @@ export async function DELETE(req) {
     await connectDB();
     const { searchParams } = new URL(req.url);
     const orderId = searchParams.get('id');
-    
+
     console.log('Order ID to delete:', orderId);
-    
+
     if (!orderId) {
       console.log('❌ No order ID provided');
       return NextResponse.json({ error: "Order ID is required." }, { status: 400 });
     }
 
-    const deletedOrder = await deleteOrder(orderId);
-    if (!deletedOrder) {
+    const orderData = await getOrders();
+    const orderToDelete = orderData.find(o => (o._id === orderId || o.orderId === orderId));
+
+    if (!orderToDelete) {
       console.log('❌ Order not found:', orderId);
       return NextResponse.json({ error: "Order not found." }, { status: 404 });
     }
 
+    // Safeguard: Only allow deletion if order is Cancelled or Delivered
+    const terminalStatuses = ["Cancelled", "Delivered"];
+    if (!terminalStatuses.includes(orderToDelete.status)) {
+      console.log(`❌ Attempted to delete active order (${orderToDelete.status})`);
+      return NextResponse.json({
+        error: `Cannot delete an active order. Please mark it as 'Cancelled' or 'Delivered' first. Current status: ${orderToDelete.status}`
+      }, { status: 400 });
+    }
+
+    const deletedOrder = await deleteOrder(orderId);
     console.log('✅ Order deleted successfully:', orderId);
-    return NextResponse.json({ message: "Order deleted successfully.", order: deletedOrder });
+    return NextResponse.json({ message: "Order deleted successfully.", order: orderToDelete });
 
   } catch (err) {
     console.error('❌ Delete order error:', err);
