@@ -1,10 +1,9 @@
 "use client";
-
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useNotifications } from '@/components/Notifications';
 
-export default function LoginPage() {
+function LoginContent() {
   const [showPassword, setShowPassword] = useState(false);
   const { success, error } = useNotifications();
   const searchParams = useSearchParams();
@@ -31,6 +30,32 @@ export default function LoginPage() {
     }
   }, [searchParams, error]);
   
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const email = formData.get('email');
+    const password = formData.get('password');
+    
+    fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    }).then(res => res.json()).then(data => {
+      if (data.token) {
+        localStorage.setItem('aquatai_token', data.token);
+        localStorage.setItem('aquatai_user', JSON.stringify(data.user));
+        success('Login successful! Welcome back!');
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 1000);
+      } else {
+        error(data.error || 'Login failed');
+      }
+    }).catch(() => {
+      error('Login failed. Please try again.');
+    });
+  };
+
   return (
     <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg, #040d1a 0%, #0a2540 60%, #0d3060 100%)", padding: "40px 16px" }}>
       <div style={{ width: "100%", maxWidth: 400, background: "linear-gradient(145deg, #0d2545, #0a1e35)", border: "1px solid rgba(0,180,255,0.18)", borderRadius: 20, padding: 36 }}>
@@ -41,90 +66,33 @@ export default function LoginPage() {
           Sign in to your AQUA R.O Filter account.
         </p>
 
-        <form onSubmit={(e) => {
-          e.preventDefault();
-          const formData = new FormData(e.target);
-          const email = formData.get('email');
-          const password = formData.get('password');
-          
-          fetch('/api/auth/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password })
-          }).then(res => res.json()).then(data => {
-            if (data.token) {
-              localStorage.setItem('aquatai_token', data.token);
-              localStorage.setItem('aquatai_user', JSON.stringify(data.user));
-              success('Login successful! Welcome back!');
-              setTimeout(() => {
-                window.location.href = '/';
-              }, 1000);
-            } else {
-              error(data.error || 'Login failed');
-            }
-          }).catch(() => {
-            error('Login failed. Please try again.');
-          });
-        }}>
-          <div style={{ marginBottom: 16 }}>
-            <input 
+        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          <div>
+            <label style={{ display: "block", marginBottom: 8, color: "#00b4ff", fontSize: 14, fontWeight: 600 }}>Email</label>
+            <input
+              type="email"
               name="email"
-              style={{ 
-                width: "100%", 
-                background: "rgba(255,255,255,0.05)", 
-                border: "1px solid rgba(0,180,255,0.2)", 
-                borderRadius: 10, 
-                padding: "12px 16px", 
-                color: "#fff", 
-                fontSize: 14, 
-                outline: "none" 
-              }} 
-              type="email" 
-              placeholder="you@example.com" 
               required
+              style={{ width: "100%", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(0,180,255,0.2)", borderRadius: 8, padding: "12px 16px", color: "#000", fontSize: 16, outline: "none" }}
             />
           </div>
-          
-          <div style={{ marginBottom: 24, position: "relative" }}>
-            <input 
-              name="password"
-              style={{ 
-                width: "100%", 
-                background: "rgba(255,255,255,0.05)", 
-                border: "1px solid rgba(0,180,255,0.2)", 
-                borderRadius: 10, 
-                padding: "12px 16px", 
-                color: "#fff", 
-                fontSize: 14, 
-                outline: "none",
-                paddingRight: "45px"
-              }} 
-              type={showPassword ? "text" : "password"}
-              placeholder="••••••" 
-              required
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              style={{
-                position: "absolute",
-                right: "12px",
-                top: "50%",
-                transform: "translateY(-50%)",
-                background: "none",
-                border: "none",
-                color: "#00b4ff",
-                cursor: "pointer",
-                fontSize: "14px",
-                padding: "4px",
-                borderRadius: "4px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center"
-              }}
-            >
-              {showPassword ? "👁️" : "👁️‍🗨️"}
-            </button>
+          <div>
+            <label style={{ display: "block", marginBottom: 8, color: "#00b4ff", fontSize: 14, fontWeight: 600 }}>Password</label>
+            <div style={{ position: "relative" }}>
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                required
+                style={{ width: "100%", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(0,180,255,0.2)", borderRadius: 8, padding: "12px 16px", color: "#000", fontSize: 16, outline: "none" }}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", color: "#64748b", cursor: "pointer", fontSize: 14 }}
+              >
+                {showPassword ? "👁️" : "👁️‍🗨️"}
+              </button>
+            </div>
           </div>
 
           <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "20px" }}>
