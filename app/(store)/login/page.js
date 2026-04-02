@@ -177,3 +177,11 @@ function LoginContent() {
     </div>
   );
 }
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", color: "#00b4ff" }}>Loading...</div>}>
+      <LoginContent />
+    </Suspense>
+  );
+}
