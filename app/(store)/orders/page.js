@@ -76,7 +76,7 @@ export default function MyOrdersPage() {
       return;
     }
     loadOrders();
-  }, [state.clientUser, router]);
+  }, [state.clientUser]);
 
   if (!mounted) return null;
 

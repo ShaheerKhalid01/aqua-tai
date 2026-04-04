@@ -37,6 +37,41 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     localStorage.removeItem("aquatai_auth"); // clean old pre-backend key
+    
+    // Session validation disabled temporarily to prevent conflicts
+    // TODO: Re-enable when Edge-compatible session storage is implemented
+    /*
+    const checkSessionValidity = async () => {
+      const token = localStorage.getItem("aquatai_token");
+      if (token) {
+        try {
+          const response = await fetch('/api/auth/validate-session', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            }
+          });
+          
+          if (response.status === 401) {
+            // Session was invalidated, log out user
+            console.log('🚫 Session invalidated by server, logging out...');
+            logout();
+          }
+        } catch (error) {
+          console.error('Session validation check failed:', error);
+        }
+      }
+    };
+    
+    // Check session validity on mount and route changes
+    checkSessionValidity();
+    
+    // Set up interval to check session periodically
+    const interval = setInterval(checkSessionValidity, 30000); // Check every 30 seconds
+    
+    return () => clearInterval(interval);
+    */
   }, []);
 
   const register = async (name, email, password) => {
@@ -56,9 +91,21 @@ export function AuthProvider({ children }) {
   };
 
   const logout = () => {
+    // Clear all authentication data
     localStorage.removeItem("aquatai_token");
     localStorage.removeItem("aquatai_user");
+    localStorage.removeItem("aquatai_admin_token");
+    
+    // Also clear any other auth-related keys that might exist
+    localStorage.removeItem("aquatai_auth");
+    
+    // Dispatch logout action
     dispatch({ type: "LOGOUT_CLIENT" });
+    
+    // Force a page reload to ensure clean state
+    if (typeof window !== "undefined") {
+      window.location.href = "/";
+    }
   };
 
   const adminLogin = async (id, password) => {

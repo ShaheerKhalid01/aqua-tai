@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getAllUsers } from '@/lib/mongodb';
+import { deleteUser } from '@/lib/mongodb';
 
 export async function DELETE(request, { params }) {
   try {
@@ -22,60 +22,26 @@ export async function DELETE(request, { params }) {
       );
     }
     
-    // Get all users
-    const users = await getAllUsers();
-    console.log('Total users found:', users.length);
-    console.log('User IDs:', users.map(u => ({ _id: u._id, email: u.email })));
+    // Use the proper deleteUser function from the database
+    const deleted = await deleteUser(id);
+    console.log('Delete result:', deleted);
     
-    // Find the user to delete (check both _id and id fields)
-    const userIndex = users.findIndex(user => user._id === id || user.id === id);
-    console.log('User found at index:', userIndex);
-    
-    if (userIndex === -1) {
+    if (!deleted) {
       return NextResponse.json(
         { error: 'User not found', searchedId: id },
         { status: 404 }
       );
     }
     
-    // Remove the user from the array
-    const deletedUser = users[userIndex];
-    console.log('Deleting user:', deletedUser.email);
-    users.splice(userIndex, 1);
-    
-    // Update the database (this is a simplified approach for file-based storage)
-    // In a real MongoDB setup, you'd use a proper delete function
-    const fs = require('fs');
-    const path = require('path');
-    const dbPath = path.join(process.cwd(), 'data', 'database.json');
-    
-    try {
-      const dbData = JSON.parse(fs.readFileSync(dbPath, 'utf8'));
-      dbData.users = users;
-      fs.writeFileSync(dbPath, JSON.stringify(dbData, null, 2));
-      console.log('Database updated successfully');
-    } catch (error) {
-      console.error('Error updating database:', error);
-      return NextResponse.json(
-        { error: 'Failed to update database' },
-        { status: 500 }
-      );
-    }
-    
     return NextResponse.json({
       success: true,
-      message: 'Customer deleted successfully',
-      deletedUser: {
-        id: deletedUser._id,
-        name: deletedUser.name,
-        email: deletedUser.email
-      }
+      message: 'Customer deleted successfully'
     });
     
   } catch (error) {
     console.error('Error deleting user:', error);
     return NextResponse.json(
-      { error: 'Failed to delete customer' },
+      { error: 'Failed to delete customer', details: error.message },
       { status: 500 }
     );
   }

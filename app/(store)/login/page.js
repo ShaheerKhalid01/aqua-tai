@@ -2,11 +2,24 @@
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useNotifications } from '@/components/Notifications';
+import { useAuth } from '@/context/AuthContext';
+import { useRouter } from 'next/navigation';
 
 function LoginContent() {
   const [showPassword, setShowPassword] = useState(false);
   const { success, error } = useNotifications();
   const searchParams = useSearchParams();
+  const auth = useAuth();
+  const router = useRouter();
+
+  // Check if user is already logged in and redirect to home
+  useEffect(() => {
+    if (auth.state.clientUser) {
+      console.log('User already logged in, redirecting to home...');
+      router.replace('/');
+      return;
+    }
+  }, [auth.state.clientUser, router]);
 
   useEffect(() => {
     const googleError = searchParams.get('error');

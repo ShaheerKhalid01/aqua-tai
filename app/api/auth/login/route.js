@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { connectDB, findUser } from "@/lib/mongodb";
+import { connectDB, findUser, createSession } from "@/lib/mongodb";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { trackLoginAttempt, validatePassword, addSecurityHeaders } from "@/lib/security";
@@ -97,6 +97,9 @@ export async function POST(req) {
       process.env.JWT_SECRET,
       { expiresIn: "7d" }
     );
+
+    // Create session for automatic logout on deletion
+    await createSession(user._id, user.email, token);
 
     return addSecurityHeaders(
       NextResponse.json({
