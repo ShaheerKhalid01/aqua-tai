@@ -13,43 +13,43 @@ const SLIDES = [
     cta: "Shop RO Systems",
     cat: "Reverse Osmosis System",
     bg: "linear-gradient(120deg,#003d7a 0%,#0057a8 50%,#0070cc 100%)",
-    icon: "🔬",
+    icon: "/1.jpeg",
   },
   {
     tag: "Free Installation",
     headline: "Whole House\nWater Softeners",
     sub: "Protect Your Pipes & Appliances with Premium Softening Systems",
     cta: "View Softeners",
-    cat: "Whole House Water Softener",
+    cat: "Water Softener",
     bg: "linear-gradient(120deg,#065f46 0%,#047857 50%,#059669 100%)",
-    icon: "🏠",
+    icon: "/2.jpeg",
   },
   {
     tag: "Commercial Grade",
     headline: "Water Plants for\nBusiness & Industry",
     sub: "Large-Scale RO Plants from 500 LPH to 10,000 LPH — Custom Built",
     cta: "Explore Plants",
-    cat: "Commercial Water Plants",
+    cat: "Commercial RO System",
     bg: "linear-gradient(120deg,#4c1d95 0%,#6d28d9 50%,#7c3aed 100%)",
-    icon: "🏭",
+    icon: "/3.jpeg",
   },
 ];
 
 // ── Categories ────────────────────────────────────────────────
 const CATEGORIES = [
-  { name: "Reverse Osmosis System",     icon: "🔬", color: "#0057a8", light: "#dbeafe" },
-  { name: "Cartridges & Accessories",   icon: "🔧", color: "#047857", light: "#d1fae5" },
-  { name: "Whole House Water Softener", icon: "🏠", color: "#7c3aed", light: "#ede9fe" },
-  { name: "Domestic Water Filter",      icon: "🚰", color: "#b45309", light: "#fef3c7" },
-  { name: "Commercial Water Plants",    icon: "🏭", color: "#be123c", light: "#ffe4e6" },
+  { name: "Reverse Osmosis System",     icon: "/1.jpeg", color: "#0057a8", light: "#dbeafe" },
+  { name: "Domestic Water Filter",         icon: "/2.jpeg", color: "#047857", light: "#d1fae5" },
+  { name: "Commercial RO System",          icon: "/3.jpeg", color: "#7c3aed", light: "#ede9fe" },
+  { name: "UV Water Purifier",            icon: "/4.jpeg", color: "#b45309", light: "#fef3c7" },
+  { name: "Water Softener",              icon: "/5.jpeg", color: "#be123c", light: "#ffe4e6" },
 ];
 
 // ── Features ──────────────────────────────────────────────────
 const FEATURES = [
-  { icon: "🚚", title: "Free Delivery",      desc: "We deliver across Rahim Yar Khan & all of Pakistan." },
-  { icon: "🔧", title: "Free Installation",  desc: "Expert technicians install your system at no cost." },
-  { icon: "✅", title: "Genuine Products",   desc: "100% authentic, tested water filtration equipment." },
-  { icon: "📞", title: "24/7 Support",       desc: "Call 0304-2604217 for after-sale support anytime." },
+  { icon: "/1.jpeg", title: "Free Delivery",      desc: "We deliver across Rahim Yar Khan & all of Pakistan." },
+  { icon: "/2.jpeg", title: "Free Installation",  desc: "Expert technicians install your system at no cost." },
+  { icon: "/3.jpeg", title: "Genuine Products",   desc: "100% authentic, tested water filtration equipment." },
+  { icon: "/4.jpeg", title: "24/7 Support",       desc: "Call 0304-2604217 for after-sale support anytime." },
 ];
 
 // ── Hero Slider ───────────────────────────────────────────────
@@ -100,7 +100,7 @@ function HeroSlider() {
 
           <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
             <div style={{ fontSize: 160, opacity: animating ? 0 : 0.9, transform: animating ? "scale(0.8)" : "scale(1)", transition: "all 0.4s", filter: "drop-shadow(0 20px 40px rgba(0,0,0,0.3))" }}>
-              {s.icon}
+              <img src={s.icon} alt={s.headline} style={{ width: 220, height: 220, objectFit: "cover", borderRadius: 20 }} />
             </div>
           </div>
         </div>
@@ -140,7 +140,9 @@ export default function Home() {
         <div style={{ maxWidth: 1200, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(4,1fr)" }}>
           {FEATURES.map((f, i) => (
             <div key={f.title} style={{ padding: "22px 24px", borderRight: i < 3 ? "1px solid rgba(255,255,255,0.15)" : "none", display: "flex", gap: 14, alignItems: "flex-start" }}>
-              <span style={{ fontSize: 28, flexShrink: 0 }}>{f.icon}</span>
+              <div style={{ width: 56, height: 56, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <img src={f.icon} alt={f.title} style={{ width: 48, height: 48, objectFit: "cover", borderRadius: 8 }} />
+              </div>
               <div>
                 <div style={{ color: "#fff", fontWeight: 700, fontSize: 14, marginBottom: 3 }}>{f.title}</div>
                 <div style={{ color: "rgba(255,255,255,0.65)", fontSize: 12, lineHeight: 1.5 }}>{f.desc}</div>
@@ -164,8 +166,8 @@ export default function Home() {
                   onMouseEnter={e => { e.currentTarget.style.border = `2px solid ${cat.color}`; e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.boxShadow = "0 12px 32px rgba(0,87,168,0.15)"; }}
                   onMouseLeave={e => { e.currentTarget.style.border = "2px solid transparent"; e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 2px 12px rgba(0,87,168,0.07)"; }}>
                   {/* Image/icon area */}
-                  <div style={{ background: cat.light, height: 120, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 52 }}>
-                    {cat.icon}
+                  <div style={{ background: cat.light, height: 140, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
+                    <img src={cat.icon} alt={cat.name} style={{ width: 80, height: 80, objectFit: "cover", borderRadius: 12 }} />
                   </div>
                   {/* Label */}
                   <div style={{ padding: "14px 12px" }}>
@@ -198,7 +200,9 @@ export default function Home() {
             </div>
           ) : (
             <div style={{ textAlign: "center", padding: "60px 0", color: "#94a3b8", background: "#f7f9fc", borderRadius: 16 }}>
-              <div style={{ fontSize: 48, marginBottom: 12 }}>📦</div>
+              <div style={{ fontSize: 48, marginBottom: 12 }}>
+                <img src="/2.jpeg" alt="Products" style={{ width: 120, height: 120, objectFit: "cover", borderRadius: 16 }} />
+              </div>
               <p style={{ fontSize: 16 }}>Products will appear here once added from admin panel.</p>
             </div>
           )}
@@ -211,7 +215,7 @@ export default function Home() {
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 0, borderRadius: 20, overflow: "hidden", boxShadow: "0 8px 40px rgba(0,87,168,0.12)" }}>
             {/* Left — image */}
             <div style={{ background: "linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%)", minHeight: 340, display: "flex", alignItems: "center", justifyContent: "center", position: "relative", overflow: "hidden" }}>
-              <div style={{ fontSize: 120, opacity: 0.6 }}>🚰</div>
+              <img src="/2.jpeg" alt="Domestic Water Filter" style={{ width: 160, height: 160, objectFit: "cover", borderRadius: 20, opacity: 0.8 }} />
               <div style={{ position: "absolute", bottom: 20, left: 20, background: "#0057a8", color: "#fff", padding: "6px 14px", borderRadius: 20, fontSize: 12, fontWeight: 700 }}>Domestic Range</div>
             </div>
             {/* Right — content */}
@@ -260,7 +264,7 @@ export default function Home() {
             </div>
             {/* Right — image */}
             <div style={{ background: "linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%)", minHeight: 340, display: "flex", alignItems: "center", justifyContent: "center", position: "relative", overflow: "hidden" }}>
-              <div style={{ fontSize: 120, opacity: 0.6 }}>🔧</div>
+              <img src="/2.jpeg" alt="Accessories" style={{ width: 160, height: 160, objectFit: "cover", borderRadius: 20, opacity: 0.8 }} />
               <div style={{ position: "absolute", bottom: 20, right: 20, background: "#047857", color: "#fff", padding: "6px 14px", borderRadius: 20, fontSize: 12, fontWeight: 700 }}>Accessories Range</div>
             </div>
           </div>
@@ -269,7 +273,9 @@ export default function Home() {
 
       {/* ── Full Width Promo Banner ── */}
       <section style={{ background: "linear-gradient(120deg, #0f172a 0%, #0057a8 50%, #0284c7 100%)", padding: "56px 0", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", right: -80, top: "50%", transform: "translateY(-50%)", fontSize: 200, opacity: 0.06, pointerEvents: "none" }}>💧</div>
+        <div style={{ position: "absolute", right: -80, top: "50%", transform: "translateY(-50%)", fontSize: 200, opacity: 0.06, pointerEvents: "none" }}>
+        <img src="/2.jpeg" alt="Tools" style={{ width: 160, height: 160, objectFit: "cover", borderRadius: 20 }} />
+      </div>
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 40, alignItems: "center" }}>
           <div>
             <div style={{ color: "#7dd3fc", fontSize: 12, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", marginBottom: 14 }}>Limited Time Offer</div>
