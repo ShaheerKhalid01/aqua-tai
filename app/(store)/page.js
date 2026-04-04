@@ -42,6 +42,7 @@ const CATEGORIES = [
   { name: "Commercial RO System",          icon: "/3.jpeg", color: "#7c3aed", light: "#ede9fe" },
   { name: "UV Water Purifier",            icon: "/4.jpeg", color: "#b45309", light: "#fef3c7" },
   { name: "Water Softener",              icon: "/5.jpeg", color: "#be123c", light: "#ffe4e6" },
+  { name: "Accessories and Parts",        icon: "/2.jpeg", color: "#64748b", light: "#f1f5f9" },
 ];
 
 // ── Features ──────────────────────────────────────────────────
@@ -159,7 +160,7 @@ export default function Home() {
             <p style={{ color: "#0057a8", fontWeight: 700, fontSize: 13, letterSpacing: 3, textTransform: "uppercase", marginBottom: 10 }}>Explore Our Range</p>
             <h2 style={{ fontSize: 34, fontWeight: 900, color: "#1a1a2e" }}>Shop By Category</h2>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(5,1fr)", gap: 16 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(6,1fr)", gap: 16 }}>
             {CATEGORIES.map(cat => (
               <Link key={cat.name} href={`/shop?category=${encodeURIComponent(cat.name)}`} style={{ textDecoration: "none" }}>
                 <div style={{ background: "#fff", borderRadius: 16, overflow: "hidden", boxShadow: "0 2px 12px rgba(0,87,168,0.07)", border: "2px solid transparent", transition: "all 0.3s", textAlign: "center", cursor: "pointer" }}

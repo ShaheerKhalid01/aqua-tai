@@ -14,6 +14,7 @@ const CATEGORY_ICONS = {
   "Commercial RO System": "",
   "UV Water Purifier": "",
   "Water Softener": "",
+  "Accessories and Parts": "",
 };
 
 function FilterTag({ label, onRemove }) {

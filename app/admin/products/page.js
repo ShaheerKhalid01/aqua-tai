@@ -6,7 +6,7 @@ import { formatPrice } from "@/lib/utils";
 import { useNotifications } from "@/components/Notifications";
 import { useConfirmDialog } from "@/components/ConfirmDialog";
 
-const CATEGORIES = ["Reverse Osmosis System", "Domestic Water Filter", "Commercial RO System", "UV Water Purifier", "Water Softener"];
+const CATEGORIES = ["Reverse Osmosis System", "Domestic Water Filter", "Commercial RO System", "UV Water Purifier", "Water Softener", "Accessories and Parts"];
 const BADGES = ["", "Best Seller", "Popular", "Premium", "New", "Top Rated"];
 const emptyForm = { name: "", category: "", price: "", originalPrice: "", stock: "", badge: "", description: "", features: "", specifications: "", images: [] };
 
