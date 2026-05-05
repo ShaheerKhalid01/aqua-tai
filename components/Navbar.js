@@ -27,17 +27,6 @@ export default function Navbar() {
 
   return (
     <nav style={{ background: "#fff", borderBottom: "2px solid #e8f0fe", position: "sticky", top: 0, zIndex: 50, boxShadow: "0 2px 12px rgba(0,87,168,0.08)" }}>
-      {/* Top bar */}
-      <div style={{ background: "#0057a8", padding: "5px 0" }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <span style={{ color: "rgba(255,255,255,0.8)", fontSize: 12 }}>📍 Old Adda Khanpur, Rahim Yar Khan</span>
-          <div style={{ display: "flex", gap: 16 }}>
-            <a href="tel:03042604217" style={{ color: "rgba(255,255,255,0.8)", fontSize: 12, textDecoration: "none" }}>📞 0304-2604217</a>
-            <a href="mailto:aquarowaterfilter@gmail.com" style={{ color: "rgba(255,255,255,0.8)", fontSize: 12, textDecoration: "none" }}>✉️ aquarowaterfilter@gmail.com</a>
-          </div>
-        </div>
-      </div>
-
       {/* Main navbar */}
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px", height: 68, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         {/* Logo */}

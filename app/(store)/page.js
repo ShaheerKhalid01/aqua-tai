@@ -13,7 +13,7 @@ const SLIDES = [
     cta: "Shop RO Systems",
     cat: "Reverse Osmosis System",
     bg: "linear-gradient(120deg,#003d7a 0%,#0057a8 50%,#0070cc 100%)",
-    icon: "/1.jpeg",
+    icon: "/1.png",
   },
   {
     tag: "Free Installation",
@@ -22,7 +22,7 @@ const SLIDES = [
     cta: "View Softeners",
     cat: "Water Softener",
     bg: "linear-gradient(120deg,#065f46 0%,#047857 50%,#059669 100%)",
-    icon: "/2.jpeg",
+    icon: "/2.png",
   },
   {
     tag: "Commercial Grade",
@@ -31,7 +31,7 @@ const SLIDES = [
     cta: "Explore Plants",
     cat: "Commercial RO System",
     bg: "linear-gradient(120deg,#4c1d95 0%,#6d28d9 50%,#7c3aed 100%)",
-    icon: "/3.jpeg",
+    icon: "/3.png",
   },
 ];
 
@@ -72,54 +72,53 @@ function HeroSlider() {
   const s = SLIDES[idx];
 
   return (
-    <div style={{ position: "relative", height: 480, overflow: "hidden" }}>
-      <div style={{ position: "absolute", inset: 0, background: s.bg, transition: "background 0.5s" }}>
-        {/* decorative shapes */}
-        <div style={{ position: "absolute", right: -60, top: -60, width: 400, height: 400, borderRadius: "50%", background: "rgba(255,255,255,0.05)", pointerEvents: "none" }} />
-        <div style={{ position: "absolute", right: 80, bottom: -80, width: 280, height: 280, borderRadius: "50%", background: "rgba(255,255,255,0.04)", pointerEvents: "none" }} />
+    <div style={{ position: "relative", height: 600, overflow: "hidden" }}>
+      {/* Background image */}
+      <div style={{ position: "absolute", inset: 0, transition: "opacity 0.5s" }}>
+        <img src={s.icon} alt={s.headline} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+        {/* Dark overlay for text readability */}
+        <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.4)" }} />
+      </div>
 
-        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px", height: "100%", display: "grid", gridTemplateColumns: "1fr 1fr", alignItems: "center", gap: 40 }}>
-          <div style={{ opacity: animating ? 0 : 1, transform: animating ? "translateX(-20px)" : "translateX(0)", transition: "all 0.3s" }}>
-            <div style={{ display: "inline-block", background: "rgba(255,255,255,0.15)", border: "1px solid rgba(255,255,255,0.25)", borderRadius: 30, padding: "5px 16px", fontSize: 12, color: "#fff", marginBottom: 20, fontWeight: 600, letterSpacing: 1 }}>
-              ⭐ {s.tag}
-            </div>
-            <h1 style={{ fontSize: "clamp(32px,4vw,54px)", fontWeight: 900, color: "#fff", lineHeight: 1.2, marginBottom: 18, whiteSpace: "pre-line" }}>
-              {s.headline}
-            </h1>
-            <p style={{ color: "rgba(255,255,255,0.8)", fontSize: 16, lineHeight: 1.7, marginBottom: 32, maxWidth: 420 }}>{s.sub}</p>
-            <div style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
-              <Link href={`/shop?category=${encodeURIComponent(s.cat)}`}
-                style={{ background: "#fff", color: s.bg.includes("003d7a") ? "#0057a8" : s.bg.includes("065f46") ? "#047857" : "#7c3aed", padding: "13px 32px", borderRadius: 8, fontWeight: 800, fontSize: 15, textDecoration: "none", boxShadow: "0 4px 20px rgba(0,0,0,0.2)" }}>
-                {s.cta} →
-              </Link>
-              <a href="https://wa.me/923294879030" target="_blank" rel="noreferrer"
-                style={{ background: "rgba(255,255,255,0.15)", border: "2px solid rgba(255,255,255,0.4)", color: "#fff", padding: "13px 28px", borderRadius: 8, fontWeight: 700, fontSize: 15, textDecoration: "none" }}>
-                💬 WhatsApp
-              </a>
-            </div>
+      {/* Text content overlay */}
+      <div style={{ position: "relative", zIndex: 1, maxWidth: 1200, margin: "0 auto", padding: "0 80px", height: "100%", display: "flex", alignItems: "center" }}>
+        <div style={{ maxWidth: 600, opacity: animating ? 0 : 1, transform: animating ? "translateX(-20px)" : "translateX(0)", transition: "all 0.3s" }}>
+          <div style={{ display: "inline-block", background: "rgba(255,255,255,0.2)", backdropFilter: "blur(10px)", border: "1px solid rgba(255,255,255,0.3)", borderRadius: 30, padding: "5px 16px", fontSize: 12, color: "#fff", marginBottom: 20, fontWeight: 600, letterSpacing: 1 }}>
+            ⭐ {s.tag}
           </div>
-
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <div style={{ fontSize: 160, opacity: animating ? 0 : 0.9, transform: animating ? "scale(0.8)" : "scale(1)", transition: "all 0.4s", filter: "drop-shadow(0 20px 40px rgba(0,0,0,0.3))" }}>
-              <img src={s.icon} alt={s.headline} style={{ width: 220, height: 220, objectFit: "cover", borderRadius: 20 }} />
-            </div>
+          <h1 style={{ fontSize: "clamp(32px,4vw,54px)", fontWeight: 900, color: "#fff", lineHeight: 1.2, marginBottom: 18, whiteSpace: "pre-line", textShadow: "2px 2px 4px rgba(0,0,0,0.5)" }}>
+            {s.headline}
+          </h1>
+          <p style={{ color: "rgba(255,255,255,0.9)", fontSize: 16, lineHeight: 1.7, marginBottom: 32, maxWidth: 500, textShadow: "1px 1px 2px rgba(0,0,0,0.5)" }}>{s.sub}</p>
+          <div style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
+            <Link href={`/shop?category=${encodeURIComponent(s.cat)}`}
+              style={{ background: "#fff", color: "#0057a8", padding: "13px 32px", borderRadius: 8, fontWeight: 800, fontSize: 15, textDecoration: "none", boxShadow: "0 4px 20px rgba(0,0,0,0.3)" }}>
+              {s.cta} →
+            </Link>
+            <a href="https://wa.me/923294879030" target="_blank" rel="noreferrer"
+              style={{ background: "rgba(255,255,255,0.2)", backdropFilter: "blur(10px)", border: "2px solid rgba(255,255,255,0.4)", color: "#fff", padding: "13px 28px", borderRadius: 8, fontWeight: 700, fontSize: 15, textDecoration: "none" }}>
+              💬 WhatsApp
+            </a>
           </div>
-        </div>
-
-        {/* Arrows */}
-        <button onClick={() => go((idx - 1 + SLIDES.length) % SLIDES.length)}
-          style={{ position: "absolute", left: 20, top: "50%", transform: "translateY(-50%)", background: "rgba(255,255,255,0.15)", border: "none", color: "#fff", width: 44, height: 44, borderRadius: "50%", fontSize: 20, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>‹</button>
-        <button onClick={() => go((idx + 1) % SLIDES.length)}
-          style={{ position: "absolute", right: 20, top: "50%", transform: "translateY(-50%)", background: "rgba(255,255,255,0.15)", border: "none", color: "#fff", width: 44, height: 44, borderRadius: "50%", fontSize: 20, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>›</button>
-
-        {/* Dots */}
-        <div style={{ position: "absolute", bottom: 24, left: "50%", transform: "translateX(-50%)", display: "flex", gap: 8 }}>
-          {SLIDES.map((_, i) => (
-            <div key={i} onClick={() => go(i)}
-              style={{ width: i === idx ? 28 : 10, height: 10, borderRadius: 5, background: i === idx ? "#fff" : "rgba(255,255,255,0.4)", cursor: "pointer", transition: "all 0.3s" }} />
-          ))}
         </div>
       </div>
+
+        {/* Navigation controls */}
+        <div style={{ position: "absolute", inset: 0, pointerEvents: "none" }}>
+          {/* Arrows */}
+          <button onClick={() => { console.log("Left button clicked"); go((idx - 1 + SLIDES.length) % SLIDES.length); }}
+            style={{ position: "absolute", left: 20, top: "50%", transform: "translateY(-50%)", background: "rgba(255,255,255,0.15)", border: "none", color: "#fff", width: 44, height: 44, borderRadius: "50%", fontSize: 20, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", pointerEvents: "auto", zIndex: 10 }}>‹</button>
+          <button onClick={() => { console.log("Right button clicked"); go((idx + 1) % SLIDES.length); }}
+            style={{ position: "absolute", right: 20, top: "50%", transform: "translateY(-50%)", background: "rgba(255,255,255,0.15)", border: "none", color: "#fff", width: 44, height: 44, borderRadius: "50%", fontSize: 20, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", pointerEvents: "auto", zIndex: 10 }}>›</button>
+
+          {/* Dots */}
+          <div style={{ position: "absolute", bottom: 24, left: "50%", transform: "translateX(-50%)", display: "flex", gap: 8, pointerEvents: "auto", zIndex: 10 }}>
+            {SLIDES.map((_, i) => (
+              <div key={i} onClick={() => { console.log(`Dot ${i} clicked`); go(i); }}
+                style={{ width: i === idx ? 28 : 10, height: 10, borderRadius: 5, background: i === idx ? "#fff" : "rgba(255,255,255,0.4)", cursor: "pointer", transition: "all 0.3s" }} />
+            ))}
+          </div>
+        </div>
     </div>
   );
 }
@@ -167,8 +166,8 @@ export default function Home() {
                   onMouseEnter={e => { e.currentTarget.style.border = `2px solid ${cat.color}`; e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.boxShadow = "0 12px 32px rgba(0,87,168,0.15)"; }}
                   onMouseLeave={e => { e.currentTarget.style.border = "2px solid transparent"; e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 2px 12px rgba(0,87,168,0.07)"; }}>
                   {/* Image/icon area */}
-                  <div style={{ background: cat.light, height: 140, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
-                    <img src={cat.icon} alt={cat.name} style={{ width: 80, height: 80, objectFit: "cover", borderRadius: 12 }} />
+                  <div style={{ height: 140, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
+                    <img src={cat.icon} alt={cat.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                   </div>
                   {/* Label */}
                   <div style={{ padding: "14px 12px" }}>
@@ -348,7 +347,7 @@ export default function Home() {
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 60, alignItems: "center" }}>
           <div>
             <p style={{ color: "#0057a8", fontWeight: 700, fontSize: 13, letterSpacing: 3, textTransform: "uppercase", marginBottom: 12 }}>About Us</p>
-            <h2 style={{ fontSize: 34, fontWeight: 900, color: "#1a1a2e", marginBottom: 18, lineHeight: 1.25 }}>Rahim Yar Khan's Most Trusted Water Filter Specialists</h2>
+            <h2 style={{ fontSize: 34, fontWeight: 900, color: "#1a1a2e", marginBottom: 18, lineHeight: 1.25 }}>Rahim Yar Khan&apos;s Most Trusted Water Filter Specialists</h2>
             <p style={{ color: "#64748b", fontSize: 15, lineHeight: 1.8, marginBottom: 16 }}>
               AQUA R.O Filter has served homes and businesses in Rahim Yar Khan for over 10 years. We provide genuine, tested RO systems, domestic filters, water softeners, and large-scale commercial plants — with free professional installation.
             </p>

@@ -10,18 +10,6 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Top bar */}
-      <div className="bg-gradient-to-r from-[#0a1628] to-[#0d4f8c] text-white text-sm py-2 px-4">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <span className="flex items-center gap-2 text-cyan-300">
-            <Phone size={13} />
-            0800-AQUATAI (Free Helpline)
-          </span>
-          <span className="text-cyan-100 hidden md:block">🚚 Free delivery on orders over Rs. 2,000</span>
-          <span className="text-cyan-300 text-xs">100% Genuine Products</span>
-        </div>
-      </div>
-
       {/* Main navbar */}
       <nav className="bg-white shadow-lg sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
