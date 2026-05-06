@@ -19,8 +19,8 @@ export default function Navbar() {
               <Droplets size={22} className="text-white" />
             </div>
             <div>
-              <span className="font-display text-2xl text-[#0a1628]">Aqua<span className="text-cyan-500">Tai</span></span>
-              <p className="text-[10px] text-gray-400 -mt-1 tracking-widest uppercase">Pure Water, Pure Life</p>
+              <span className="font-display text-2xl text-[#0a1628]">AQUA<span className="text-cyan-500">Tai</span></span>
+              <p className="text-[10px] text-gray-400 -mt-1 tracking-widest uppercase">PURE WATER - HEALTHY LIFE</p>
             </div>
           </Link>
 

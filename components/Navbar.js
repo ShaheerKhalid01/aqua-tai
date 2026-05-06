@@ -75,8 +75,8 @@ export default function Navbar() {
           <Link href="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none", flexShrink: 0 }}>
             <img src="/logo.jpeg" alt="Aqua R.O Water Filter" style={{ width: 38, height: 38, objectFit: "contain", borderRadius: 8 }} />
             <div className="logo-text" style={{ display: "none" }}>
-              <div style={{ color: "#0057a8", fontWeight: 900, fontSize: 16, letterSpacing: 0.5, lineHeight: 1.1 }}>Aqua R.O Water Filter</div>
-              <div style={{ color: "#64748b", fontSize: 9, letterSpacing: 2, textTransform: "uppercase" }}>Pure Water Solutions</div>
+              <div style={{ color: "#0057a8", fontWeight: 900, fontSize: 16, letterSpacing: 0.5, lineHeight: 1.1 }}>AQUA R.O Water Filter</div>
+              <div style={{ color: "#64748b", fontSize: 9, letterSpacing: 1.5, textTransform: "uppercase" }}>PURE WATER - HEALTHY LIFE</div>
             </div>
           </Link>
 
@@ -167,8 +167,8 @@ export default function Navbar() {
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <img src="/logo.jpeg" alt="Aqua R.O" style={{ width: 36, height: 36, objectFit: "contain", borderRadius: 8 }} />
             <div>
-              <div style={{ color: "#0057a8", fontWeight: 900, fontSize: 14, lineHeight: 1.1 }}>Aqua R.O Water Filter</div>
-              <div style={{ color: "#64748b", fontSize: 9, letterSpacing: 1.5, textTransform: "uppercase" }}>Pure Water Solutions</div>
+              <div style={{ color: "#0057a8", fontWeight: 900, fontSize: 14, lineHeight: 1.1 }}>AQUA R.O Water Filter</div>
+              <div style={{ color: "#64748b", fontSize: 9, letterSpacing: 1.5, textTransform: "uppercase" }}>PURE WATER - HEALTHY LIFE</div>
             </div>
           </div>
           <button className="drawer-close" onClick={() => setMobileOpen(false)}>✕</button>

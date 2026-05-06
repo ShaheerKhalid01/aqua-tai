@@ -7,7 +7,7 @@ import { NotificationProvider } from "@/components/Notifications";
 import { ConfirmDialogProvider } from "@/components/ConfirmDialog";
 
 export const metadata = {
-  title: "Aqua R.O Water Filter - Pure Water Solutions",
+  title: "AQUA R.O Water Filter - PURE WATER - HEALTHY LIFE",
   description: "Pakistan's leading water filtration store. Shop RO systems, domestic filters, whole house softeners and more.",
 };
 

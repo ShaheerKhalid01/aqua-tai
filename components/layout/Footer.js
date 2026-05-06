@@ -12,7 +12,7 @@ export default function Footer() {
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center">
                 <Droplets size={22} className="text-white" />
               </div>
-              <span className="font-display text-2xl">Aqua<span className="text-cyan-400">Tai</span></span>
+              <span className="font-display text-2xl">AQUA<span className="text-cyan-400">Tai</span></span>
             </div>
             <p className="text-gray-400 text-sm leading-relaxed mb-6">
               Pakistan's leading water filter brand. We provide certified, tested filtration systems for homes, offices, and industries.
@@ -100,7 +100,7 @@ export default function Footer() {
 
       <div className="border-t border-white/10 py-5 px-4">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-2 text-sm text-gray-500">
-          <p>© 2024 AquaTai. All rights reserved.</p>
+          <p>© 2024 AQUATai. All rights reserved.</p>
           <div className="flex gap-4">
             <a href="#" className="hover:text-cyan-400 transition-colors">Privacy Policy</a>
             <a href="#" className="hover:text-cyan-400 transition-colors">Terms of Service</a>

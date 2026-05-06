@@ -21,7 +21,7 @@ const CATEGORY_STYLE = {
 const SLIDES = [
   {
     tag: "Best Quality",
-    headline: "Pure Water for\nYour Family",
+    headline: "PURE WATER -\nHEALTHY LIFE",
     sub: "Advanced Reverse Osmosis Systems — Installed Free at Your Doorstep",
     cta: "Shop RO Systems",
     cat: "Reverse Osmosis System",
@@ -146,7 +146,7 @@ export default function Home() {
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 16px" }}>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "14px 20px" }} className="features-bar">
             {[
-              { icon: "💧", title: "Aqua RO System", desc: "Pure & Safe Water" },
+              { icon: "💧", title: "AQUA RO System", desc: "Pure & Safe Water" },
               { icon: "🚚", title: "Fast Delivery", desc: "All Over Pakistan" },
               { icon: "🎧", title: "Customer Support", desc: "24/7 Service" },
               { icon: "🏷️", title: "Heavy Discount", desc: "Up to 30% Off" },
