@@ -70,33 +70,37 @@ function LoginContent() {
   };
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg, #040d1a 0%, #0a2540 60%, #0d3060 100%)", padding: "40px 16px" }}>
-      <div style={{ width: "100%", maxWidth: 400, background: "linear-gradient(145deg, #0d2545, #0a1e35)", border: "1px solid rgba(0,180,255,0.18)", borderRadius: 20, padding: 36 }}>
-        <h2 style={{ fontWeight: 800, fontSize: 22, marginBottom: 6, fontFamily: "Georgia, serif", color: "#00b4ff", textAlign: "center" }}>
-          Welcome Back
-        </h2>
-        <p style={{ color: "#64748b", fontSize: 13, marginBottom: 24, textAlign: "center" }}>
-          Sign in to your AQUA R.O Filter account.
-        </p>
+    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg, #f5f8ff 0%, #e8f0fe 100%)", padding: "40px 16px" }}>
+      <div style={{ width: "100%", maxWidth: 400, background: "#fff", border: "1px solid #e8f0fe", borderRadius: 20, padding: "32px 24px", boxShadow: "0 8px 32px rgba(0,87,168,0.08)" }}>
+        {/* Logo */}
+        <div style={{ textAlign: "center", marginBottom: 24 }}>
+          <img src="/logo.jpeg" alt="Aqua R.O" style={{ width: 56, height: 56, objectFit: "contain", borderRadius: 12, margin: "0 auto 12px" }} />
+          <h2 style={{ fontWeight: 800, fontSize: 22, marginBottom: 4, color: "#1a1a2e" }}>
+            Welcome Back
+          </h2>
+          <p style={{ color: "#64748b", fontSize: 13 }}>
+            Sign in to your AQUA R.O Filter account.
+          </p>
+        </div>
 
         <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           <div>
-            <label style={{ display: "block", marginBottom: 8, color: "#00b4ff", fontSize: 14, fontWeight: 600 }}>Email</label>
+            <label style={{ display: "block", marginBottom: 6, color: "#0057a8", fontSize: 13, fontWeight: 600 }}>Email</label>
             <input
               type="email"
               name="email"
               required
-              style={{ width: "100%", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(0,180,255,0.2)", borderRadius: 8, padding: "12px 16px", color: "#fff", fontSize: 16, outline: "none" }}
+              style={{ width: "100%", background: "#f7f9fc", border: "1px solid #e8f0fe", borderRadius: 10, padding: "12px 16px", color: "#1a1a2e", fontSize: 15, outline: "none" }}
             />
           </div>
           <div>
-            <label style={{ display: "block", marginBottom: 8, color: "#00b4ff", fontSize: 14, fontWeight: 600 }}>Password</label>
+            <label style={{ display: "block", marginBottom: 6, color: "#0057a8", fontSize: 13, fontWeight: 600 }}>Password</label>
             <div style={{ position: "relative" }}>
               <input
                 type={showPassword ? "text" : "password"}
                 name="password"
                 required
-                style={{ width: "100%", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(0,180,255,0.2)", borderRadius: 8, padding: "12px 16px", color: "#fff", fontSize: 16, outline: "none" }}
+                style={{ width: "100%", background: "#f7f9fc", border: "1px solid #e8f0fe", borderRadius: 10, padding: "12px 16px", color: "#1a1a2e", fontSize: 15, outline: "none" }}
               />
               <button
                 type="button"
@@ -108,31 +112,33 @@ function LoginContent() {
             </div>
           </div>
 
-          <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "20px" }}>
-            <button
-              type="submit"
-              style={{
-                flex: 1,
-                background: "linear-gradient(135deg,#00b4ff,#0066cc)",
-                color: "#fff",
-                border: "none",
-                padding: "13px 0",
-                borderRadius: 11,
-                fontWeight: 700,
-                fontSize: 15,
-                cursor: "pointer"
-              }}
-            >
-              Sign In →
-            </button>
-            <span style={{ color: "#64748b", fontSize: 13 }}>
-              Don't have an account? <a href="/register" style={{ color: "#00b4ff", textDecoration: "none", fontWeight: 600 }}>Register</a>
-            </span>
+          <button
+            type="submit"
+            style={{
+              width: "100%",
+              background: "#0057a8",
+              color: "#fff",
+              border: "none",
+              padding: "13px 0",
+              borderRadius: 10,
+              fontWeight: 700,
+              fontSize: 15,
+              cursor: "pointer",
+              marginTop: 4
+            }}
+          >
+            Sign In →
+          </button>
+
+          <div style={{ textAlign: "center", fontSize: 13, color: "#64748b" }}>
+            Don't have an account? <a href="/register" style={{ color: "#0057a8", textDecoration: "none", fontWeight: 600 }}>Register</a>
           </div>
         </form>
 
-        <div style={{ textAlign: "center", margin: "20px 0" }}>
-          <span style={{ color: "#64748b", fontSize: 12 }}>OR</span>
+        <div style={{ textAlign: "center", margin: "20px 0", display: "flex", alignItems: "center", gap: 12 }}>
+          <div style={{ flex: 1, height: 1, background: "#e8f0fe" }} />
+          <span style={{ color: "#94a3b8", fontSize: 12 }}>OR</span>
+          <div style={{ flex: 1, height: 1, background: "#e8f0fe" }} />
         </div>
 
         <button
@@ -160,9 +166,9 @@ function LoginContent() {
             width: "100%",
             background: "#fff",
             color: "#333",
-            border: "1px solid #e5e7eb",
+            border: "1px solid #e8f0fe",
             padding: "12px 0",
-            borderRadius: 11,
+            borderRadius: 10,
             fontWeight: 600,
             fontSize: 14,
             cursor: "pointer",
@@ -181,8 +187,8 @@ function LoginContent() {
           Continue with Google
         </button>
 
-        <div style={{ textAlign: "center" }}>
-          <a href="/forgot-password" style={{ color: "#00b4ff", textDecoration: "none", fontWeight: 600, fontSize: 13 }}>
+        <div style={{ textAlign: "center", marginTop: 16 }}>
+          <a href="/forgot-password" style={{ color: "#0057a8", textDecoration: "none", fontWeight: 600, fontSize: 13 }}>
             Forgot Password?
           </a>
         </div>
@@ -193,7 +199,7 @@ function LoginContent() {
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={<div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", color: "#00b4ff" }}>Loading...</div>}>
+    <Suspense fallback={<div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", color: "#0057a8" }}>Loading...</div>}>
       <LoginContent />
     </Suspense>
   );

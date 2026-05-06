@@ -7,7 +7,6 @@ import WhatsAppButton from "@/components/WhatsAppButton";
 import { useAuth } from "@/context/AuthContext";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useRef } from "react";
-import "../globals.css";
 
 // Separate component for OAuth handling
 function OAuthHandler() {

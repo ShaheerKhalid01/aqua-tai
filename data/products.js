@@ -91,6 +91,6 @@ export const products = [
   },
 ];
 
-export const categories = ["All", "Under Sink", "Countertop", "Whole House", "Refrigerator", "Pitcher", "UV Sterilizer"];
+export const categories = ["All", "Reverse Osmosis System", "Domestic Water Filter", "Commercial RO System", "UV Water Purifier", "Water Softener", "Accessories and Parts"];
 export const getProductBySlug = (slug) => products.find((p) => p.slug === slug);
 export const getProductById = (id) => products.find((p) => p.id === parseInt(id));
